@@ -1,0 +1,5 @@
+Comando que converte o arquivo de layout  arquivo.ui em codigo python Qt (pyqt)
+
+pyuic4 -x arquivo.ui -o arquivo.py
+
+-x opção que torna o arquivo executavel (sem ele usa-se outro arquivo principal)

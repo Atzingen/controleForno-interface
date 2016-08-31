@@ -1,0 +1,1 @@
+C:\Users\Gustavo\Anaconda2\Scripts\pyuic tela.ui -o interface.py
