@@ -1,8 +1,14 @@
+# -*- coding: latin-1 -*-
 from PyQt4 import QtGui
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
- 
 from matplotlib.figure import Figure
- 
+
+'''
+Classes para tela e gráfico.
+Como por padrão o Qt4 não possui um objeto de gráfico adequado, é utilizado o matplotlib,
+sendo que um objeto de tela comum do qt herdará suas propriedades.
+'''
+
 class MplCanvas(FigureCanvas):
     def __init__(self):
         self.fig = Figure()
