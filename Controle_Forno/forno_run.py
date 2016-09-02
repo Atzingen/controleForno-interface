@@ -40,18 +40,12 @@ class Main(QtGui.QMainWindow):
         self.serial_timeout = False  # Timeout da leirura serial
         self.experimento_nome = 'Sem Nome'  # Veri�vel para o nome do experimento
         ###     Vari�veis da calibra��o        ################################
-        self.S_01_A = float(self.ui.lineEdit_4.text())
-        self.S_01_B = float(self.ui.lineEdit_5.text())
-        self.S_02_A = float(self.ui.lineEdit_7.text())
-        self.S_02_B = float(self.ui.lineEdit_6.text())
-        self.S_03_A = float(self.ui.lineEdit_9.text())
-        self.S_03_B = float(self.ui.lineEdit_8.text())
-        self.S_04_A = float(self.ui.lineEdit_11.text())
-        self.S_04_B = float(self.ui.lineEdit_10.text())
-        self.S_05_A = float(self.ui.lineEdit_13.text())
-        self.S_05_B = float(self.ui.lineEdit_12.text())
-        self.S_06_A = float(self.ui.lineEdit_15.text())
-        self.S_06_B = float(self.ui.lineEdit_14.text())
+        nomes_calibracao = retorna_dados_config()
+        print nomes_calibracao
+        cal = leitura_calibracao(str(nomes_calibracao))
+        self.atualiza_valores_calibracoes(cal)
+        self.atualiza_lineEdit_calibracao()
+
         ###   Vari�veis de estado do forno (flags) #############################
         self.resitencia01 = 0
         self.resitencia02 = 0
@@ -115,6 +109,7 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_7.pressed.connect(self.limpa_texto)
         self.ui.pushButton_6.pressed.connect(partial(envia_manual, self))
         self.ui.comboBox.activated.connect(self.add_portas_disponiveis)
+        self.ui.comboBox_4.activated.connect(self.lista_calibracoes)
         self.ui.radioButton.clicked.connect(partial(hold, self))
         self.ui.pushButton_5.pressed.connect(partial(tira_foto, self))
         self.ui.checkBox_10.stateChanged.connect(partial(foto_update, self))
@@ -127,23 +122,82 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_14.pressed.connect(partial(limpa_senha, self))
         self.ui.pushButton_15.pressed.connect(partial(novo_exp, self))
         self.ui.pushButton_16.pressed.connect(partial(local_arquivo, self.ui))
-        self.ui.pushButton_17.pressed.connect(self.atualiza_calibra_linear)
+        self.ui.pushButton_17.pressed.connect(self.salva_calibracao)
+        self.ui.pushButton_19.pressed.connect(self.deleta_calibracao)
+
+        self.lista_calibracoes(1)
 
     #########################  Calibracao linear ###########################
-    def atualiza_calibra_linear(self):
+    def salva_calibracao(self):
+        s_01_A = float(self.ui.lineEdit_4.text())
+        s_02_A = float(self.ui.lineEdit_7.text())
+        s_03_A = float(self.ui.lineEdit_9.text())
+        s_04_A = float(self.ui.lineEdit_11.text())
+        s_05_A = float(self.ui.lineEdit_13.text())
+        s_06_A = float(self.ui.lineEdit_15.text())
+        s_01_B = float(self.ui.lineEdit_5.text())
+        s_02_B = float(self.ui.lineEdit_6.text())
+        s_03_B = float(self.ui.lineEdit_8.text())
+        s_04_B = float(self.ui.lineEdit_10.text())
+        s_05_B = float(self.ui.lineEdit_12.text())
+        s_06_B = float(self.ui.lineEdit_14.text())
+        text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog',
+            'Digite o nome da calibracao')
+        print text, ok
+        if ok:
+            insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
+
+    def deleta_calibracao(self):
+        pass
+
+    def atualiza_lineEdit_calibracao(self):
+        self.ui.lineEdit_4.setText(str(self.S_01_A))
+        self.ui.lineEdit_7.setText(str(self.S_02_A))
+        self.ui.lineEdit_9.setText(str(self.S_03_A))
+        self.ui.lineEdit_11.setText(str(self.S_04_A))
+        self.ui.lineEdit_13.setText(str(self.S_05_A))
+        self.ui.lineEdit_15.setText(str(self.S_06_A))
+        self.ui.lineEdit_5.setText(str(self.S_01_B))
+        self.ui.lineEdit_6.setText(str(self.S_02_B))
+        self.ui.lineEdit_8.setText(str(self.S_03_B))
+        self.ui.lineEdit_10.setText(str(self.S_04_B))
+        self.ui.lineEdit_12.setText(str(self.S_05_B))
+        self.ui.lineEdit_14.setText(str(self.S_06_B))
+
+    def lista_calibracoes(self,tipo=0):
+        nomes = nomes_calibracao()
+        self.ui.comboBox.blockSignals(True)
+        numero_escolha = self.ui.comboBox_4.currentIndex()
+        self.ui.comboBox_4.clear()
+        for nome in nomes:
+            self.ui.comboBox_4.addItem(str(nome[0]))
+        self.ui.comboBox_4.setCurrentIndex(numero_escolha)
+        self.ui.comboBox_4.blockSignals(False)
+        escolha = unicode(self.ui.comboBox_4.currentText())
+        if ( tipo == 1):
+            padrao = retorna_dados_config()
+            valores = leitura_calibracao(padrao)
+        else:
+            valores = leitura_calibracao(escolha)
+            salva_config_calibracao(escolha)
+        self.atualiza_valores_calibracoes(valores)
+        self.atualiza_lineEdit_calibracao()
+
+
+    def atualiza_valores_calibracoes(self, valores):
         '''Pega os valores dos campos da calibra��o linear para fazer a convers�o entre tens�o e temperatura'''
-        self.S_01_A = float(self.ui.lineEdit_4.text())
-        self.S_01_B = float(self.ui.lineEdit_5.text())
-        self.S_02_A = float(self.ui.lineEdit_7.text())
-        self.S_02_B = float(self.ui.lineEdit_6.text())
-        self.S_03_A = float(self.ui.lineEdit_9.text())
-        self.S_03_B = float(self.ui.lineEdit_8.text())
-        self.S_04_A = float(self.ui.lineEdit_11.text())
-        self.S_04_B = float(self.ui.lineEdit_10.text())
-        self.S_05_A = float(self.ui.lineEdit_13.text())
-        self.S_05_B = float(self.ui.lineEdit_12.text())
-        self.S_06_A = float(self.ui.lineEdit_15.text())
-        self.S_06_B = float(self.ui.lineEdit_14.text())
+        self.S_01_A = valores[2]
+        self.S_01_B = valores[3]
+        self.S_02_A = valores[4]
+        self.S_02_B = valores[5]
+        self.S_03_A = valores[6]
+        self.S_03_B = valores[7]
+        self.S_04_A = valores[8]
+        self.S_04_B = valores[9]
+        self.S_05_A = valores[10]
+        self.S_05_B = valores[11]
+        self.S_06_A = valores[12]
+        self.S_06_B = valores[13]
 
     #####################  Fun��es da GUI #################################
     def alerta_toolbar(self, texto):
@@ -197,16 +251,14 @@ class Main(QtGui.QMainWindow):
         ''' M�todo que altera os valores da combobox que mostra as portas dispon�veis
 		Os valores s�o retirados da fun��o serial_ports '''
         escolha = self.ui.comboBox.currentIndex()  # Salva a porta atual escolhida
-        self.ui.comboBox.blockSignals(
-            True)  # Bloqueia sinais do PyQt na combobox para evitar que a fun��o seja chamada novamente
+        self.ui.comboBox.blockSignals(True)  # Bloqueia sinais do PyQt na combobox para evitar que a fun��o seja chamada novamente
         self.ui.comboBox.clear()  # Limpa os itens da combobox
         self.ui.comboBox.addItem('Atualiza')  # Adiciona uma op��o de atualiza��o das portas
         self.ui.comboBox.addItem('/')  # Adiciona um item para a raiz do sistema
         ports = serial_ports()  # chama a fun��o que lista as portas
         for port in ports:
             self.ui.comboBox.addItem(port)  # Adiciona as portas a lista da combobox
-        self.ui.comboBox.blockSignals(
-            False)  # Desabitita o bloqueio de sinal do PyQt para que esta fun��o possa ser chamada novamente no futuro
+        self.ui.comboBox.blockSignals(False)  # Desabitita o bloqueio de sinal do PyQt para que esta fun��o possa ser chamada novamente no futuro
         self.ui.comboBox.setCurrentIndex(escolha)  # Volta para a porta escolhida
 
     def limpa_texto(self):

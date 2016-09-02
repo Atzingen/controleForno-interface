@@ -4,10 +4,86 @@ import datetime
 import scipy
 from PyQt4 import QtGui
 
+def cria_tabela_config():
+	db = sqlite3.connect('forno_data.db')
+	cursor = db.cursor()
+	cursor.execute('''CREATE TABLE IF NOT EXISTS config
+	(id INTEGER PRIMARY KEY, calibracao_selecionada TEXT UNIQUE)''')
+	db.commit()
+	db.close()
+
+def retorna_dados_config():
+	db = sqlite3.connect('forno_data.db')
+	cursor = db.cursor()
+	cursor.execute('''SELECT calibracao_selecionada FROM config''')
+	row = cursor.fetchall()
+	db.commit()
+	db.close()
+	return row[0][0]
+
+def salva_config_calibracao(nome):
+	db = sqlite3.connect('forno_data.db')
+	cursor = db.cursor()
+	cursor.execute('''UPDATE config SET calibracao_selecionada=? WHERE id=?''',(nome,1))
+	db.commit()
+	db.close()
+
+def cria_tabela_calibracao():
+	db = sqlite3.connect('forno_data.db')
+	cursor = db.cursor()
+	cursor.execute('''CREATE TABLE IF NOT EXISTS calibracao
+	(id INTEGER PRIMARY KEY,nome TEXT,s1_A REAL,s2_A REAL,s3_A REAL,s4_A REAL,s5_A REAL,s6_A REAL,
+							s1_B REAL,s2_B REAL,s3_B REAL,s4_B REAL,s5_B REAL,s6_B REAL)''')
+	db.commit()
+	db.close()
+
+def insere_calibracao(nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
+					s1_B,s2_B,s3_B,s4_B,s5_B,s6_B):
+	db = sqlite3.connect('forno_data.db')
+	cursor = db.cursor()
+	cursor.execute('''INSERT INTO calibracao (nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
+					s1_B,s2_B,s3_B,s4_B,s5_B,s6_B) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+					(nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,s1_B,s2_B,s3_B,s4_B,s5_B,s6_B))
+	db.commit()
+	db.close()
+	if cursor.rowcount > 0:
+		return True
+	else:
+		return False
+
+
+def nomes_calibracao():
+	try:
+		db = sqlite3.connect('forno_data.db')
+		cursor = db.cursor()
+		cursor.execute('''SELECT nome FROM calibracao''')
+		row = cursor.fetchall()
+		db.close()
+		if row:
+			return row
+		else:
+			return None
+	except:
+		return None
+
+def leitura_calibracao(nome):
+	try:
+		db = sqlite3.connect('forno_data.db')
+		cursor = db.cursor()
+		cursor.execute('''SELECT * FROM calibracao WHERE nome = ?''',(nome,))
+		row = cursor.fetchone()
+		db.close()
+		if row:
+			return row
+		else:
+			return None
+	except:
+		return None
+
 def cria_tabela():
 	'''
-	Cira a tabela 'dados_forno' caso ela não exista, criando o esquema e as colunas no formato correto.
-	O nome do arquivo do banco de dados é 'forno_data.db' e esta na mesma pasta que o proprama principal.
+	Cira a tabela 'dados_forno' caso ela nÃ£o exista, criando o esquema e as colunas no formato correto.
+	O nome do arquivo do banco de dados ï¿½ 'forno_data.db' e esta na mesma pasta que o proprama principal.
 	'''
 	createDB = sqlite3.connect('forno_data.db')
 	queryCurs = createDB.cursor()
@@ -17,9 +93,9 @@ def cria_tabela():
 
 def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None):
 	'''
-	Recebe os dados de tempo e o estado dos 6 sensores. todos os dados são salvos no bd na tabela 'dados_forno', nas coluna apropriadas
-	O instante atual é capturado para salvar na culuna timestap. Caso a variável experimento (que significa o nome do experimento) seja passada,
-	ela tambénm é salva no bd.
+	Recebe os dados de tempo e o estado dos 6 sensores. todos os dados sï¿½o salvos no bd na tabela 'dados_forno', nas coluna apropriadas
+	O instante atual ï¿½ capturado para salvar na culuna timestap. Caso a variï¿½vel experimento (que significa o nome do experimento) seja passada,
+	ela tambï¿½nm ï¿½ salva no bd.
 	'''
 	createDB = sqlite3.connect('forno_data.db')							# Conecta com o bd
 	queryCurs = createDB.cursor()										# Cria um cursor para interagir com o bd
@@ -31,46 +107,46 @@ def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None):
 	else:
 		queryCurs.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6)
 						  VALUES(?,?,?,?,?,?,?,?)''',(t_abs,t_0,s1,s2,s3,s4,s5,s6))
-	createDB.commit()													# Salva as alterações.
+	createDB.commit()													# Salva as alteraï¿½ï¿½es.
 
 def deleta_tabeta():
 	'''
-	Função que deleta dodos os dados do bd.
+	Funï¿½ï¿½o que deleta dodos os dados do bd.
 	'''
 	createDB = sqlite3.connect('forno_data.db')						# Conecta com o bd
 	queryCurs = createDB.cursor()									# Cria um cursor para interagir com o bd
 	queryCurs.execute("DELETE FROM dados_forno WHERE id > -1")		# Envia o comando que apaga todos os valores
-	createDB.commit()												# Salva as alterações.
+	createDB.commit()												# Salva as alteraï¿½ï¿½es.
 
 def retorna_dados(delta_t,experimento=None,Ti=None,Tf=None):
 	'''
-	Função que retorna os dados do bd. 
-		-Caso o nome do experimento seja fornecido, serão retornaos todos os dados relativos a este experimento
-		-Caso os tempos inicial e final sejam fornecidos, serão retornados todos os dados dentro deste período
-		-Tempo delta (padrão) - Retorna dados entre o tempo atual e o tempo atual - delta_t.
+	Funï¿½ï¿½o que retorna os dados do bd.
+		-Caso o nome do experimento seja fornecido, serï¿½o retornaos todos os dados relativos a este experimento
+		-Caso os tempos inicial e final sejam fornecidos, serï¿½o retornados todos os dados dentro deste perï¿½odo
+		-Tempo delta (padrï¿½o) - Retorna dados entre o tempo atual e o tempo atual - delta_t.
 	'''
 	createDB = sqlite3.connect('forno_data.db')						# Conecta com o bd
 	queryCurs = createDB.cursor()									# Cria um cursor para interagir com o bd
-	if experimento:													# Caso a variável experimento tenha sido passada:
+	if experimento:													# Caso a variï¿½vel experimento tenha sido passada:
 		queryCurs.execute("SELECT * FROM dados_forno WHERE experimento = ?",(experimento,))
 	else:
-		if Ti == None and Tf == None:								# Caso não tenha sido passado Ti e Tf, usa-se o tempo padrão - delta_t
+		if Ti == None and Tf == None:								# Caso nï¿½o tenha sido passado Ti e Tf, usa-se o tempo padrï¿½o - delta_t
 			tempo_inicial = datetime.datetime.now() - datetime.timedelta(minutes=delta_t)
 			queryCurs.execute("SELECT * FROM dados_forno WHERE t_abs > ?",(tempo_inicial,))
-		else:														# Opção Ti - Tf
+		else:														# Opï¿½ï¿½o Ti - Tf
 			queryCurs.execute("SELECT * FROM dados_forno WHERE t_abs > ? AND t_abs < ?",(Ti,Tf))
 	createDB.commit()
 	return scipy.array(queryCurs.fetchall())						# Retorna os dados no formato matricial
 
 def zerabd_gui(self):
-	''' Método para zerar o banco de dados (acionado pelo botão 'Zerar Bando de dados') 
-	Um popup é aberto para confirmar que os dados serão mesmo apagados'''
-	reply = QtGui.QMessageBox.question(self, 'Mensagem',"Ter certeza que quer zerar o banco de dados?", 
-										QtGui.QMessageBox.Yes | 
+	''' Mï¿½todo para zerar o banco de dados (acionado pelo botï¿½o 'Zerar Bando de dados')
+	Um popup ï¿½ aberto para confirmar que os dados serï¿½o mesmo apagados'''
+	reply = QtGui.QMessageBox.question(self, 'Mensagem',"Ter certeza que quer zerar o banco de dados?",
+										QtGui.QMessageBox.Yes |
 										QtGui.QMessageBox.No, QtGui.QMessageBox.No)
 	if reply == QtGui.QMessageBox.Yes:
-		reply = QtGui.QMessageBox.question(self, 'Mensagem',"Ter certeza ? Isto apagara TODOS os dados", 
-										QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, 
+		reply = QtGui.QMessageBox.question(self, 'Mensagem',"Ter certeza ? Isto apagara TODOS os dados",
+										QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
 										QtGui.QMessageBox.No)
 		if reply == QtGui.QMessageBox.Yes:
 			self.alerta_toolbar("Apagando bd")
