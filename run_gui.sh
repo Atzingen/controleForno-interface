@@ -1,2 +1,2 @@
 #!/bin/bash
-python /home/pi/Desktop/Controle_Forno/forno_run.py
+sudo python /home/pi/controleForno-interface/source/forno_run.py
