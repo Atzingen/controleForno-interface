@@ -1,1 +1,1 @@
-C:\Users\Gustavo\Anaconda2\Scripts\pyuic forno_design.ui -o forno_gui.py
+pyuic source\\forno_design.ui -o source\\forno_gui.py

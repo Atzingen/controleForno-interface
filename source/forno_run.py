@@ -125,48 +125,71 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_17.pressed.connect(self.salva_calibracao)
         self.ui.pushButton_19.pressed.connect(self.deleta_calibracao)
 
-        self.lista_calibracoes(1)
+        self.lista_calibracoes(False)
 
     #########################  Calibracao linear ###########################
     def salva_calibracao(self):
-        s_01_A = float(self.ui.lineEdit_4.text())
-        s_02_A = float(self.ui.lineEdit_7.text())
-        s_03_A = float(self.ui.lineEdit_9.text())
-        s_04_A = float(self.ui.lineEdit_11.text())
-        s_05_A = float(self.ui.lineEdit_13.text())
-        s_06_A = float(self.ui.lineEdit_15.text())
-        s_01_B = float(self.ui.lineEdit_5.text())
-        s_02_B = float(self.ui.lineEdit_6.text())
-        s_03_B = float(self.ui.lineEdit_8.text())
-        s_04_B = float(self.ui.lineEdit_10.text())
-        s_05_B = float(self.ui.lineEdit_12.text())
-        s_06_B = float(self.ui.lineEdit_14.text())
+        s_01_A = float(self.ui.lineEdit_S01A.text())
+        s_02_A = float(self.ui.lineEdit_S02A.text())
+        s_03_A = float(self.ui.lineEdit_S03A.text())
+        s_04_A = float(self.ui.lineEdit_S04A.text())
+        s_05_A = float(self.ui.lineEdit_S05A.text())
+        s_06_A = float(self.ui.lineEdit_S06A.text())
+        s_01_B = float(self.ui.lineEdit_S01B.text())
+        s_02_B = float(self.ui.lineEdit_S02B.text())
+        s_03_B = float(self.ui.lineEdit_S03B.text())
+        s_04_B = float(self.ui.lineEdit_S04B.text())
+        s_05_B = float(self.ui.lineEdit_S05B.text())
+        s_06_B = float(self.ui.lineEdit_S06B.text())
         text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog',
             'Digite o nome da calibracao')
         print text, ok
         if ok:
-            insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
+            nomes = nomes_calibracao()
+            igual = False
+            print nomes
+            for nome in nomes:
+                print nome[0], text
+                if nome[0] == text:
+                    igual = True
+                    break
+            if igual:
+                print "nome já existe"
+            else:
+                insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
 
     def deleta_calibracao(self):
-        pass
+        try:
+            numero_escolha = self.ui.comboBox_4.currentIndex()
+            escolha = self.ui.comboBox_4.itemText(numero_escolha)
+            reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que deletar a calibracao" + escolha + " ?",
+        										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+            if reply == QtGui.QMessageBox.Yes:
+                deleta_calibracao_bd(str(escolha))
+                if ( str(escolha) == retorna_dados_config() ):
+                    primeiro_nome = self.ui.comboBox_4.itemText(0)
+                    salva_config_calibracao(primeiro_nome)
+                self.lista_calibracoes()
+        except:
+            pass
 
     def atualiza_lineEdit_calibracao(self):
-        self.ui.lineEdit_4.setText(str(self.S_01_A))
-        self.ui.lineEdit_7.setText(str(self.S_02_A))
-        self.ui.lineEdit_9.setText(str(self.S_03_A))
-        self.ui.lineEdit_11.setText(str(self.S_04_A))
-        self.ui.lineEdit_13.setText(str(self.S_05_A))
-        self.ui.lineEdit_15.setText(str(self.S_06_A))
-        self.ui.lineEdit_5.setText(str(self.S_01_B))
-        self.ui.lineEdit_6.setText(str(self.S_02_B))
-        self.ui.lineEdit_8.setText(str(self.S_03_B))
-        self.ui.lineEdit_10.setText(str(self.S_04_B))
-        self.ui.lineEdit_12.setText(str(self.S_05_B))
-        self.ui.lineEdit_14.setText(str(self.S_06_B))
+        self.ui.lineEdit_S01A.setText(str(self.S_01_A))
+        self.ui.lineEdit_S02A.setText(str(self.S_02_A))
+        self.ui.lineEdit_S03A.setText(str(self.S_03_A))
+        self.ui.lineEdit_S04A.setText(str(self.S_04_A))
+        self.ui.lineEdit_S05A.setText(str(self.S_05_A))
+        self.ui.lineEdit_S06A.setText(str(self.S_06_A))
+        self.ui.lineEdit_S01B.setText(str(self.S_01_B))
+        self.ui.lineEdit_S02B.setText(str(self.S_02_B))
+        self.ui.lineEdit_S03B.setText(str(self.S_03_B))
+        self.ui.lineEdit_S04B.setText(str(self.S_04_B))
+        self.ui.lineEdit_S05B.setText(str(self.S_05_B))
+        self.ui.lineEdit_S06B.setText(str(self.S_06_B))
 
     def lista_calibracoes(self,tipo=0):
-        nomes = nomes_calibracao()
         self.ui.comboBox.blockSignals(True)
+        nomes = nomes_calibracao()
         numero_escolha = self.ui.comboBox_4.currentIndex()
         self.ui.comboBox_4.clear()
         for nome in nomes:
@@ -174,7 +197,7 @@ class Main(QtGui.QMainWindow):
         self.ui.comboBox_4.setCurrentIndex(numero_escolha)
         self.ui.comboBox_4.blockSignals(False)
         escolha = unicode(self.ui.comboBox_4.currentText())
-        if ( tipo == 1):
+        if ( tipo is False):
             padrao = retorna_dados_config()
             valores = leitura_calibracao(padrao)
         else:
@@ -183,20 +206,19 @@ class Main(QtGui.QMainWindow):
         self.atualiza_valores_calibracoes(valores)
         self.atualiza_lineEdit_calibracao()
 
-
     def atualiza_valores_calibracoes(self, valores):
         '''Pega os valores dos campos da calibra��o linear para fazer a convers�o entre tens�o e temperatura'''
         self.S_01_A = valores[2]
-        self.S_01_B = valores[3]
-        self.S_02_A = valores[4]
-        self.S_02_B = valores[5]
-        self.S_03_A = valores[6]
-        self.S_03_B = valores[7]
-        self.S_04_A = valores[8]
-        self.S_04_B = valores[9]
-        self.S_05_A = valores[10]
-        self.S_05_B = valores[11]
-        self.S_06_A = valores[12]
+        self.S_02_A = valores[3]
+        self.S_03_A = valores[4]
+        self.S_04_A = valores[5]
+        self.S_05_A = valores[6]
+        self.S_06_A = valores[7]
+        self.S_01_B = valores[8]
+        self.S_02_B = valores[9]
+        self.S_03_B = valores[10]
+        self.S_04_B = valores[11]
+        self.S_05_B = valores[12]
         self.S_06_B = valores[13]
 
     #####################  Fun��es da GUI #################################

@@ -1395,7 +1395,7 @@
          <string>Sensor 1: A =</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_4">
+       <widget class="QLineEdit" name="lineEdit_S01A">
         <property name="geometry">
          <rect>
           <x>80</x>
@@ -1421,7 +1421,7 @@
          <string>B =</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_5">
+       <widget class="QLineEdit" name="lineEdit_S01B">
         <property name="geometry">
          <rect>
           <x>170</x>
@@ -1434,7 +1434,7 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_6">
+       <widget class="QLineEdit" name="lineEdit_S02B">
         <property name="geometry">
          <rect>
           <x>170</x>
@@ -1447,7 +1447,7 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_7">
+       <widget class="QLineEdit" name="lineEdit_S02A">
         <property name="geometry">
          <rect>
           <x>80</x>
@@ -1486,7 +1486,7 @@
          <string>B =</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_8">
+       <widget class="QLineEdit" name="lineEdit_S03B">
         <property name="geometry">
          <rect>
           <x>170</x>
@@ -1499,7 +1499,7 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_9">
+       <widget class="QLineEdit" name="lineEdit_S03A">
         <property name="geometry">
          <rect>
           <x>80</x>
@@ -1538,7 +1538,7 @@
          <string>B =</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_10">
+       <widget class="QLineEdit" name="lineEdit_S04B">
         <property name="geometry">
          <rect>
           <x>170</x>
@@ -1551,7 +1551,7 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_11">
+       <widget class="QLineEdit" name="lineEdit_S04A">
         <property name="geometry">
          <rect>
           <x>80</x>
@@ -1590,7 +1590,7 @@
          <string>B =</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_12">
+       <widget class="QLineEdit" name="lineEdit_S05B">
         <property name="geometry">
          <rect>
           <x>170</x>
@@ -1603,7 +1603,7 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_13">
+       <widget class="QLineEdit" name="lineEdit_S05A">
         <property name="geometry">
          <rect>
           <x>80</x>
@@ -1642,7 +1642,7 @@
          <string>B =</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_14">
+       <widget class="QLineEdit" name="lineEdit_S06B">
         <property name="geometry">
          <rect>
           <x>170</x>
@@ -1655,7 +1655,7 @@
          <string/>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_15">
+       <widget class="QLineEdit" name="lineEdit_S06A">
         <property name="geometry">
          <rect>
           <x>80</x>
