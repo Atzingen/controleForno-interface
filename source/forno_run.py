@@ -294,6 +294,7 @@ class Main(QtGui.QMainWindow):
 
 if __name__ == "__main__":  # Executa quando o programa � executado diretamente
     app = QtGui.QApplication(sys.argv)
+    app.setStyle(QtGui.QStyleFactory.create("plastique"))
     window = Main()
     window.show()
     sys.exit(app.exec_())

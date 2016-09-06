@@ -56,6 +56,7 @@ def serial_read(self):
             print texto
             texto = texto.rstrip('\r\n')
             self.alerta_toolbar('Dado Recebido: ' + texto)
+            self.ui.textEdit.insertPlainText(texto + '\n')
             tipo, d = verifica_dado(texto,self)
             print tipo, d
             resultado_dado(self, tipo, d)
