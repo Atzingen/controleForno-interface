@@ -17,3 +17,22 @@ desliga_01 = 'S72\n'
 
 global s  				# objeto da comunição serial
 s = serial.Serial()
+
+global texto
+texto = ""
+
+global valor_resistencia01
+global valor_resistencia02
+global valor_resistencia03
+global valor_resistencia04
+global valor_resistencia05
+global valor_resistencia06
+global valor_esteira
+
+valor_resistencia01 = 0
+valor_resistencia02 = 0
+valor_resistencia03 = 0
+valor_resistencia04 = 0
+valor_resistencia05 = 0
+valor_resistencia06 = 0
+valor_esteira = 0

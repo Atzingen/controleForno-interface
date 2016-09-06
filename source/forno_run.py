@@ -36,7 +36,7 @@ class Main(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()  # Qtdesigner
         self.ui.setupUi(self)
         ####### Vari�veis de configura��o #####################################
-        self.tempo_update_serial = 431  # tempo em milisegundos
+        self.tempo_update_serial = 5 #431  # tempo em milisegundos
         self.serial_timeout = False  # Timeout da leirura serial
         self.experimento_nome = 'Sem Nome'  # Veri�vel para o nome do experimento
         ###     Vari�veis da calibra��o        ################################
@@ -47,6 +47,7 @@ class Main(QtGui.QMainWindow):
         self.atualiza_lineEdit_calibracao()
 
         ###   Vari�veis de estado do forno (flags) #############################
+        '''
         self.resitencia01 = 0
         self.resitencia02 = 0
         self.resitencia03 = 0
@@ -56,6 +57,7 @@ class Main(QtGui.QMainWindow):
         self.esteira = 0
         self.flag = []
         self.mensagem = ""
+        '''
 
         ################### Remover ###########################################
         if sys.platform.startswith('win'):  # Parte de teste - apagar no final
@@ -78,6 +80,7 @@ class Main(QtGui.QMainWindow):
         self.timer_serial = QtCore.QTimer()
         self.timer_ST = QtCore.QTimer()
         self.timer_status = QtCore.QTimer()
+
         #####  Acertando a hora do experimento (datetimeedit) #################
         agora = QtCore.QDateTime.currentDateTime()
         antes = agora.addDays(-5)
@@ -90,7 +93,7 @@ class Main(QtGui.QMainWindow):
 
         ## Remover depois				- Porta serial com4 pc de casa
         if sys.platform.startswith('win'):
-            self.ui.comboBox.setCurrentIndex(5)
+            self.ui.comboBox.setCurrentIndex(4)
 
         ####### Connex�es #####################################################
         # Slider do tempo de intervalo grafico
