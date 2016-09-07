@@ -65,6 +65,15 @@ def serial_read(self):
 
 
 def resultado_dado(self, tipo, d):
+
+    global valor_resistencia01
+    global valor_resistencia02
+    global valor_resistencia03
+    global valor_resistencia04
+    global valor_resistencia05
+    global valor_resistencia06
+    global valor_esteira
+
     if tipo == 1:
         self.ui.lcdNumber.display(d[1])						# Altera os valores dos displays de temperatura
         self.ui.lcdNumber_2.display(d[2])
@@ -271,6 +280,7 @@ def teste_retorno(self):
     alterando o estado das vari�veis de controle da esteira e das resist�ncias 1 a 6).
     Para esta verifica��o, � comparado o estado da vari�vel de controle com o estado dos sliders
     de controle, que s�o alterados quando recebem o sinal de volta do microcontrolador '''
+
     global valor_resistencia01
     global valor_resistencia02
     global valor_resistencia03
@@ -278,6 +288,9 @@ def teste_retorno(self):
     global valor_resistencia05
     global valor_resistencia06
     global valor_esteira
+
+    print "retorno - global: ",valor_resistencia01, valor_resistencia02, valor_resistencia03, valor_resistencia04
+    print "                  ",int(self.ui.horizontalSlider_r01.value()), self.ui.horizontalSlider_r02.value(),self.ui.horizontalSlider_r03.value(), self.ui.horizontalSlider_r04.value()
 
     if not(int(self.ui.horizontalSlider.value()) == valor_esteira):				# verifica se h� diferen�a entre a vari�vel e a esteira
         self.ui.lcdNumber_7.display(valor_esteira)								# Altera o valor do LCD da GUI
