@@ -4,6 +4,11 @@ import sqlite3
 import datetime
 import scipy
 from PyQt4 import QtGui
+from exporta_experimentos import local_parent
+
+nome_arquivo_db = 'forno_data.db'
+caminho, barra = local_parent()
+caminho_banco = caminho + "bancoDados" + barra +  nome_arquivo_db
 
 if sys.platform.startswith('win'):
 	if os.path.isdir('C:\\Users\\gustavo\\Documents\\GitHub\\controleForno-interface\\bancoDados'):
@@ -15,7 +20,6 @@ else:
 		caminho_banco = '/home/pi/Desktop/controleForno-interface/bancoDados/forno_data.db'
 	else:
 		caminho_banco = 'forno_data.db'
-
 
 def cria_tabela_config():
 	try:
@@ -136,7 +140,7 @@ def leitura_calibracao(nome):
 		if row:
 			return row
 		else:
-			return None
+			return [1,"sem calibracao",0,0,0,0,0,0,1,1,1,1,1,1]
 	except:
 		return None
 

@@ -341,7 +341,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>120</y>
+         <y>130</y>
          <width>82</width>
          <height>21</height>
         </rect>
@@ -1343,8 +1343,13 @@
         <height>21</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>6</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>C:UsersGustavoDesktop</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -1404,6 +1409,11 @@
           <height>20</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -1430,6 +1440,11 @@
           <height>20</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -1443,6 +1458,11 @@
           <height>20</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -1455,6 +1475,11 @@
           <width>51</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
         </property>
         <property name="text">
          <string/>
@@ -1495,6 +1520,11 @@
           <height>20</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -1507,6 +1537,11 @@
           <width>51</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
         </property>
         <property name="text">
          <string/>
@@ -1547,6 +1582,11 @@
           <height>20</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -1559,6 +1599,11 @@
           <width>51</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
         </property>
         <property name="text">
          <string/>
@@ -1599,6 +1644,11 @@
           <height>20</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -1611,6 +1661,11 @@
           <width>51</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
         </property>
         <property name="text">
          <string/>
@@ -1651,6 +1706,11 @@
           <height>20</height>
          </rect>
         </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -1663,6 +1723,11 @@
           <width>51</width>
           <height>20</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>6</pointsize>
+         </font>
         </property>
         <property name="text">
          <string/>
