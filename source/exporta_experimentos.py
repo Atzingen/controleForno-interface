@@ -8,7 +8,6 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEBase import MIMEBase
 from email import Encoders
-from tr import tr
 
 # Imports Locais
 #from forno_run import Ui_MainWindow
