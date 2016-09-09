@@ -610,7 +610,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Intervalo de tempo = 60min</string>
+       <string>Delta T = 60min</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -1068,7 +1068,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Pendrive / Externo</string>
+       <string>Pendrive</string>
       </property>
      </widget>
      <widget class="QGroupBox" name="groupBox_10">
@@ -1090,7 +1090,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>30</y>
+         <y>40</y>
          <width>70</width>
          <height>17</height>
         </rect>
@@ -1109,7 +1109,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>60</y>
+         <y>70</y>
          <width>81</width>
          <height>17</height>
         </rect>
@@ -1132,7 +1132,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Zerar Banco de Dados</string>
+       <string>Zerar Banco</string>
       </property>
      </widget>
      <widget class="QGroupBox" name="groupBox_11">
@@ -1392,20 +1392,20 @@
          <rect>
           <x>10</x>
           <y>50</y>
-          <width>71</width>
+          <width>51</width>
           <height>21</height>
          </rect>
         </property>
         <property name="text">
-         <string>Sensor 1: A =</string>
+         <string>S1: A =</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="lineEdit_S01A">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>60</x>
           <y>50</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1421,7 +1421,7 @@
        <widget class="QLabel" name="label_22">
         <property name="geometry">
          <rect>
-          <x>140</x>
+          <x>130</x>
           <y>50</y>
           <width>21</width>
           <height>21</height>
@@ -1434,9 +1434,9 @@
        <widget class="QLineEdit" name="lineEdit_S01B">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>160</x>
           <y>50</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1452,9 +1452,9 @@
        <widget class="QLineEdit" name="lineEdit_S02B">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>160</x>
           <y>100</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1470,9 +1470,9 @@
        <widget class="QLineEdit" name="lineEdit_S02A">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>60</x>
           <y>100</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1490,18 +1490,18 @@
          <rect>
           <x>10</x>
           <y>100</y>
-          <width>71</width>
+          <width>51</width>
           <height>21</height>
          </rect>
         </property>
         <property name="text">
-         <string>Sensor 2: A =</string>
+         <string>S2: A =</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_24">
         <property name="geometry">
          <rect>
-          <x>140</x>
+          <x>130</x>
           <y>100</y>
           <width>21</width>
           <height>21</height>
@@ -1514,9 +1514,9 @@
        <widget class="QLineEdit" name="lineEdit_S03B">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>160</x>
           <y>150</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1532,9 +1532,9 @@
        <widget class="QLineEdit" name="lineEdit_S03A">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>60</x>
           <y>150</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1552,18 +1552,18 @@
          <rect>
           <x>10</x>
           <y>150</y>
-          <width>71</width>
+          <width>51</width>
           <height>21</height>
          </rect>
         </property>
         <property name="text">
-         <string>Sensor 3: A =</string>
+         <string>S3: A =</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_26">
         <property name="geometry">
          <rect>
-          <x>140</x>
+          <x>130</x>
           <y>150</y>
           <width>21</width>
           <height>21</height>
@@ -1576,9 +1576,9 @@
        <widget class="QLineEdit" name="lineEdit_S04B">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>160</x>
           <y>200</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1594,9 +1594,9 @@
        <widget class="QLineEdit" name="lineEdit_S04A">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>60</x>
           <y>200</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1614,18 +1614,18 @@
          <rect>
           <x>10</x>
           <y>200</y>
-          <width>71</width>
+          <width>51</width>
           <height>21</height>
          </rect>
         </property>
         <property name="text">
-         <string>Sensor 4: A =</string>
+         <string>S4: A =</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_28">
         <property name="geometry">
          <rect>
-          <x>140</x>
+          <x>130</x>
           <y>200</y>
           <width>21</width>
           <height>21</height>
@@ -1638,9 +1638,9 @@
        <widget class="QLineEdit" name="lineEdit_S05B">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>160</x>
           <y>250</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1656,9 +1656,9 @@
        <widget class="QLineEdit" name="lineEdit_S05A">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>60</x>
           <y>250</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1676,18 +1676,18 @@
          <rect>
           <x>10</x>
           <y>250</y>
-          <width>71</width>
+          <width>51</width>
           <height>21</height>
          </rect>
         </property>
         <property name="text">
-         <string>Sensor 5: A =</string>
+         <string>S5: A =</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_30">
         <property name="geometry">
          <rect>
-          <x>140</x>
+          <x>130</x>
           <y>250</y>
           <width>21</width>
           <height>21</height>
@@ -1700,9 +1700,9 @@
        <widget class="QLineEdit" name="lineEdit_S06B">
         <property name="geometry">
          <rect>
-          <x>170</x>
+          <x>160</x>
           <y>300</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1718,9 +1718,9 @@
        <widget class="QLineEdit" name="lineEdit_S06A">
         <property name="geometry">
          <rect>
-          <x>80</x>
+          <x>60</x>
           <y>300</y>
-          <width>51</width>
+          <width>61</width>
           <height>20</height>
          </rect>
         </property>
@@ -1738,18 +1738,18 @@
          <rect>
           <x>10</x>
           <y>300</y>
-          <width>71</width>
+          <width>51</width>
           <height>21</height>
          </rect>
         </property>
         <property name="text">
-         <string>Sensor 6: A =</string>
+         <string>S6: A =</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_32">
         <property name="geometry">
          <rect>
-          <x>140</x>
+          <x>130</x>
           <y>300</y>
           <width>21</width>
           <height>21</height>
