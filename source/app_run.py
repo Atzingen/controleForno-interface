@@ -45,6 +45,13 @@ class Main(QtGui.QMainWindow):
         self.atualiza_valores_calibracoes(cal)
         self.atualiza_lineEdit_calibracao()
 
+        self.ui.horizontalSlider_r01.setStyle(QtGui.QStyleFactory.create("macintosh"))
+        self.ui.horizontalSlider_r02.setStyle(QtGui.QStyleFactory.create("macintosh"))
+        self.ui.horizontalSlider_r03.setStyle(QtGui.QStyleFactory.create("macintosh"))
+        self.ui.horizontalSlider_r04.setStyle(QtGui.QStyleFactory.create("macintosh"))
+        self.ui.horizontalSlider_r05.setStyle(QtGui.QStyleFactory.create("macintosh"))
+        self.ui.horizontalSlider_r06.setStyle(QtGui.QStyleFactory.create("macintosh"))
+
 
         ######## Caminho para os experimentos salvos #########################
         source_parent, _ = local_parent()
