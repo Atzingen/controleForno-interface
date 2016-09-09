@@ -14,12 +14,12 @@ sendo que um objeto de tela comum do qt herdará suas propriedades.
 class MplCanvas(FigureCanvas):
     def __init__(self):
         self.fig = Figure()
-        self.ax = self.fig.add_subplot(111) 
+        self.ax = self.fig.add_subplot(111)
         FigureCanvas.__init__(self, self.fig)
         FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
- 
- 
+
+
 class matplotlibWidget(QtGui.QWidget):
     def __init__(self, parent = None):
         QtGui.QWidget.__init__(self, parent)
@@ -32,8 +32,8 @@ def plotar(self):
     ''' Função que plota o gráfico na GUI, utilizando a classe Matplotlib que sobrecarrega a o lable do qt (ver arquivo matplotlibwidgetFile.py) '''
     self.ui.widget.canvas.ax.clear()                                            # Limpa os eixos para plotar novamente
     if self.ui.checkBox_20.isChecked() and (                                    # Verifica se a checkbox do experimento atual esta marcada
-        self.experimento_nome is not 'Sem Nome'):                               # Pega o nome do experimento e verifica se é 'Sem nome' ou não.                                                                     
-        d = retorna_dados(1,                                                    # Pega os dados no bd   
+        self.experimento_nome is not 'Sem Nome'):                               # Pega o nome do experimento e verifica se é 'Sem nome' ou não.
+        d = retorna_dados(1,                                                    # Pega os dados no bd
             experimento=str(self.experimento_nome))
     else:
         delta_t = self.ui.horizontalSlider_8.value()                            # Pega os dados no bd
@@ -57,14 +57,14 @@ def plotar(self):
         pass
 
 def grafico_update(self):
-    ''' Método recursivo. 
+    ''' Método recursivo.
     É chamado quando a checkbox de autoupdate do gráfico é ativada.
-    A função ativa uma thread do QT no modo singleShot após a quantidad de tempo escolhida no 
+    A função ativa uma thread do QT no modo singleShot após a quantidad de tempo escolhida no
     spinBox da GUI. caso a checkbox continue ativada, a função se chamará novamente de forma recursiva
     até que a checkbox seja desabilitada ou a conecção seja desfeita. '''
     self.alerta_toolbar("update-grafico")
     if self.ui.checkBox_14.isChecked():                                         # Verifica se a checkbox de plotar o gráfico automaticamente está ativada
-        plotar(self)                                                            # Chama a função plotar 
+        plotar(self)                                                            # Chama a função plotar
         tempo_delay = 1000*int(self.ui.spinBox_4.value())                       # Tempo até chamar a Thread
         self.timer_grafico.singleShot(tempo_delay,partial(grafico_update,self)) # Chama a própria função de forma recursiva
 
@@ -76,5 +76,5 @@ def tempo_grafico(self):
     - Chama a função atualiza grafico.
     '''
     valor = self.ui.horizontalSlider_8.value()                                  # Pega o valor do intervalo de tempo do gráfico pelo slider
-    texto = 'Intervalor de tempo = ' + str(valor) + ' min'                      # Texto para ser mostrado ao lado do slider com o valor escolhido
+    texto = 'Delta T = ' + str(valor) + ' min'                      # Texto para ser mostrado ao lado do slider com o valor escolhido
     self.ui.label_9.setText(texto)                                              # Altera o texto do lable na GUI
