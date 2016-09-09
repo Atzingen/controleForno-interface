@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -265,10 +265,10 @@
       <widget class="QLabel" name="label_4">
        <property name="geometry">
         <rect>
-         <x>80</x>
-         <y>20</y>
-         <width>56</width>
-         <height>13</height>
+         <x>150</x>
+         <y>10</y>
+         <width>71</width>
+         <height>16</height>
         </rect>
        </property>
        <property name="text">
@@ -278,10 +278,10 @@
       <widget class="QLabel" name="label_5">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>160</x>
          <y>130</y>
-         <width>56</width>
-         <height>13</height>
+         <width>61</width>
+         <height>16</height>
         </rect>
        </property>
        <property name="text">
@@ -330,7 +330,7 @@
       <widget class="QLCDNumber" name="lcdNumber_8">
        <property name="geometry">
         <rect>
-         <x>130</x>
+         <x>10</x>
          <y>120</y>
          <width>71</width>
          <height>31</height>
@@ -340,9 +340,9 @@
       <widget class="QRadioButton" name="radioButton">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>90</x>
          <y>130</y>
-         <width>82</width>
+         <width>71</width>
          <height>21</height>
         </rect>
        </property>
@@ -477,7 +477,7 @@
      <widget class="QCheckBox" name="checkBox">
       <property name="geometry">
        <rect>
-        <x>250</x>
+        <x>240</x>
         <y>10</y>
         <width>85</width>
         <height>18</height>
@@ -490,7 +490,7 @@
      <widget class="QCheckBox" name="checkBox_2">
       <property name="geometry">
        <rect>
-        <x>250</x>
+        <x>240</x>
         <y>30</y>
         <width>85</width>
         <height>18</height>
@@ -557,7 +557,7 @@
        <rect>
         <x>510</x>
         <y>10</y>
-        <width>85</width>
+        <width>111</width>
         <height>18</height>
        </rect>
       </property>
@@ -621,7 +621,7 @@
        <rect>
         <x>360</x>
         <y>450</y>
-        <width>41</width>
+        <width>51</width>
         <height>16</height>
        </rect>
       </property>
@@ -632,9 +632,9 @@
      <widget class="QLabel" name="label_11">
       <property name="geometry">
        <rect>
-        <x>470</x>
+        <x>440</x>
         <y>450</y>
-        <width>51</width>
+        <width>71</width>
         <height>16</height>
        </rect>
       </property>
@@ -648,9 +648,9 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>520</x>
+        <x>510</x>
         <y>410</y>
-        <width>51</width>
+        <width>61</width>
         <height>18</height>
        </rect>
       </property>
@@ -722,12 +722,12 @@
        <rect>
         <x>230</x>
         <y>410</y>
-        <width>111</width>
+        <width>131</width>
         <height>18</height>
        </rect>
       </property>
       <property name="text">
-       <string>Experimemto  atual</string>
+       <string>Exp  atual</string>
       </property>
       <property name="checked">
        <bool>false</bool>
@@ -766,7 +766,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>Automatico - Imagem</string>
+       <string>Automatico</string>
       </property>
       <widget class="QLabel" name="label_14">
        <property name="geometry">
@@ -809,9 +809,9 @@
       <widget class="QCheckBox" name="checkBox_10">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>0</x>
          <y>20</y>
-         <width>91</width>
+         <width>121</width>
          <height>20</height>
         </rect>
        </property>
@@ -822,9 +822,9 @@
       <widget class="QCheckBox" name="checkBox_11">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>0</x>
          <y>40</y>
-         <width>91</width>
+         <width>121</width>
          <height>20</height>
         </rect>
        </property>
@@ -987,9 +987,9 @@
       <widget class="QCheckBox" name="checkBox_12">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>0</x>
          <y>50</y>
-         <width>91</width>
+         <width>121</width>
          <height>20</height>
         </rect>
        </property>
@@ -1000,7 +1000,7 @@
       <widget class="QCheckBox" name="checkBox_13">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>0</x>
          <y>70</y>
          <width>91</width>
          <height>20</height>
@@ -1081,7 +1081,7 @@
        </rect>
       </property>
       <property name="title">
-       <string>Formato do Arquivo</string>
+       <string>Formato</string>
       </property>
       <property name="checkable">
        <bool>false</bool>
@@ -1286,7 +1286,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Experimento Atual:</string>
+       <string>Exp Atual:</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_20">
@@ -1411,7 +1411,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1442,7 +1442,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1460,7 +1460,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1478,7 +1478,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1522,7 +1522,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1540,7 +1540,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1584,7 +1584,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1602,7 +1602,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1646,7 +1646,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1664,7 +1664,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1708,7 +1708,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1726,7 +1726,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>6</pointsize>
+          <pointsize>7</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1787,7 +1787,7 @@
          <rect>
           <x>120</x>
           <y>360</y>
-          <width>110</width>
+          <width>101</width>
           <height>31</height>
          </rect>
         </property>
