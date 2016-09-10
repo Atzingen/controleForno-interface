@@ -1,7 +1,7 @@
 import serial, time
 
 s = serial.Serial()
-s.port = "COM3"
+s.port = "/dev/tty.usbserial-A50285BI"
 s.baudrate = 9600
 s.timeout=0
 
@@ -13,7 +13,8 @@ while s.isOpen():
     if contador % 50 == 0:
         s.write("ST\n")
         print "enviado pedido"
-    texto += s.read(s.inWaiting)
+    if (s.inWaiting() > 0):
+        texto += s.read(s.inWaiting())
     print "parcial", texto
     if '\r\n' in texto:
         print texto
