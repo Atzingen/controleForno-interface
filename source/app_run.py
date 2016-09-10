@@ -2,7 +2,7 @@
 from __future__ import division
 # Bibliotecas
 import numpy as np
-import sys, os, serial, glob, thread, time, datetime, sqlite3, PIL, scipy, csv, smtplib, shutil
+import sys, os, serial, glob, thread, time, datetime, sqlite3, PIL, scipy, csv, smtplib, shutil, platform
 from functools import partial
 from threading import Thread
 from PyQt4 import QtGui, QtCore
@@ -36,7 +36,7 @@ class Main(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()  # Qtdesigner
         self.ui.setupUi(self)
         ####### Vari�veis de configura��o #####################################
-        self.tempo_update_serial = 5 #431  # tempo em milisegundos
+        self.tempo_update_serial = 5 # 431  # tempo em milisegundos
         self.serial_timeout = False  # Timeout da leirura serial
         self.experimento_nome = 'Sem Nome'  # Veri�vel para o nome do experimento
         ###     Vari�veis da calibra��o        ################################
@@ -45,14 +45,24 @@ class Main(QtGui.QMainWindow):
         self.atualiza_valores_calibracoes(cal)
         self.atualiza_lineEdit_calibracao()
 
-        self.ui.horizontalSlider_r01.setStyle(QtGui.QStyleFactory.create("windows"))
-        self.ui.horizontalSlider_r02.setStyle(QtGui.QStyleFactory.create("windows"))
-        self.ui.horizontalSlider_r03.setStyle(QtGui.QStyleFactory.create("windows"))
-        self.ui.horizontalSlider_r04.setStyle(QtGui.QStyleFactory.create("windows"))
-        self.ui.horizontalSlider_r05.setStyle(QtGui.QStyleFactory.create("windows"))
-        self.ui.horizontalSlider_r06.setStyle(QtGui.QStyleFactory.create("windows"))
-	self.ui.horizontalSlider.setStyle(QtGui.QStyleFactory.create("windows"))
-	self.ui.horizontalSlider_8.setStyle(QtGui.QStyleFactory.create("windows"))
+        if (platform.system() == 'Darwin'):
+            self.ui.horizontalSlider_r01.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_r02.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_r03.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_r04.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_r05.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_r06.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_8.setStyle(QtGui.QStyleFactory.create("macintosh"))
+        else:
+            self.ui.horizontalSlider_r01.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_r02.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_r03.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_r04.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_r05.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_r06.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_8.setStyle(QtGui.QStyleFactory.create("windows"))
 
         ######## Caminho para os experimentos salvos #########################
         source_parent, _ = local_parent()
@@ -281,7 +291,10 @@ class Main(QtGui.QMainWindow):
 
 if __name__ == "__main__":  # Executa quando o programa � executado diretamente
     app = QtGui.QApplication(sys.argv)
-    app.setStyle(QtGui.QStyleFactory.create("plastique"))
+    if (platform.system() == 'Darwin'):
+        app.setStyle(QtGui.QStyleFactory.create("macintosh"))
+    else:
+        app.setStyle(QtGui.QStyleFactory.create("plastique"))
     window = Main()
     window.show()
     #window.showFullScreen()
