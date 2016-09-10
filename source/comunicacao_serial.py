@@ -12,6 +12,7 @@ from modulo_global import *
 def conecta(self):
     ''' Evento ocorre quando o botao de conectar/desconectar � pressionado
     '''
+    global s
     texto_botao = self.ui.pushButton.text()
     if ( texto_botao == 'Conectar' ):
         baudrate = int(self.ui.comboBox_2.currentText())			# Configura��es da comunica��o serial
@@ -21,8 +22,7 @@ def conecta(self):
                 s.port = porta
                 s.baudrate = baudrate
                 s.timeout=0
-                #s = serial.Serial(porta,baudrate,timeout=self.serial_timeout)
-                if s.isOpen():
+                if s.is_open:
                     s.close()
                     time.sleep(0.1)
                 s.open()											# abre a comunica��o
@@ -41,8 +41,9 @@ def conecta(self):
 
 def envia_serial(dado):
     ''' M�todo que envia uma string pela serial '''
+    global s
     try:
-        if s.isOpen():
+        if s.is_open:
             s.write(dado)
     except:
         self.alerta_toolbar('Erro ao enviar dado pela serial')
@@ -50,8 +51,9 @@ def envia_serial(dado):
 
 def serial_read(self):
     global texto
-    if s.isOpen():
-        texto += s.read(s.inWaiting())
+    global s
+    if s.is_open:
+        texto += s.read(s.in_waiting)
         if '\r\n' in texto:
             print texto
             texto = texto.rstrip('\r\n')
@@ -322,6 +324,7 @@ def teste_retorno(self):
 
 def atualiza_temp(self):
     ''' Envia o pedid de atualiza��o da temperatura (o mc retornar� os dados da temperatura dos 6 sensores) '''
+    global s
     s.write('ST\n')
 
 def resistencia01(self):
