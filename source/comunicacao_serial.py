@@ -51,7 +51,6 @@ def envia_serial(dado):
 
 def serial_read(self):
     global texto
-    global s
     if s.is_open:
         texto += s.read(s.in_waiting)
         if '\r\n' in texto:

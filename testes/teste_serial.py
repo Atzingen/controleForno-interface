@@ -1,20 +1,29 @@
 import serial, time
 
 s = serial.Serial()
-s.port = "/dev/tty.usbserial-A50285BI"
+s.port = "/dev/ttyAMA0"
 s.baudrate = 9600
-s.timeout=0
+s.timeout=10
+
+ligado = False
 
 s.open()
 texto = ""
 contador = 1
 
-while s.isOpen():
-    if contador % 50 == 0:
+while s.is_open:
+    if contador % 20 == 0:
+        if ligado:
+            s.write("S21\n")
+        else:
+            s.write("S22\n")
+        ligado = not(ligado)
+    if contador % 30 == 0:
         s.write("ST\n")
         print "enviado pedido"
-    if (s.inWaiting() > 0):
-        texto += s.read(s.inWaiting())
+    print s.in_waiting
+    if (s.in_waiting > 0):
+        texto += s.read(s.in_waiting)
     print "parcial", texto
     if '\r\n' in texto:
         print texto
