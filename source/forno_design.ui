@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
-    <height>617</height>
+    <width>807</width>
+    <height>607</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -45,15 +45,15 @@
       <property name="title">
        <string>Esteira</string>
       </property>
-      <widget class="QSlider" name="horizontalSlider">
+      <widget class="QSlider" name="horizontalSlider_esteira">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>30</x>
          <y>20</y>
-         <width>201</width>
+         <width>161</width>
          <height>22</height>
         </rect>
        </property>
@@ -67,7 +67,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QLCDNumber" name="lcdNumber_7">
+      <widget class="QLCDNumber" name="lcdNumber_esteiraVelocidade">
        <property name="geometry">
         <rect>
          <x>130</x>
@@ -80,7 +80,7 @@
         <number>3</number>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="pushButton_esteiraParar">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -94,6 +94,47 @@
        </property>
        <property name="text">
         <string>Parar</string>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButton_esteiraTras">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>21</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="radioButton_esteiraFrente">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>20</y>
+         <width>21</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
@@ -265,9 +306,9 @@
       <widget class="QLabel" name="label_4">
        <property name="geometry">
         <rect>
-         <x>150</x>
+         <x>170</x>
          <y>10</y>
-         <width>71</width>
+         <width>51</width>
          <height>16</height>
         </rect>
        </property>
@@ -278,9 +319,9 @@
       <widget class="QLabel" name="label_5">
        <property name="geometry">
         <rect>
-         <x>160</x>
+         <x>170</x>
          <y>130</y>
-         <width>61</width>
+         <width>51</width>
          <height>16</height>
         </rect>
        </property>
@@ -327,7 +368,7 @@
         <string>Direita</string>
        </property>
       </widget>
-      <widget class="QLCDNumber" name="lcdNumber_8">
+      <widget class="QLCDNumber" name="lcdNumber_resistenciaControle">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -337,10 +378,13 @@
         </rect>
        </property>
       </widget>
-      <widget class="QRadioButton" name="radioButton">
+      <widget class="QRadioButton" name="radioButton_hold">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
-         <x>90</x>
+         <x>100</x>
          <y>130</y>
          <width>71</width>
          <height>21</height>
@@ -363,7 +407,7 @@
       <property name="title">
        <string>Comando Manual</string>
       </property>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="lineEdit_serialManual">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -399,13 +443,13 @@
         </font>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab_4">
         <attribute name="title">
          <string>Dados Ubee</string>
         </attribute>
-        <widget class="QTextEdit" name="textEdit">
+        <widget class="QTextEdit" name="textEdit_dadosUbee">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -427,7 +471,7 @@
         <attribute name="title">
          <string>Temperatura</string>
         </attribute>
-        <widget class="QTextEdit" name="textEdit_2">
+        <widget class="QTextEdit" name="textEdit_temperatura">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -444,7 +488,7 @@
         </widget>
        </widget>
       </widget>
-      <widget class="QPushButton" name="pushButton_6">
+      <widget class="QPushButton" name="pushButton_serialEnviaLinha">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -474,7 +518,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox">
+     <widget class="QCheckBox" name="checkBox_sensor1">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -486,8 +530,11 @@
       <property name="text">
        <string>Sensor 1</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_2">
+     <widget class="QCheckBox" name="checkBox_sensor2">
       <property name="geometry">
        <rect>
         <x>240</x>
@@ -499,8 +546,11 @@
       <property name="text">
        <string>Sensor 2</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_3">
+     <widget class="QCheckBox" name="checkBox_sensor4">
       <property name="geometry">
        <rect>
         <x>330</x>
@@ -512,8 +562,11 @@
       <property name="text">
        <string>Sensor 4</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_4">
+     <widget class="QCheckBox" name="checkBox_sensor3">
       <property name="geometry">
        <rect>
         <x>330</x>
@@ -525,8 +578,11 @@
       <property name="text">
        <string>Sensor 3</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_5">
+     <widget class="QCheckBox" name="checkBox_sensor6">
       <property name="geometry">
        <rect>
         <x>420</x>
@@ -538,8 +594,11 @@
       <property name="text">
        <string>Sensor 6</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_6">
+     <widget class="QCheckBox" name="checkBox_sensor5">
       <property name="geometry">
        <rect>
         <x>420</x>
@@ -551,8 +610,11 @@
       <property name="text">
        <string>Sensor 5</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_8">
+     <widget class="QCheckBox" name="checkBox_simulacao">
       <property name="geometry">
        <rect>
         <x>510</x>
@@ -564,8 +626,11 @@
       <property name="text">
        <string>Simulação</string>
       </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_7">
+     <widget class="QCheckBox" name="checkBox_esteira">
       <property name="geometry">
        <rect>
         <x>510</x>
@@ -577,8 +642,11 @@
       <property name="text">
        <string>Esteira</string>
       </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
      </widget>
-     <widget class="QSlider" name="horizontalSlider_8">
+     <widget class="QSlider" name="horizontalSlider_graficoPeriodo">
       <property name="geometry">
        <rect>
         <x>360</x>
@@ -600,7 +668,7 @@
        <enum>Qt::Horizontal</enum>
       </property>
      </widget>
-     <widget class="QLabel" name="label_9">
+     <widget class="QLabel" name="label_graficoTempo">
       <property name="geometry">
        <rect>
         <x>360</x>
@@ -642,13 +710,13 @@
        <string>180 min</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_14">
+     <widget class="QCheckBox" name="checkBox_graficoAuto">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
-        <x>510</x>
+        <x>320</x>
         <y>410</y>
         <width>61</width>
         <height>18</height>
@@ -664,8 +732,8 @@
      <widget class="QLabel" name="label_16">
       <property name="geometry">
        <rect>
-        <x>520</x>
-        <y>440</y>
+        <x>550</x>
+        <y>410</y>
         <width>61</width>
         <height>20</height>
        </rect>
@@ -677,13 +745,13 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QSpinBox" name="spinBox_4">
+     <widget class="QSpinBox" name="spinBox_graficoLatencia">
       <property name="geometry">
        <rect>
-        <x>580</x>
-        <y>440</y>
-        <width>53</width>
-        <height>21</height>
+        <x>550</x>
+        <y>430</y>
+        <width>61</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="minimum">
@@ -693,10 +761,10 @@
        <number>1</number>
       </property>
       <property name="value">
-       <number>20</number>
+       <number>5</number>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_7">
+     <widget class="QPushButton" name="pushButton_limpaTexto">
       <property name="geometry">
        <rect>
         <x>230</x>
@@ -714,7 +782,7 @@
        <string>LimparTexto</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_20">
+     <widget class="QCheckBox" name="checkBox_experimentoAtual">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -722,7 +790,7 @@
        <rect>
         <x>230</x>
         <y>410</y>
-        <width>131</width>
+        <width>81</width>
         <height>18</height>
        </rect>
       </property>
@@ -731,19 +799,6 @@
       </property>
       <property name="checked">
        <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_18">
-      <property name="geometry">
-       <rect>
-        <x>570</x>
-        <y>400</y>
-        <width>61</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>clear</string>
       </property>
      </widget>
     </widget>
@@ -784,7 +839,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QSpinBox" name="spinBox_3">
+      <widget class="QSpinBox" name="spinBox_cameraRefresh">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -806,7 +861,7 @@
         <number>10</number>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkBox_10">
+      <widget class="QCheckBox" name="checkBox_cameraAutoUpdate">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -819,7 +874,7 @@
         <string>Auto update</string>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkBox_11">
+      <widget class="QCheckBox" name="checkBox_cameraAutoSave">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -845,7 +900,7 @@
       <property name="title">
        <string>Manual - Imagem</string>
       </property>
-      <widget class="QSpinBox" name="spinBox_2">
+      <widget class="QSpinBox" name="spinBox_cameraDelay">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -867,7 +922,7 @@
         <number>1000</number>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_3">
+      <widget class="QComboBox" name="comboBox_cameraResolucao">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -900,7 +955,7 @@
         </property>
        </item>
       </widget>
-      <widget class="QPushButton" name="pushButton_5">
+      <widget class="QPushButton" name="pushButton_tiraFoto">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -945,7 +1000,7 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_9">
+      <widget class="QPushButton" name="pushButton_salvaImagen">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -1032,7 +1087,7 @@
      <attribute name="title">
       <string>Dados</string>
      </attribute>
-     <widget class="QPushButton" name="pushButton_8">
+     <widget class="QPushButton" name="pushButton_gerarArquivo">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1045,7 +1100,7 @@
        <string>Gerar Arquivo</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_11">
+     <widget class="QPushButton" name="pushButton_enviarEmail">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1058,7 +1113,7 @@
        <string>Enviar e-mail</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_12">
+     <widget class="QPushButton" name="pushButton_pendrive">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1086,7 +1141,7 @@
       <property name="checkable">
        <bool>false</bool>
       </property>
-      <widget class="QCheckBox" name="checkBox_15">
+      <widget class="QCheckBox" name="checkBox_formatoTxt">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1105,7 +1160,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkBox_16">
+      <widget class="QCheckBox" name="checkBox_formatoCsv">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1122,7 +1177,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pushButton_13">
+     <widget class="QPushButton" name="pushButton_zerarBanco">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -1147,7 +1202,7 @@
       <property name="title">
        <string>E-mail  -  (gmail)</string>
       </property>
-      <widget class="QLineEdit" name="lineEdit_2">
+      <widget class="QLineEdit" name="lineEdit_email">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1163,7 +1218,7 @@
         <string>e-mail@gmail.com</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_3">
+      <widget class="QLineEdit" name="lineEdit_senha">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1182,7 +1237,7 @@
         <string>Senha</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_14">
+      <widget class="QPushButton" name="pushButton_limpaSenha">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1208,7 +1263,7 @@
       <property name="title">
        <string>Experimento</string>
       </property>
-      <widget class="QCheckBox" name="checkBox_18">
+      <widget class="QCheckBox" name="checkBox_experimentoPeriodo">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -1227,7 +1282,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkBox_19">
+      <widget class="QCheckBox" name="checkBox_experimentoAtualData">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -1249,7 +1304,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QDateTimeEdit" name="dateTimeEdit">
+      <widget class="QDateTimeEdit" name="dateTimeEdit_inicio">
        <property name="geometry">
         <rect>
          <x>80</x>
@@ -1262,7 +1317,7 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+      <widget class="QDateTimeEdit" name="dateTimeEdit_fim">
        <property name="geometry">
         <rect>
          <x>80</x>
@@ -1289,7 +1344,7 @@
        <string>Exp Atual:</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_20">
+     <widget class="QLabel" name="label_nomeExperimento">
       <property name="geometry">
        <rect>
         <x>280</x>
@@ -1308,7 +1363,7 @@
        <string>Sem Nome</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_15">
+     <widget class="QPushButton" name="pushButton_experimento">
       <property name="geometry">
        <rect>
         <x>160</x>
@@ -1321,7 +1376,7 @@
        <string>Novo Experimento</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_16">
+     <widget class="QPushButton" name="pushButton_localArquivo">
       <property name="geometry">
        <rect>
         <x>220</x>
@@ -1334,7 +1389,7 @@
        <string>Local do Arquivo</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_18">
+     <widget class="QLabel" name="label_caminho">
       <property name="geometry">
        <rect>
         <x>170</x>
@@ -1759,7 +1814,7 @@
          <string>B =</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_17">
+       <widget class="QPushButton" name="pushButton_salvarFit">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -1772,7 +1827,7 @@
          <string>Salvar</string>
         </property>
        </widget>
-       <widget class="QComboBox" name="comboBox_4">
+       <widget class="QComboBox" name="comboBox_fitLinear">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -1782,7 +1837,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_19">
+       <widget class="QPushButton" name="pushButton_deletarFit">
         <property name="geometry">
          <rect>
           <x>120</x>
@@ -1816,7 +1871,7 @@
     <property name="title">
      <string>Conexão</string>
     </property>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="pushButton_conectar">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1861,7 +1916,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox">
+    <widget class="QComboBox" name="comboBox_portaSerial">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1871,7 +1926,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QComboBox" name="comboBox_2">
+    <widget class="QComboBox" name="comboBox_baudRate">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -1927,7 +1982,7 @@
     <property name="title">
      <string>Sensores</string>
     </property>
-    <widget class="QLCDNumber" name="lcdNumber">
+    <widget class="QLCDNumber" name="lcdNumber_s1">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1943,7 +1998,7 @@
       <double>23.000000000000000</double>
      </property>
     </widget>
-    <widget class="QLCDNumber" name="lcdNumber_2">
+    <widget class="QLCDNumber" name="lcdNumber_s2">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1959,7 +2014,7 @@
       <double>23.000000000000000</double>
      </property>
     </widget>
-    <widget class="QLCDNumber" name="lcdNumber_4">
+    <widget class="QLCDNumber" name="lcdNumber_s4">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1975,7 +2030,7 @@
       <double>23.000000000000000</double>
      </property>
     </widget>
-    <widget class="QLCDNumber" name="lcdNumber_6">
+    <widget class="QLCDNumber" name="lcdNumber_s6">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1991,7 +2046,7 @@
       <double>23.000000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="pushButton_serialAtualiza">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -2023,7 +2078,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QSpinBox" name="spinBox">
+    <widget class="QSpinBox" name="spinBox_serialUpdate">
      <property name="geometry">
       <rect>
        <x>70</x>
@@ -2042,7 +2097,7 @@
       <number>5</number>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBox_9">
+    <widget class="QCheckBox" name="checkBox_serialAuto">
      <property name="enabled">
       <bool>false</bool>
      </property>
@@ -2061,7 +2116,7 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QLCDNumber" name="lcdNumber_5">
+    <widget class="QLCDNumber" name="lcdNumber_s5">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -2077,7 +2132,7 @@
       <double>23.000000000000000</double>
      </property>
     </widget>
-    <widget class="QLCDNumber" name="lcdNumber_3">
+    <widget class="QLCDNumber" name="lcdNumber_s3">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -2185,7 +2240,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="pushButton_emergencia">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -2436,49 +2491,49 @@
  <resources/>
  <connections>
   <connection>
-   <sender>horizontalSlider</sender>
+   <sender>horizontalSlider_esteira</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_7</receiver>
+   <receiver>lcdNumber_esteiraVelocidade</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>123</x>
-     <y>85</y>
+     <x>145</x>
+     <y>63</y>
     </hint>
     <hint type="destinationlabel">
-     <x>193</x>
-     <y>120</y>
+     <x>195</x>
+     <y>102</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>horizontalSlider_r02</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_8</receiver>
+   <receiver>lcdNumber_resistenciaControle</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>240</y>
+     <x>49</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
-     <x>67</x>
-     <y>273</y>
+     <x>69</x>
+     <y>262</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>horizontalSlider_r04</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_8</receiver>
+   <receiver>lcdNumber_resistenciaControle</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>120</x>
-     <y>240</y>
+     <x>122</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
-     <x>120</x>
+     <x>92</x>
      <y>262</y>
     </hint>
    </hints>
@@ -2486,60 +2541,60 @@
   <connection>
    <sender>horizontalSlider_r06</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_8</receiver>
+   <receiver>lcdNumber_resistenciaControle</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>195</x>
-     <y>242</y>
+     <x>197</x>
+     <y>222</y>
     </hint>
     <hint type="destinationlabel">
-     <x>119</x>
-     <y>270</y>
+     <x>92</x>
+     <y>262</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>horizontalSlider_r05</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_8</receiver>
+   <receiver>lcdNumber_resistenciaControle</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>172</x>
-     <y>195</y>
+     <x>174</x>
+     <y>172</y>
     </hint>
     <hint type="destinationlabel">
-     <x>102</x>
-     <y>270</y>
+     <x>92</x>
+     <y>262</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>horizontalSlider_r03</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_8</receiver>
+   <receiver>lcdNumber_resistenciaControle</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>140</x>
-     <y>190</y>
+     <x>142</x>
+     <y>172</y>
     </hint>
     <hint type="destinationlabel">
-     <x>118</x>
-     <y>263</y>
+     <x>92</x>
+     <y>262</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>horizontalSlider_r01</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber_8</receiver>
+   <receiver>lcdNumber_resistenciaControle</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>64</x>
-     <y>191</y>
+     <x>66</x>
+     <y>172</y>
     </hint>
     <hint type="destinationlabel">
      <x>68</x>

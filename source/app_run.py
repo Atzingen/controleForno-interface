@@ -38,7 +38,6 @@ class Main(QtGui.QMainWindow):
         ####### Vari�veis de configura��o #####################################
         self.tempo_update_serial = 5 # 431  # tempo em milisegundos
         self.serial_timeout = False  # Timeout da leirura serial
-        self.experimento_nome = 'Sem Nome'  # Veri�vel para o nome do experimento
         ###     Vari�veis da calibra��o        ################################
         nomes_calibracao = retorna_dados_config()
         cal = leitura_calibracao(str(nomes_calibracao))
@@ -52,8 +51,8 @@ class Main(QtGui.QMainWindow):
             self.ui.horizontalSlider_r04.setStyle(QtGui.QStyleFactory.create("macintosh"))
             self.ui.horizontalSlider_r05.setStyle(QtGui.QStyleFactory.create("macintosh"))
             self.ui.horizontalSlider_r06.setStyle(QtGui.QStyleFactory.create("macintosh"))
-            self.ui.horizontalSlider.setStyle(QtGui.QStyleFactory.create("macintosh"))
-            self.ui.horizontalSlider_8.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_esteira.setStyle(QtGui.QStyleFactory.create("macintosh"))
+            self.ui.horizontalSlider_graficoPeriodo.setStyle(QtGui.QStyleFactory.create("macintosh"))
         else:
             self.ui.horizontalSlider_r01.setStyle(QtGui.QStyleFactory.create("windows"))
             self.ui.horizontalSlider_r02.setStyle(QtGui.QStyleFactory.create("windows"))
@@ -61,12 +60,12 @@ class Main(QtGui.QMainWindow):
             self.ui.horizontalSlider_r04.setStyle(QtGui.QStyleFactory.create("windows"))
             self.ui.horizontalSlider_r05.setStyle(QtGui.QStyleFactory.create("windows"))
             self.ui.horizontalSlider_r06.setStyle(QtGui.QStyleFactory.create("windows"))
-            self.ui.horizontalSlider.setStyle(QtGui.QStyleFactory.create("windows"))
-            self.ui.horizontalSlider_8.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_esteira.setStyle(QtGui.QStyleFactory.create("windows"))
+            self.ui.horizontalSlider_graficoPeriodo.setStyle(QtGui.QStyleFactory.create("windows"))
 
         ######## Caminho para os experimentos salvos #########################
         source_parent, _ = local_parent()
-        self.ui.label_18.setText(source_parent + "dadosExperimento")
+        self.ui.label_caminho.setText(source_parent + "dadosExperimento")
 
         ####### Banco de dados ################################################
         tempo_coleta = time.time()
@@ -81,8 +80,8 @@ class Main(QtGui.QMainWindow):
         #####  Acertando a hora do experimento (datetimeedit) #################
         agora = QtCore.QDateTime.currentDateTime()
         antes = agora.addDays(-5)
-        self.ui.dateTimeEdit.setDateTime(agora)
-        self.ui.dateTimeEdit_2.setDateTime(antes)
+        self.ui.dateTimeEdit_inicio.setDateTime(antes)
+        self.ui.dateTimeEdit_fim.setDateTime(agora)
         #####  testes #########################################################
 
         #######  Atualizando os valores das portas no inicio do programa #####
@@ -90,41 +89,42 @@ class Main(QtGui.QMainWindow):
 
         ## Remover depois				- Porta serial com4 pc de casa
         if sys.platform.startswith('win'):
-            self.ui.comboBox.setCurrentIndex(4)
+            self.ui.comboBox_portaSerial.setCurrentIndex(4)
 
         ####### Connex�es #####################################################
         # Slider do tempo de intervalo grafico
-        self.ui.horizontalSlider_8.sliderReleased.connect(partial(tempo_grafico, self))
+        self.ui.horizontalSlider_graficoPeriodo.sliderReleased.connect(partial(tempo_grafico, self))
         self.ui.horizontalSlider_r01.sliderReleased.connect(partial(resistencia01, self))
         self.ui.horizontalSlider_r02.sliderReleased.connect(partial(resistencia02, self))
         self.ui.horizontalSlider_r03.sliderReleased.connect(partial(resistencia03, self))
         self.ui.horizontalSlider_r04.sliderReleased.connect(partial(resistencia04, self))
         self.ui.horizontalSlider_r05.sliderReleased.connect(partial(resistencia05, self))
         self.ui.horizontalSlider_r06.sliderReleased.connect(partial(resistencia06, self))
-        self.ui.horizontalSlider.sliderReleased.connect(partial(esteira, self))
-        self.ui.pushButton.pressed.connect(partial(conecta, self))
-        self.ui.pushButton_3.pressed.connect(partial(emergencia, self))
-        self.ui.pushButton_4.pressed.connect(partial(para_esteira, self))
-        self.ui.pushButton_2.pressed.connect(partial(atualiza_temp, self))
-        self.ui.pushButton_7.pressed.connect(self.limpa_texto)
-        self.ui.pushButton_6.pressed.connect(partial(envia_manual, self))
-        self.ui.comboBox.activated.connect(self.add_portas_disponiveis)
-        self.ui.comboBox_4.activated.connect(self.lista_calibracoes)
-        self.ui.radioButton.clicked.connect(partial(hold, self))
-        self.ui.pushButton_5.pressed.connect(partial(tira_foto, self))
-        self.ui.checkBox_10.stateChanged.connect(partial(foto_update, self))
-        self.ui.checkBox_14.stateChanged.connect(partial(grafico_update, self))
-        self.ui.checkBox_9.stateChanged.connect(partial(auto_ST, self))
-        self.ui.pushButton_8.pressed.connect(partial(gera_arquivo, self))
-        self.ui.pushButton_11.pressed.connect(partial(envia_email, self))
-        self.ui.pushButton_12.pressed.connect(partial(pendrive, self))
-        self.ui.pushButton_13.pressed.connect(partial(zerabd_gui, self))
-        self.ui.pushButton_14.pressed.connect(partial(limpa_senha, self))
-        self.ui.pushButton_15.pressed.connect(partial(novo_exp, self))
-        self.ui.pushButton_16.pressed.connect(partial(local_arquivo, self.ui))
-        self.ui.pushButton_17.pressed.connect(self.salva_calibracao)
-        self.ui.pushButton_19.pressed.connect(self.deleta_calibracao)
-
+        self.ui.horizontalSlider_esteira.sliderReleased.connect(partial(esteira, self))
+        self.ui.radioButton_esteiraTras.pressed.connect(partial(esteiraTrasTotal, self))
+        self.ui.radioButton_esteiraFrente.pressed.connect(partial(esteiraFrenteTotal, self))
+        self.ui.pushButton_conectar.pressed.connect(partial(conecta, self))
+        self.ui.pushButton_emergencia.pressed.connect(partial(emergencia, self))
+        self.ui.pushButton_esteiraParar.pressed.connect(partial(para_esteira, self))
+        self.ui.pushButton_serialAtualiza.pressed.connect(partial(atualiza_temp, self))
+        self.ui.pushButton_limpaTexto.pressed.connect(self.limpa_texto)
+        self.ui.pushButton_serialEnviaLinha.pressed.connect(partial(envia_manual, self))
+        self.ui.comboBox_portaSerial.activated.connect(self.add_portas_disponiveis)
+        self.ui.comboBox_fitLinear.activated.connect(self.lista_calibracoes)
+        self.ui.radioButton_hold.clicked.connect(partial(hold, self))
+        self.ui.pushButton_tiraFoto.pressed.connect(partial(tira_foto, self))
+        self.ui.checkBox_cameraAutoUpdate.stateChanged.connect(partial(foto_update, self))
+        self.ui.checkBox_graficoAuto.stateChanged.connect(partial(grafico_update, self))
+        self.ui.checkBox_serialAuto.stateChanged.connect(partial(auto_ST, self))
+        self.ui.pushButton_gerarArquivo.pressed.connect(partial(gera_arquivo, self))
+        self.ui.pushButton_enviarEmail.pressed.connect(partial(envia_email, self))
+        self.ui.pushButton_pendrive.pressed.connect(partial(pendrive, self))
+        self.ui.pushButton_zerarBanco.pressed.connect(partial(zerabd_gui, self))
+        self.ui.pushButton_limpaSenha.pressed.connect(partial(limpa_senha, self))
+        self.ui.pushButton_experimento.pressed.connect(partial(novo_exp, self))
+        self.ui.pushButton_localArquivo.pressed.connect(partial(local_arquivo, self.ui))
+        self.ui.pushButton_salvarFit.pressed.connect(self.salva_calibracao)
+        self.ui.pushButton_deletarFit.pressed.connect(self.deleta_calibracao)
         self.lista_calibracoes(False)
 
     #########################  Calibracao linear ###########################
@@ -146,10 +146,7 @@ class Main(QtGui.QMainWindow):
         print text, ok
         if ok:
             nomes = nomes_calibracao()
-            igual = False
-            print nomes
             for nome in nomes:
-                print nome[0], text
                 if nome[0] == text:
                     igual = True
                     break
@@ -160,14 +157,14 @@ class Main(QtGui.QMainWindow):
 
     def deleta_calibracao(self):
         try:
-            numero_escolha = self.ui.comboBox_4.currentIndex()
-            escolha = self.ui.comboBox_4.itemText(numero_escolha)
+            numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
+            escolha = self.ui.comboBox_fitLinear.itemText(numero_escolha)
             reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que deletar a calibracao" + escolha + " ?",
         										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
             if reply == QtGui.QMessageBox.Yes:
                 deleta_calibracao_bd(str(escolha))
                 if ( str(escolha) == retorna_dados_config() ):
-                    primeiro_nome = self.ui.comboBox_4.itemText(0)
+                    primeiro_nome = self.ui.comboBox_fitLinear.itemText(0)
                     salva_config_calibracao(primeiro_nome)
                 self.lista_calibracoes()
         except:
@@ -188,15 +185,15 @@ class Main(QtGui.QMainWindow):
         self.ui.lineEdit_S06B.setText(str(self.S_06_B))
 
     def lista_calibracoes(self,tipo=0):
-        self.ui.comboBox.blockSignals(True)
+        self.ui.comboBox_portaSerial.blockSignals(True)
         nomes = nomes_calibracao()
-        numero_escolha = self.ui.comboBox_4.currentIndex()
-        self.ui.comboBox_4.clear()
+        numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
+        self.ui.comboBox_fitLinear.clear()
         for nome in nomes:
-            self.ui.comboBox_4.addItem(str(nome[0]))
-        self.ui.comboBox_4.setCurrentIndex(numero_escolha)
-        self.ui.comboBox_4.blockSignals(False)
-        escolha = unicode(self.ui.comboBox_4.currentText())
+            self.ui.comboBox_fitLinear.addItem(str(nome[0]))
+        self.ui.comboBox_fitLinear.setCurrentIndex(numero_escolha)
+        self.ui.comboBox_fitLinear.blockSignals(False)
+        escolha = unicode(self.ui.comboBox_fitLinear.currentText())
         if ( tipo is False):
             padrao = retorna_dados_config()
             valores = leitura_calibracao(padrao)
@@ -256,37 +253,42 @@ class Main(QtGui.QMainWindow):
             self.ui.horizontalSlider_r03.setValue(0)
             self.ui.horizontalSlider_r06.setValue(0)
             self.ui.horizontalSlider_r05.setValue(0)
-        self.ui.horizontalSlider.setEnabled(estado)  # Habilita/desabilita os controles
+        self.ui.horizontalSlider_esteira.setEnabled(estado)  # Habilita/desabilita os controles
         self.ui.horizontalSlider_r01.setEnabled(estado)
         self.ui.horizontalSlider_r02.setEnabled(estado)
         self.ui.horizontalSlider_r04.setEnabled(estado)
         self.ui.horizontalSlider_r03.setEnabled(estado)
         self.ui.horizontalSlider_r06.setEnabled(estado)
         self.ui.horizontalSlider_r05.setEnabled(estado)
-        self.ui.pushButton_2.setEnabled(estado)
-        self.ui.pushButton_4.setEnabled(estado)
-        self.ui.pushButton_6.setEnabled(estado)
-        self.ui.pushButton_3.setEnabled(estado)
-        self.ui.checkBox_9.setEnabled(estado)
+        self.ui.pushButton_serialAtualiza.setEnabled(estado)
+        self.ui.pushButton_esteiraParar.setEnabled(estado)
+        self.ui.pushButton_serialEnviaLinha.setEnabled(estado)
+        self.ui.pushButton_emergencia.setEnabled(estado)
+        self.ui.checkBox_serialAuto.setEnabled(estado)
+        self.ui.checkBox_experimentoAtual.setEnabled(estado)
+        self.ui.checkBox_graficoAuto.setEnabled(estado)
+        self.ui.radioButton_hold.setEnabled(estado)
+        self.ui.radioButton_esteiraTras.setEnabled(estado)
+        self.ui.radioButton_esteiraFrente.setEnabled(estado)
 
     def add_portas_disponiveis(self):
         ''' M�todo que altera os valores da combobox que mostra as portas dispon�veis
 		Os valores s�o retirados da fun��o serial_ports '''
-        escolha = self.ui.comboBox.currentIndex()  # Salva a porta atual escolhida
-        self.ui.comboBox.blockSignals(True)  # Bloqueia sinais do PyQt na combobox para evitar que a fun��o seja chamada novamente
-        self.ui.comboBox.clear()  # Limpa os itens da combobox
-        self.ui.comboBox.addItem('Atualiza')  # Adiciona uma op��o de atualiza��o das portas
-        self.ui.comboBox.addItem('/')  # Adiciona um item para a raiz do sistema
+        escolha = self.ui.comboBox_portaSerial.currentIndex()  # Salva a porta atual escolhida
+        self.ui.comboBox_portaSerial.blockSignals(True)  # Bloqueia sinais do PyQt na combobox para evitar que a fun��o seja chamada novamente
+        self.ui.comboBox_portaSerial.clear()  # Limpa os itens da combobox
+        self.ui.comboBox_portaSerial.addItem('Atualiza')  # Adiciona uma op��o de atualiza��o das portas
+        self.ui.comboBox_portaSerial.addItem('/')  # Adiciona um item para a raiz do sistema
         ports = serial_ports()  # chama a fun��o que lista as portas
         for port in ports:
-            self.ui.comboBox.addItem(port)  # Adiciona as portas a lista da combobox
-        self.ui.comboBox.blockSignals(False)  # Desabitita o bloqueio de sinal do PyQt para que esta fun��o possa ser chamada novamente no futuro
-        self.ui.comboBox.setCurrentIndex(escolha)  # Volta para a porta escolhida
+            self.ui.comboBox_portaSerial.addItem(port)  # Adiciona as portas a lista da combobox
+        self.ui.comboBox_portaSerial.blockSignals(False)  # Desabitita o bloqueio de sinal do PyQt para que esta fun��o possa ser chamada novamente no futuro
+        self.ui.comboBox_portaSerial.setCurrentIndex(escolha)  # Volta para a porta escolhida
 
     def limpa_texto(self):
         ''' Limpa as 3 textbox que informam os dados recebidos '''
-        self.ui.textEdit.clear()
-        self.ui.textEdit_2.clear()
+        self.ui.textEdit_dadosUbee.clear()
+        self.ui.textEdit_temperatura.clear()
 
 
 if __name__ == "__main__":  # Executa quando o programa � executado diretamente

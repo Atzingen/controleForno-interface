@@ -31,26 +31,26 @@ class matplotlibWidget(QtGui.QWidget):
 def plotar(self):
     ''' Função que plota o gráfico na GUI, utilizando a classe Matplotlib que sobrecarrega a o lable do qt (ver arquivo matplotlibwidgetFile.py) '''
     self.ui.widget.canvas.ax.clear()                                            # Limpa os eixos para plotar novamente
-    if self.ui.checkBox_20.isChecked() and (                                    # Verifica se a checkbox do experimento atual esta marcada
+    if self.ui.checkBox_experimentoAtual.isChecked() and (                                    # Verifica se a checkbox do experimento atual esta marcada
         self.experimento_nome is not 'Sem Nome'):                               # Pega o nome do experimento e verifica se é 'Sem nome' ou não.
         d = retorna_dados(1,                                                    # Pega os dados no bd
             experimento=str(self.experimento_nome))
     else:
-        delta_t = self.ui.horizontalSlider_8.value()                            # Pega os dados no bd
+        delta_t = self.ui.horizontalSlider_graficoPeriodo.value()                            # Pega os dados no bd
         d = retorna_dados(delta_t)
     try:
         if np.size(d[:,0]) > 1:                                                     # Adiciona os valores ao eixo do gráfico caso a checkbox do respectivo sensor
-            if self.ui.checkBox.isChecked():                                        # esteja marcada
+            if self.ui.checkBox_sensor1.isChecked():                                        # esteja marcada
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,3])
-            if self.ui.checkBox_2.isChecked():                                      # Repete o procedimento para todos os sensores
+            if self.ui.checkBox_sensor2.isChecked():                                      # Repete o procedimento para todos os sensores
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,4])
-            if self.ui.checkBox_4.isChecked():
+            if self.ui.checkBox_sensor3.isChecked():
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,5])
-            if self.ui.checkBox_3.isChecked():
+            if self.ui.checkBox_sensor4.isChecked():
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,6])
-            if self.ui.checkBox_6.isChecked():
+            if self.ui.checkBox_sensor5.isChecked():
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,7])
-            if self.ui.checkBox_5.isChecked():
+            if self.ui.checkBox_sensor6.isChecked():
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,8])
             self.ui.widget.canvas.draw()
     except:
@@ -63,9 +63,9 @@ def grafico_update(self):
     spinBox da GUI. caso a checkbox continue ativada, a função se chamará novamente de forma recursiva
     até que a checkbox seja desabilitada ou a conecção seja desfeita. '''
     self.alerta_toolbar("update-grafico")
-    if self.ui.checkBox_14.isChecked():                                         # Verifica se a checkbox de plotar o gráfico automaticamente está ativada
+    if self.ui.checkBox_graficoAuto.isChecked():                                         # Verifica se a checkbox de plotar o gráfico automaticamente está ativada
         plotar(self)                                                            # Chama a função plotar
-        tempo_delay = 1000*int(self.ui.spinBox_4.value())                       # Tempo até chamar a Thread
+        tempo_delay = 1000*int(self.ui.spinBox_graficoLatencia.value())                       # Tempo até chamar a Thread
         self.timer_grafico.singleShot(tempo_delay,partial(grafico_update,self)) # Chama a própria função de forma recursiva
 
 def tempo_grafico(self):
@@ -75,6 +75,6 @@ def tempo_grafico(self):
     em relação ao tempo actual.
     - Chama a função atualiza grafico.
     '''
-    valor = self.ui.horizontalSlider_8.value()                                  # Pega o valor do intervalo de tempo do gráfico pelo slider
+    valor = self.ui.horizontalSlider_graficoPeriodo.value()                                  # Pega o valor do intervalo de tempo do gráfico pelo slider
     texto = 'Delta T = ' + str(valor) + ' min'                      # Texto para ser mostrado ao lado do slider com o valor escolhido
-    self.ui.label_9.setText(texto)                                              # Altera o texto do lable na GUI
+    self.ui.label_graficoTempo.setText(texto)                                              # Altera o texto do lable na GUI

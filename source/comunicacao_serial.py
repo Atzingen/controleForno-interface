@@ -13,10 +13,10 @@ def conecta(self):
     ''' Evento ocorre quando o botao de conectar/desconectar � pressionado
     '''
     global s
-    texto_botao = self.ui.pushButton.text()
+    texto_botao = self.ui.pushButton_conectar.text()
     if ( texto_botao == 'Conectar' ):
-        baudrate = int(self.ui.comboBox_2.currentText())			# Configura��es da comunica��o serial
-        porta    = str(self.ui.comboBox.currentText())
+        baudrate = int(self.ui.comboBox_baudRate.currentText())			# Configura��es da comunica��o serial
+        porta    = str(self.ui.comboBox_portaSerial.currentText())
         if ( porta > 1 and baudrate is not '' ):					# Caso os dados de conf. tenham sido selecionados
             try:
                 s.port = porta
@@ -27,7 +27,7 @@ def conecta(self):
                     time.sleep(0.1)
                 s.open()											# abre a comunica��o
                 self.enabled_disabled(True)							# altera as informa��es da ui para conectado
-                self.ui.pushButton.setText('Desconectar')
+                self.ui.pushButton_conectar.setText('Desconectar')
                 self.timer_serial.singleShot(500,partial(serial_read,self))
             except:
                 self.alerta_toolbar('erro ao conectar')
@@ -37,7 +37,7 @@ def conecta(self):
             s.close()												# fecha a conec��o
         except:
             pass
-        self.ui.pushButton.setText('Conectar')
+        self.ui.pushButton_conectar.setText('Conectar')
 
 def envia_serial(dado):
     ''' M�todo que envia uma string pela serial '''
@@ -57,7 +57,7 @@ def serial_read(self):
             print texto
             texto = texto.rstrip('\r\n')
             self.alerta_toolbar('Dado Recebido: ' + texto)
-            self.ui.textEdit.insertPlainText(texto + '\n')
+            self.ui.textEdit_dadosUbee.insertPlainText(texto + '\n')
             tipo, d = verifica_dado(texto,self)
             print tipo, d
             resultado_dado(self, tipo, d)
@@ -76,15 +76,15 @@ def resultado_dado(self, tipo, d):
     global valor_esteira
 
     if tipo == 1:
-        self.ui.lcdNumber.display(d[1])						# Altera os valores dos displays de temperatura
-        self.ui.lcdNumber_2.display(d[2])
-        self.ui.lcdNumber_3.display(d[3])
-        self.ui.lcdNumber_4.display(d[4])
-        self.ui.lcdNumber_5.display(d[5])
-        self.ui.lcdNumber_6.display(d[6])
+        self.ui.lcdNumber_s1.display(d[1])						# Altera os valores dos displays de temperatura
+        self.ui.lcdNumber_s2.display(d[2])
+        self.ui.lcdNumber_s3.display(d[3])
+        self.ui.lcdNumber_s4.display(d[4])
+        self.ui.lcdNumber_s5.display(d[5])
+        self.ui.lcdNumber_s6.display(d[6])
         data = str(["%i" % x for x in d])					# Coloca os dados da temperatura em ums string
         data = data + '\n'									# Adiciona um caracter de fim de linha a string
-        self.ui.textEdit_2.insertPlainText(data)			# Insere o texto na textbox da GUI
+        self.ui.textEdit_temperatura.insertPlainText(data)			# Insere o texto na textbox da GUI
         # Adicionando os dados ao bd
         if self.experimento_nome == 'Sem Nome':				# 'Sem nome': padr�o para quando ainda n�o foi dado nome ao experimento
             adiciona_dado(float(d[0]),float(d[1]),float(d[2]),
@@ -171,21 +171,21 @@ def resultado_dado(self, tipo, d):
 
 def envia_manual(self):
     ''' Envia manualmente dados pela serial. A string contida na lineEdit � capturada e eniada '''
-    texto = self.ui.lineEdit.text()						# captura o texto da lineEdit
+    texto = self.ui.lineEdit_serialManual.text()						# captura o texto da lineEdit
     s.write(str(texto))									# envia a string pela serial
     s.write('\n')										# envia um caracter de fim de linha
-    self.ui.lineEdit.setText('')						# Apaga a string enviada da lineEdit
+    self.ui.lineEdit_serialManual.setText('')						# Apaga a string enviada da lineEdit
 
 def auto_ST(self):
     ''' M�todo recursivo.
     � chamado quando a checkbox de receber a temperatura dos sensores automaticamente � ativada.
     A fun��o ativa uma thread do QT no modo singleShot ap�s a quantidad de tempo escolhida no
-    spinBox da GUI. caso a checkbox continue ativada, a fun��o se chamar� novamente de forma recursiva
+    spinBox_serialUpdate da GUI. caso a checkbox continue ativada, a fun��o se chamar� novamente de forma recursiva
     at� que a checkbox seja desabilitada ou a conec��o seja desfeita.
     '''
-    if self.ui.checkBox_9.isChecked():					# Executa apenas quando a checkbox est� ativada
+    if self.ui.checkBox_serialAuto.isChecked():					# Executa apenas quando a checkbox est� ativada
         atualiza_temp(self)							# Fun��o que envia o pedido de temperatura para o microcontrolador
-        tempo = 1000*self.ui.spinBox.value()			# *1000 pois o tempo da do m�todo singleshot � em milissegundos
+        tempo = 1000*self.ui.spinBox_serialUpdate.value()			# *1000 pois o tempo da do m�todo singleshot � em milissegundos
         self.timer_ST.singleShot(tempo,partial(auto_ST,self))   # Thread recursiva �nica que se chamar�.
 
 def verifica_dado(dado,self):
@@ -293,9 +293,11 @@ def teste_retorno(self):
     print "retorno - global: ",valor_resistencia01, valor_resistencia02, valor_resistencia03, valor_resistencia04
     print "                  ",int(self.ui.horizontalSlider_r01.value()), self.ui.horizontalSlider_r02.value(),self.ui.horizontalSlider_r03.value(), self.ui.horizontalSlider_r04.value()
 
-    if not(int(self.ui.horizontalSlider.value()) == valor_esteira):				# verifica se h� diferen�a entre a vari�vel e a esteira
-        self.ui.lcdNumber_7.display(valor_esteira)								# Altera o valor do LCD da GUI
-        self.ui.horizontalSlider.setValue(valor_esteira)							# Altera o valor do slider
+    if not(int(self.ui.horizontalSlider_esteira.value()) == valor_esteira):				# verifica se h� diferen�a entre a vari�vel e a esteira
+        self.ui.lcdNumber_esteiraVelocidade.display(valor_esteira)								# Altera o valor do LCD da GUI
+        self.ui.horizontalSlider_esteira.setValue(valor_esteira)							# Altera o valor do slider
+        self.ui.radioButton_esteiraFrente.setChecked(valor_esteira == 100)
+        self.ui.radioButton_esteiraTras.setChecked(valor_esteira == -100)
 
     if not(int(self.ui.horizontalSlider_r01.value()) == valor_resistencia01):		# verifica se h� diferen�a entre a vari�vel e a resist�ncia 1
         self.ui.horizontalSlider_r01.setValue(valor_resistencia01)				# Altera o valor do slider
@@ -329,7 +331,7 @@ def atualiza_temp(self):
 def resistencia01(self):
     ''' Fun��o que � chamada quando alguma mudan�a no controle da GUI relativa a resist�ncia 1 ocorre
     A fun��o verifica o estado da resist�ncia 1 e envia para o mc caso seja necess�rio '''
-    if (not self.ui.radioButton.isChecked()):									# Os dados s�o enviados apenas se o 'hold' n�o estiver pressionado
+    if (not self.ui.radioButton_hold.isChecked()):									# Os dados s�o enviados apenas se o 'hold' n�o estiver pressionado
         valor = int(self.ui.horizontalSlider_r01.value())						# Pega o valor do slider relativo a resist�ncia 1
         if valor == 100:														# envia o dado adequado em fun��o do valor 0, 1..99, 100
             envia_serial(liga_02)
@@ -341,7 +343,7 @@ def resistencia01(self):
                                                                                 # o comando e retornou a string esperada.
 
 def resistencia02(self):														# Idem para as resist�ncias 2 a 6
-    if (not self.ui.radioButton.isChecked()):
+    if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r02.value())
         if valor == 100:
             envia_serial(liga_04)
@@ -352,7 +354,7 @@ def resistencia02(self):														# Idem para as resist�ncias 2 a 6
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))				# Chama a fun��o teste_retorno em t segundos para verificar se o mc recebeu
 
 def resistencia03(self):
-    if (not self.ui.radioButton.isChecked()):
+    if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r03.value())
         if valor == 100:
             envia_serial(liga_06)
@@ -363,7 +365,7 @@ def resistencia03(self):
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))				# Chama a fun��o teste_retorno em t segundos para verificar se o mc recebeu
 
 def resistencia04(self):
-    if (not self.ui.radioButton.isChecked()):
+    if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r04.value())
         if valor == 100:
             envia_serial(liga_05)
@@ -374,7 +376,7 @@ def resistencia04(self):
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))				# Chama a fun��o teste_retorno em t segundos para verificar se o mc recebeu
 
 def resistencia05(self):
-    if (not self.ui.radioButton.isChecked()):
+    if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r05.value())
         if valor == 100:
             envia_serial(liga_03)
@@ -385,7 +387,7 @@ def resistencia05(self):
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))				# Chama a fun��o teste_retorno em t segundos para verificar se o mc recebeu
 
 def resistencia06(self):
-    if (not self.ui.radioButton.isChecked()):
+    if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r06.value())
         if valor == 100:
             envia_serial(liga_01)
@@ -400,7 +402,7 @@ def hold(self):
     Caso o hold seja deslicado. S�o chamadas as fun��es de todas as esteiras
     para enviar os dados caso haja diferen�a entre o estado da vari�vel e do
     slider.'''
-    if ( self.ui.radioButton.isChecked() == False ):							# Caso o 'hold' tenha sido desligado:
+    if ( self.ui.radioButton_hold.isChecked() == False ):							# Caso o 'hold' tenha sido desligado:
         resistencia01(self)														# Chama a fun��o da resist�ncia 1
         time.sleep(0.1)															# Espera um pequeno tempo por precau��o de sobrecarregar a serial
         resistencia02(self)														# Idem para as resist�ncias 2 .. 6
@@ -412,27 +414,57 @@ def hold(self):
         resistencia05(self)
         time.sleep(0.1)
         resistencia06(self)
+    QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))
 
 def esteira(self):
     ''' Fun��o que � acionada ao alterar o valor do slider da esteira. Envia para o mc o comando adequado '''
-    valor = self.ui.horizontalSlider.value()
-    if valor > 0:																# SH'xy' para frente (valores maiores que zero)
+    valor = self.ui.horizontalSlider_esteira.value()
+    if valor > 0 and valor < 100:
         s.write('SH' + str(valor) + '\n')
-    elif valor < 0:																# SA'xy' para tras (valores menores que zero)
+        self.ui.radioButton_esteiraFrente.setChecked(False)
+        self.ui.radioButton_esteiraTras.setChecked(False)
+    elif valor < 0 and valor > -100:
+        self.ui.radioButton_esteiraFrente.setChecked(False)
+        self.ui.radioButton_esteiraTras.setChecked(False)
         s.write('SA' + str(abs(valor)) + '\n')
+    elif valor == -100:
+        self.ui.radioButton_esteiraFrente.setChecked(False)
+        self.ui.radioButton_esteiraTras.setChecked(True)
+        s.write('SA' + str(abs(valor)) + '\n')
+    elif valor == 100:
+        self.ui.radioButton_esteiraFrente.setChecked(True)
+        self.ui.radioButton_esteiraTras.setChecked(False)
+        s.write('SH' + str(abs(valor)) + '\n')
     else:
         s.write('SD\n')															# Parar a esteira (0)
     QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))					# Chama a fun��o teste_retorno em t segundos para verificar se o mc recebeu
 
 def para_esteira(self):
     ''' Fun��o de parada total da esteira. Envia o comando para o mc e altera o valor do slider. '''
-    self.ui.horizontalSlider.setValue(0)
+    self.ui.horizontalSlider_esteira.setValue(0)
+    self.ui.radioButton_esteiraFrente.setChecked(False)
+    self.ui.radioButton_esteiraTras.setChecked(False)
     s.write('SD\n')
     QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))					# Chama a fun��o teste_retorno em t segundos para verificar se o mc recebeu
+
+def esteiraTrasTotal(self):
+    self.ui.horizontalSlider_esteira.setValue(-100)
+    self.ui.radioButton_esteiraFrente.setChecked(False)
+    s.write('SA100' + '\n')
+    QtCore.QTimer.singleShot(5000, partial(teste_retorno,self))
+
+def esteiraFrenteTotal(self):
+    self.ui.horizontalSlider_esteira.setValue(100)
+    self.ui.radioButton_esteiraTras.setChecked(False)
+    s.write('SH100' + '\n')
+    QtCore.QTimer.singleShot(5000, partial(teste_retorno,self))
 
 def emergencia(self):
     ''' Fun��o de Emerg�ncia. Para a esteira e desliga todas as resist�ncias '''
     s.write('SD\n')
+    self.ui.radioButton_esteiraFrente.setChecked(False)
+    self.ui.radioButton_esteiraTras.setChecked(False)
+    self.ui.horizontalSlider_esteira.setValue(0)
     for i in range(2,8):
         s.write('S' + str(i) + '2\n')
         time.sleep(0.1)

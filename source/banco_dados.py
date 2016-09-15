@@ -4,22 +4,21 @@ import sqlite3
 import datetime
 import scipy
 from PyQt4 import QtGui
-from exporta_experimentos import local_parent
+
+def local_parent():
+	#caminho_source = os.getcwd()
+	caminho_source = os.path.dirname(os.path.realpath(__file__))
+	source_parent = os.path.abspath(os.path.join(caminho_source, os.pardir))
+	if sys.platform.startswith('win'):
+		barra = '\\'
+	else:
+		barra = '/'
+	source_parent += barra
+	return str(source_parent), barra
 
 nome_arquivo_db = 'forno_data.db'
 caminho, barra = local_parent()
 caminho_banco = caminho + "bancoDados" + barra +  nome_arquivo_db
-
-if sys.platform.startswith('win'):
-	if os.path.isdir('C:\\Users\\gustavo\\Documents\\GitHub\\controleForno-interface\\bancoDados'):
-		caminho_banco = 'C:\\Users\\gustavo\\Documents\\GitHub\\controleForno-interface\\bancoDados\\forno_data.db'
-	else:
-		caminho_banco = 'forno_data.db'
-else:
-	if os.path.isdir('/home/pi/Desktop/controleForno-interface/bancoDados'):
-		caminho_banco = '/home/pi/Desktop/controleForno-interface/bancoDados/forno_data.db'
-	else:
-		caminho_banco = 'forno_data.db'
 
 def cria_tabela_config():
 	try:
@@ -189,6 +188,7 @@ def retorna_dados(delta_t,experimento=None,Ti=None,Tf=None):
 		-Caso os tempos inicial e final sejam fornecidos, ser�o retornados todos os dados dentro deste per�odo
 		-Tempo delta (padr�o) - Retorna dados entre o tempo atual e o tempo atual - delta_t.
 	'''
+	print "retorna dados chamada"
 	createDB = sqlite3.connect(caminho_banco)						# Conecta com o bd
 	cursor = createDB.cursor()									# Cria um cursor para interagir com o bd
 	if experimento:													# Caso a vari�vel experimento tenha sido passada:
