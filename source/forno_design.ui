@@ -447,7 +447,7 @@
        </property>
        <widget class="QWidget" name="tab_4">
         <attribute name="title">
-         <string>Dados Ubee</string>
+         <string>Dados Serial</string>
         </attribute>
         <widget class="QTextEdit" name="textEdit_dadosSerial">
          <property name="geometry">
@@ -769,7 +769,7 @@
        <rect>
         <x>230</x>
         <y>410</y>
-        <width>71</width>
+        <width>81</width>
         <height>21</height>
        </rect>
       </property>
@@ -790,7 +790,7 @@
        <rect>
         <x>230</x>
         <y>440</y>
-        <width>71</width>
+        <width>81</width>
         <height>21</height>
        </rect>
       </property>
