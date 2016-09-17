@@ -139,7 +139,6 @@ def novo_exp(self):
 		self.ui.checkBox_experimentoAtualData.setEnabled(False)						# Desabilita o checkbox de sele��o do experimento atual
 		self.ui.checkBox_experimentoPeriodo.setChecked(True)						# Marca a checkbox de salvar dados por per�odo
 		self.ui.checkBox_experimentoAtualData.setChecked(False)						# Desmarca o checbox de sele��o do experimento atual (plot)
-		self.ui.checkBox_experimentoAtual.setEnabled(False)						# Desabilita o checkbox de sele��o do experimento atual (plot)
 		self.ui.label_nomeExperimento.setText('Sem Nome')
 	else:
 		text, ok = QtGui.QInputDialog.getText(self, '', 			# Caixa de dialogo para nome do experimento
@@ -148,5 +147,4 @@ def novo_exp(self):
 			self.ui.label_nomeExperimento.setText(str(text))			# Altera o label do nome do experimento
 			self.ui.pushButton_experimento.setText('Encerrar Experimento')	# Altera o texto do bot�o
 			self.ui.checkBox_experimentoAtualData.setEnabled(True)					# Habilita o checkbox de sele��o do experimento atual
-			self.ui.checkBox_experimentoAtual.setEnabled(True)					# Habilita o checkbox de sele��o dos dados por per�odo
 			self.ui.checkBox_experimentoAtualData.setChecked(True)					# Marca a checkbox de salvar dados do ultimo experimento

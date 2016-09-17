@@ -443,13 +443,13 @@
         </font>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab_4">
         <attribute name="title">
          <string>Dados Ubee</string>
         </attribute>
-        <widget class="QTextEdit" name="textEdit_dadosUbee">
+        <widget class="QTextEdit" name="textEdit_dadosSerial">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -671,7 +671,7 @@
      <widget class="QLabel" name="label_graficoTempo">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>390</x>
         <y>410</y>
         <width>151</width>
         <height>16</height>
@@ -768,8 +768,8 @@
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>440</y>
-        <width>91</width>
+        <y>410</y>
+        <width>71</width>
         <height>21</height>
        </rect>
       </property>
@@ -782,23 +782,25 @@
        <string>LimparTexto</string>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox_experimentoAtual">
+     <widget class="QPushButton" name="pushButton_updateInfo">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>230</x>
-        <y>410</y>
-        <width>81</width>
-        <height>18</height>
+        <y>440</y>
+        <width>71</width>
+        <height>21</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Exp  atual</string>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
       </property>
-      <property name="checked">
-       <bool>false</bool>
+      <property name="text">
+       <string>Update Info</string>
       </property>
      </widget>
     </widget>
@@ -1066,7 +1068,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QLabel" name="label_15">
+     <widget class="QLabel" name="label_camera">
       <property name="geometry">
        <rect>
         <x>160</x>

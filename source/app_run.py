@@ -35,10 +35,7 @@ class Main(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)  # Interface Gr�fica
         self.ui = Ui_MainWindow()  # Qtdesigner
         self.ui.setupUi(self)
-        ####### Vari�veis de configura��o #####################################
-        self.tempo_update_serial = 5 # 431  # tempo em milisegundos
-        self.serial_timeout = False  # Timeout da leirura serial
-        ###     Vari�veis da calibra��o        ################################
+        ###     Vari�veis da calibração        ################################
         nomes_calibracao = retorna_dados_config()
         cal = leitura_calibracao(str(nomes_calibracao))
         self.atualiza_valores_calibracoes(cal)
@@ -90,8 +87,7 @@ class Main(QtGui.QMainWindow):
         ## Remover depois				- Porta serial com4 pc de casa
         if sys.platform.startswith('win'):
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
-
-        ####### Connex�es #####################################################
+        ####### Connexões #####################################################
         # Slider do tempo de intervalo grafico
         self.ui.horizontalSlider_graficoPeriodo.sliderReleased.connect(partial(tempo_grafico, self))
         self.ui.horizontalSlider_r01.sliderReleased.connect(partial(resistencia01, self))
@@ -100,13 +96,14 @@ class Main(QtGui.QMainWindow):
         self.ui.horizontalSlider_r04.sliderReleased.connect(partial(resistencia04, self))
         self.ui.horizontalSlider_r05.sliderReleased.connect(partial(resistencia05, self))
         self.ui.horizontalSlider_r06.sliderReleased.connect(partial(resistencia06, self))
-        self.ui.horizontalSlider_esteira.sliderReleased.connect(partial(esteira, self))
-        self.ui.radioButton_esteiraTras.pressed.connect(partial(esteiraTrasTotal, self))
-        self.ui.radioButton_esteiraFrente.pressed.connect(partial(esteiraFrenteTotal, self))
+        self.ui.horizontalSlider_esteira.sliderReleased.connect(partial(esteira, [self, 'slider']))
+        self.ui.radioButton_esteiraTras.pressed.connect(partial(esteira, [self,'tras']))
+        self.ui.radioButton_esteiraFrente.pressed.connect(partial(esteira, [self,'frente']))
+        self.ui.pushButton_esteiraParar.pressed.connect(partial(esteira, [self,'parar']))
         self.ui.pushButton_conectar.pressed.connect(partial(conecta, self))
         self.ui.pushButton_emergencia.pressed.connect(partial(emergencia, self))
-        self.ui.pushButton_esteiraParar.pressed.connect(partial(para_esteira, self))
-        self.ui.pushButton_serialAtualiza.pressed.connect(partial(atualiza_temp, self))
+        self.ui.pushButton_serialAtualiza.pressed.connect(partial(envia_serial, 'ST\n'))
+        self.ui.pushButton_updateInfo.pressed.connect(partial(envia_serial, 'SK\n'))
         self.ui.pushButton_limpaTexto.pressed.connect(self.limpa_texto)
         self.ui.pushButton_serialEnviaLinha.pressed.connect(partial(envia_manual, self))
         self.ui.comboBox_portaSerial.activated.connect(self.add_portas_disponiveis)
@@ -260,12 +257,12 @@ class Main(QtGui.QMainWindow):
         self.ui.horizontalSlider_r03.setEnabled(estado)
         self.ui.horizontalSlider_r06.setEnabled(estado)
         self.ui.horizontalSlider_r05.setEnabled(estado)
+        self.ui.pushButton_updateInfo.setEnabled(estado)
         self.ui.pushButton_serialAtualiza.setEnabled(estado)
         self.ui.pushButton_esteiraParar.setEnabled(estado)
         self.ui.pushButton_serialEnviaLinha.setEnabled(estado)
         self.ui.pushButton_emergencia.setEnabled(estado)
         self.ui.checkBox_serialAuto.setEnabled(estado)
-        self.ui.checkBox_experimentoAtual.setEnabled(estado)
         self.ui.checkBox_graficoAuto.setEnabled(estado)
         self.ui.radioButton_hold.setEnabled(estado)
         self.ui.radioButton_esteiraTras.setEnabled(estado)
@@ -287,7 +284,7 @@ class Main(QtGui.QMainWindow):
 
     def limpa_texto(self):
         ''' Limpa as 3 textbox que informam os dados recebidos '''
-        self.ui.textEdit_dadosUbee.clear()
+        self.ui.textEdit_dadosSerial.clear()
         self.ui.textEdit_temperatura.clear()
 
 
