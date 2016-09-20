@@ -29,14 +29,17 @@ class matplotlibWidget(QtGui.QWidget):
         self.setLayout(self.vbl)
 
 def plotar(self):
-    ''' Função que plota o gráfico na GUI, utilizando a classe Matplotlib que sobrecarrega a o lable do qt (ver arquivo matplotlibwidgetFile.py) '''
-    self.ui.widget.canvas.ax.clear()                                            # Limpa os eixos para plotar novamente
-    if self.ui.checkBox_experimentoAtual.isChecked() and (                                    # Verifica se a checkbox do experimento atual esta marcada
-        self.experimento_nome is not 'Sem Nome'):                               # Pega o nome do experimento e verifica se é 'Sem nome' ou não.
-        d = retorna_dados(1,                                                    # Pega os dados no bd
-            experimento=str(self.experimento_nome))
+    '''
+        Função que plota o gráfico na GUI, utilizando a classe Matplotlib
+        que sobrecarrega a o lable do qt (ver arquivo matplotlibwidgetFile.py)
+    '''
+    # Limpa os eixos para plotar novamente
+    self.ui.widget.canvas.ax.clear()
+     # Pega o nome do experimento e verifica se é 'Sem nome' ou não.
+    if (str(self.ui.label_nomeExperimento.text()) != 'Sem Nome'):
+        d=retorna_dados(1,experimento=str(self.ui.label_nomeExperimento.text()))
     else:
-        delta_t = self.ui.horizontalSlider_graficoPeriodo.value()                            # Pega os dados no bd
+        delta_t = self.ui.horizontalSlider_graficoPeriodo.value()
         d = retorna_dados(delta_t)
     try:
         if np.size(d[:,0]) > 1:                                                     # Adiciona os valores ao eixo do gráfico caso a checkbox do respectivo sensor

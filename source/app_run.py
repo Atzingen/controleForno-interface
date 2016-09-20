@@ -106,6 +106,8 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_updateInfo.pressed.connect(partial(envia_serial, 'SK\n'))
         self.ui.pushButton_limpaTexto.pressed.connect(self.limpa_texto)
         self.ui.pushButton_serialEnviaLinha.pressed.connect(partial(envia_manual, self))
+        self.ui.pushButton_periodoPWM.pressed.connect(partial(envia_setpwm, self))
+        self.ui.pushButton_leituraAnalogica.pressed.connect(partial(envia_setanalog, self))
         self.ui.comboBox_portaSerial.activated.connect(self.add_portas_disponiveis)
         self.ui.comboBox_fitLinear.activated.connect(self.lista_calibracoes)
         self.ui.radioButton_hold.clicked.connect(partial(hold, self))

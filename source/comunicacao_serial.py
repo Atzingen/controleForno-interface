@@ -262,12 +262,31 @@ def resultado_dado(self, tipo, d):
     else:
         print "erro no recebimento !!!!!!!"
 
+def envia_setpwm(self):
+    texto = self.ui.lineEdit_periodoPWM.text()
+    print 'SU' + str(texto) + '\n'
+    envia_serial('SU' + str(texto) + '\n')
+
+def envia_setanalog(self):
+    texto_nLeituras = str(self.ui.lineEdit_analogicaNleituras.text())
+    if len(texto_nLeituras) > 2:
+        texto_nLeituras = texto_nLeituras[0:2]
+    elif len(texto_nLeituras) == 1:
+        texto_nLeituras = '0' + texto_nLeituras
+    elif len(texto_nLeituras) < 1:
+        self.alerta_toolbar('erro textbox nLeituras (2 caracteres)')
+        return None
+    texto_delay = self.ui.lineEdit_analogicaDelayms.text()
+    print 'SL' + texto_nLeituras + str(texto_delay) + '\n'
+    envia_serial('SL' + texto_nLeituras + str(texto_delay) + '\n')
+
 def envia_manual(self):
     '''
     Envia os dados da string contida na lineEdit (envio manual) '''
     # captura o texto da lineEdit
     texto = self.ui.lineEdit_serialManual.text()
-    envia_serial(texto + '\n')
+    print "envia serial: ", texto
+    envia_serial(str(texto) + '\n')
     # Apaga a string enviada da lineEdit
     self.ui.lineEdit_serialManual.setText('')
 
