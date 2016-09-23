@@ -269,6 +269,8 @@ class Main(QtGui.QMainWindow):
         self.ui.radioButton_hold.setEnabled(estado)
         self.ui.radioButton_esteiraTras.setEnabled(estado)
         self.ui.radioButton_esteiraFrente.setEnabled(estado)
+        self.ui.pushButton_periodoPWM.setEnabled(estado)
+        self.ui.pushButton_leituraAnalogica.setEnabled(estado)
 
     def add_portas_disponiveis(self):
         ''' M�todo que altera os valores da combobox que mostra as portas dispon�veis
