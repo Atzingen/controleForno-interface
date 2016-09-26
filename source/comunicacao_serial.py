@@ -104,6 +104,10 @@ def verifica_dado(dado,self):
     7 ->  Resposta desconhecida.
     8 ->  Liga parcialmente (pwm) uma das resistências.
             SP'x''y''z'. x: indica a esteira (de 2a7)y e z: o valor de 1 a 99.
+    9 ->  Retorno do Pedido de informação das resistencias e esteira (SK).
+            formato: S,aaa,bbb,ccc,ddd,eee,fff,ggg
+            Onde os dados, a..f são o estado das resistencias e ggg é a
+            velocidade da esteira.
     '''
     try:
         if dado[0] == 'S':
@@ -131,6 +135,12 @@ def verifica_dado(dado,self):
             elif dado[0:2] == 'SP' and len(dado) > 3 and len(dado) < 6:
                 if ( dado[2:].isdigit() and int(dado[3:]) < 101 ):
                     return 8, dado[2:]
+            # tipo 9, retorno de informacao da esteira e resistencias
+            elif dado[1] == ',':
+                valores = dado.split(',')
+                # rerifica se todos os dados chegaram corretamente:
+                if len(dado) > 7:
+                    return 9, valores
         # tipo 6: Erro - envio de string incorreta ao microcontrolador
         elif 'Erro -' in dado:
             return 6, dado
@@ -259,6 +269,18 @@ def resultado_dado(self, tipo, d):
     # Tipo 5 - Velocidade da esteira para tras (1 a 99)
     elif tipo == 5:
         valor_esteira = -1*int(d)
+    elif tipo == 9:
+        # Atualiza o valor das variaveis globais
+        valor_resistencia01 = int(d[1])
+        valor_resistencia02 = int(d[2])
+        valor_resistencia03 = int(d[3])
+        valor_resistencia04 = int(d[4])
+        valor_resistencia05 = int(d[5])
+        valor_resistencia06 = int(d[6])
+        valor_esteira = int(x=d[7])
+        # Atualiza os slides e controles da GUI
+        QtCore.QTimer.singleShot(10, partial(teste_retorno,self))
+        self.ui.
     else:
         print "erro no recebimento !!!!!!!"
 
