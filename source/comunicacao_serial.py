@@ -280,7 +280,6 @@ def resultado_dado(self, tipo, d):
         valor_esteira = int(x=d[7])
         # Atualiza os slides e controles da GUI
         QtCore.QTimer.singleShot(10, partial(teste_retorno,self))
-        self.ui.
     else:
         print "erro no recebimento !!!!!!!"
 
