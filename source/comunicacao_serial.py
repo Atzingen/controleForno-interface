@@ -185,7 +185,7 @@ def resultado_dado(self, tipo, d):
         else:
             adiciona_dado(float(d[0]),float(d[1]),
                           float(d[2]),float(d[3]),float(d[4]),float(d[5]),
-                          float(d[6]),experimento=str(self.ui.label_caminho.text()))
+                          float(d[6]),experimento=str(self.ui.label_nomeExperimento.text()))
     # Tipo 2 - Liga ou desliga alguma resistência.
     elif tipo == 2:
         # d[0] - Valores de 2 a 7 = as 6 resistências
