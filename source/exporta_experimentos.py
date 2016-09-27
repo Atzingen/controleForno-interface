@@ -35,6 +35,7 @@ def gera_arquivo(self):
 		Ti = self.ui.dateTimeEdit_inicio.dateTime().toPyDateTime()
 		d = retorna_dados(1,Ti=Ti,Tf=Tf)
 	elif self.ui.checkBox_experimentoAtualData.isChecked():
+		print str(self.ui.label_nomeExperimento.text())
 		d = retorna_dados(1,experimento=str(self.ui.label_nomeExperimento.text()))
 		tempo = str(self.ui.label_nomeExperimento.text()) + '_' + tempo
 	for a in glob.glob('*'):

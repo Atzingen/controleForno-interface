@@ -179,7 +179,7 @@ def resultado_dado(self, tipo, d):
         self.ui.textEdit_temperatura.insertPlainText(data)
         # Adicionando os dados ao bd:
         # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
-        if str(self.ui.label_caminho.text()) == 'Sem Nome':
+        if str(self.ui.label_nomeExperimento.text()) == 'Sem Nome':
             adiciona_dado(float(d[0]),float(d[1]),float(d[2]),
                           float(d[3]),float(d[4]),float(d[5]),float(d[6]))
         else:
