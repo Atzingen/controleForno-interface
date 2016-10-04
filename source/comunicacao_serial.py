@@ -166,6 +166,7 @@ def resultado_dado(self, tipo, d):
     # tipo 1: retono de dados de temperatura.
     if tipo == 1:
         # Altera os valores dos displays de temperatura.
+        #temperatura = [None, d[4], d[], d[], d[], d[], d[]]
         self.ui.lcdNumber_s1.display(d[1])
         self.ui.lcdNumber_s2.display(d[2])
         self.ui.lcdNumber_s3.display(d[3])

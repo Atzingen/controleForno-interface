@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'source/forno_design.ui'
+# Form implementation generated from reading ui file 'source\\forno_design.ui'
 #
-# Created: Fri Sep 23 00:50:15 2016
-#      by: PyQt4 UI code generator 4.11.2
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -618,6 +617,7 @@ class Ui_MainWindow(object):
         self.groupBox_30.setGeometry(QtCore.QRect(360, 10, 231, 141))
         self.groupBox_30.setObjectName(_fromUtf8("groupBox_30"))
         self.pushButton_periodoPWM = QtGui.QPushButton(self.groupBox_30)
+        self.pushButton_periodoPWM.setEnabled(False)
         self.pushButton_periodoPWM.setGeometry(QtCore.QRect(10, 30, 101, 31))
         self.pushButton_periodoPWM.setObjectName(_fromUtf8("pushButton_periodoPWM"))
         self.lineEdit_periodoPWM = QtGui.QLineEdit(self.groupBox_30)
@@ -625,6 +625,7 @@ class Ui_MainWindow(object):
         self.lineEdit_periodoPWM.setInputMask(_fromUtf8(""))
         self.lineEdit_periodoPWM.setObjectName(_fromUtf8("lineEdit_periodoPWM"))
         self.pushButton_leituraAnalogica = QtGui.QPushButton(self.groupBox_30)
+        self.pushButton_leituraAnalogica.setEnabled(False)
         self.pushButton_leituraAnalogica.setGeometry(QtCore.QRect(10, 70, 101, 51))
         self.pushButton_leituraAnalogica.setObjectName(_fromUtf8("pushButton_leituraAnalogica"))
         self.lineEdit_analogicaNleituras = QtGui.QLineEdit(self.groupBox_30)
@@ -634,6 +635,13 @@ class Ui_MainWindow(object):
         self.lineEdit_analogicaDelayms.setGeometry(QtCore.QRect(120, 100, 101, 21))
         self.lineEdit_analogicaDelayms.setObjectName(_fromUtf8("lineEdit_analogicaDelayms"))
         self.tabWidget.addTab(self.Config, _fromUtf8(""))
+        self.tab_10 = QtGui.QWidget()
+        self.tab_10.setObjectName(_fromUtf8("tab_10"))
+        self.label_layoutForno = QtGui.QLabel(self.tab_10)
+        self.label_layoutForno.setGeometry(QtCore.QRect(20, 30, 571, 411))
+        self.label_layoutForno.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_layoutForno.setObjectName(_fromUtf8("label_layoutForno"))
+        self.tabWidget.addTab(self.tab_10, _fromUtf8(""))
         self.groupBox = QtGui.QGroupBox(self.centralwidget)
         self.groupBox.setGeometry(QtCore.QRect(630, 10, 161, 61))
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
@@ -959,6 +967,8 @@ class Ui_MainWindow(object):
         self.lineEdit_analogicaNleituras.setPlaceholderText(_translate("MainWindow", "N de leituras", None))
         self.lineEdit_analogicaDelayms.setPlaceholderText(_translate("MainWindow", "delay ms", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Config), _translate("MainWindow", "Ajustes", None))
+        self.label_layoutForno.setText(_translate("MainWindow", "Layout-teste", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_10), _translate("MainWindow", "Layout", None))
         self.groupBox.setTitle(_translate("MainWindow", "Conexão", None))
         self.pushButton_conectar.setText(_translate("MainWindow", "Conectar", None))
         self.groupBox_2.setTitle(_translate("MainWindow", "Sensores", None))

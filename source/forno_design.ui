@@ -2120,6 +2120,27 @@
       </widget>
      </widget>
     </widget>
+    <widget class="QWidget" name="tab_10">
+     <attribute name="title">
+      <string>Layout</string>
+     </attribute>
+     <widget class="QLabel" name="label_layoutForno">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>571</width>
+        <height>411</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Layout-teste</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">

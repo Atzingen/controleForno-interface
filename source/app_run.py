@@ -84,6 +84,10 @@ class Main(QtGui.QMainWindow):
         #######  Atualizando os valores das portas no inicio do programa #####
         self.add_portas_disponiveis()
 
+        #######################################################################
+        # Adicionando a foto do layout do forno
+    	self.ui.label_layoutForno.setScaledContents(True)
+    	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap("forno_layout.png"))
         ## Remover depois				- Porta serial com4 pc de casa
         if sys.platform.startswith('win'):
             self.ui.comboBox_portaSerial.setCurrentIndex(4)

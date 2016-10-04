@@ -145,66 +145,80 @@ def leitura_calibracao(nome):
 
 def cria_tabela():
 	'''
-	Cira a tabela 'dados_forno' caso ela não exista, criando o esquema e as colunas no formato correto.
-	O nome do arquivo do banco de dados � caminho_banco e esta na mesma pasta que o proprama principal.
+	Cira a tabela 'dados_forno' caso ela não exista, criando o esquema e as
+	colunas no formato correto. O nome do arquivo do banco de dados é
+	caminho_banco e esta na mesma pasta /bandoDados.
 	'''
-	createDB = sqlite3.connect(caminho_banco)
-	queryCurs = createDB.cursor()
-	queryCurs.execute('''CREATE TABLE IF NOT EXISTS dados_forno
-	(id INTEGER PRIMARY KEY,t_abs TIMESTAMP DEFAULT (DATETIME('now')),t_0 REAL,s1 REAL, s2 REAL, s3 REAL, s4 REAL, s5 REAL, s6 REAL,experimento TEXT)''')
-	createDB.commit()
+	try:
+		createDB = sqlite3.connect(caminho_banco)
+		queryCurs = createDB.cursor()
+		queryCurs.execute('''CREATE TABLE IF NOT EXISTS dados_forno
+		(id INTEGER PRIMARY KEY,t_abs TIMESTAMP DEFAULT (DATETIME('now')),t_0 REAL,
+		s1 REAL, s2 REAL, s3 REAL, s4 REAL, s5 REAL, s6 REAL,experimento TEXT,
+		calibracao TEXT, atuadores TEXT)''')
+		createDB.commit()
+	except:
+		pass
 
-def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None):
+def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None,calibracao=None,atuadores=None):
 	'''
-	Recebe os dados de tempo e o estado dos 6 sensores. todos os dados s�o salvos no bd na tabela 'dados_forno', nas coluna apropriadas
-	O instante atual � capturado para salvar na culuna timestap. Caso a vari�vel experimento (que significa o nome do experimento) seja passada,
-	ela tamb�nm � salva no bd.
+	Recebe os dados de tempo e o estado dos 6 sensores. todos os dados são salvos no bd na tabela 'dados_forno', nas coluna apropriadas
+	O instante atual é capturado para salvar na culuna timestap. Caso a variável experimento (que significa o nome do experimento) seja passada,
+	ela tambénm é salva no bd.
 	'''
-	createDB = sqlite3.connect(caminho_banco)							# Conecta com o bd
-	cursor = createDB.cursor()										# Cria um cursor para interagir com o bd
-	t_abs = datetime.datetime.now()										# Pegando o tempo atual
-	if experimento:														# Caso o experimento tenha nome, sava o nome do experimento
-																		# Inserindo no bando de dados
-		cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6,experimento)
-						VALUES(?,?,?,?,?,?,?,?,?)''',(t_abs,t_0,s1,s2,s3,s4,s5,s6,experimento))
-	else:
-		cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6)
-						  VALUES(?,?,?,?,?,?,?,?)''',(t_abs,t_0,s1,s2,s3,s4,s5,s6))
-	createDB.commit()													# Salva as altera��es.
+	try:
+		createDB = sqlite3.connect('forno_data.db')
+		#createDB = sqlite3.connect(caminho_banco)
+		cursor = createDB.cursor()
+		# Pegando o tempo atual do SO
+		t_abs = datetime.datetime.now()
+		cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6,
+			experimento,calibracao,atuadores) VALUES(?,?,?,?,?,?,?,?,?,?,?)''',
+			(t_abs,t_0,s1,s2,s3,s4,s5,s6,experimento,calibracao,atuadores))
+		createDB.commit()
+	except:
+		pass
 
 def deleta_tabeta():
 	'''
-	Fun��o que deleta dodos os dados do bd.
+	Função que deleta dodos os dados do bd.
 	'''
-	createDB = sqlite3.connect(caminho_banco)						# Conecta com o bd
-	cursor = createDB.cursor()									# Cria um cursor para interagir com o bd
-	cursor.execute("DELETE FROM dados_forno WHERE id > -1")		# Envia o comando que apaga todos os valores
-	createDB.commit()												# Salva as altera��es.
+	try:
+		createDB = sqlite3.connect(caminho_banco)
+		cursor = createDB.cursor()
+		cursor.execute("DELETE FROM dados_forno WHERE id > -1")
+		createDB.commit()
+	except:
+		pass
 
 def retorna_dados(delta_t,experimento=None,Ti=None,Tf=None):
 	'''
-	Fun��o que retorna os dados do bd.
-		-Caso o nome do experimento seja fornecido, ser�o retornaos todos os dados relativos a este experimento
-		-Caso os tempos inicial e final sejam fornecidos, ser�o retornados todos os dados dentro deste per�odo
-		-Tempo delta (padr�o) - Retorna dados entre o tempo atual e o tempo atual - delta_t.
+	Função que retorna os dados do bd.
+		-Caso o nome do experimento seja fornecido, serão retornaos todos os dados relativos a este experimento
+		-Caso os tempos inicial e final sejam fornecidos, serão retornados todos os dados dentro deste período
+		-Tempo delta (padrão) - Retorna dados entre o tempo atual e o tempo atual - delta_t.
 	'''
-	print "retorna dados chamada"
-	createDB = sqlite3.connect(caminho_banco)						# Conecta com o bd
-	cursor = createDB.cursor()									# Cria um cursor para interagir com o bd
-	if experimento:													# Caso a vari�vel experimento tenha sido passada:
-		cursor.execute("SELECT * FROM dados_forno WHERE experimento = ?",(experimento,))
-	else:
-		if Ti == None and Tf == None:								# Caso n�o tenha sido passado Ti e Tf, usa-se o tempo padr�o - delta_t
-			tempo_inicial = datetime.datetime.now() - datetime.timedelta(minutes=delta_t)
-			cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ?",(tempo_inicial,))
-		else:														# Op��o Ti - Tf
-			cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ? AND t_abs < ?",(Ti,Tf))
-	createDB.commit()
-	return scipy.array(cursor.fetchall())						# Retorna os dados no formato matricial
+	try:
+		createDB = sqlite3.connect(caminho_banco)
+		cursor = createDB.cursor()
+		if experimento:
+			cursor.execute("SELECT * FROM dados_forno WHERE experimento = ?",(experimento,))
+		else:
+			# Caso não tenha sido passado Ti e Tf, usa-se o tempo padrão - delta_t
+			if Ti == None and Tf == None:
+				tempo_inicial = datetime.datetime.now() - datetime.timedelta(minutes=delta_t)
+				cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ?",(tempo_inicial,))
+			else:														# Op��o Ti - Tf
+				cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ? AND t_abs < ?",(Ti,Tf))
+		createDB.commit()
+		# Retorna os dados no formato matricial
+		return scipy.array(cursor.fetchall())
+	except:
+		return None
 
 def zerabd_gui(self):
-	''' M�todo para zerar o banco de dados (acionado pelo bot�o 'Zerar Bando de dados')
-	Um popup � aberto para confirmar que os dados ser�o mesmo apagados'''
+	''' Método para zerar o banco de dados (acionado pelo botão 'Zerar Bando de dados')
+	Um popup é aberto para confirmar que os dados serão mesmo apagados'''
 	reply = QtGui.QMessageBox.question(self, 'Mensagem',"Ter certeza que quer zerar o banco de dados?",
 										QtGui.QMessageBox.Yes |
 										QtGui.QMessageBox.No, QtGui.QMessageBox.No)
