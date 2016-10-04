@@ -149,6 +149,8 @@ class Main(QtGui.QMainWindow):
                 if nome[0] == text:
                     igual = True
                     break
+                else:
+                    igual = False
             if igual:
                 print "nome já existe"
             else:

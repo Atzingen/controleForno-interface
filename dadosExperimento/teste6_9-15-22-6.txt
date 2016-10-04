@@ -1,5 +1,0 @@
-Arquivo gerado automaticamente - Dados do forno - LAFAC USP 
- 
- 
-chave 	 Data e horario completo  	t_0 		s1 	s2 	s3 	s4 	s5 	s6	experimento
-
