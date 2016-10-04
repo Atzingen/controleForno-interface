@@ -330,7 +330,7 @@ def auto_ST(self):
 
 def converte_dado(dado,self):
     '''
-    Função que recebe o dado como stringo e particiona em um vetor com 7 pos.
+    Função que recebe o dado como string e particiona em um vetor com 7 pos.
     A primeira posição é o tempo atual e as outras 6 são os dados dos sensores
     '''
     try:
