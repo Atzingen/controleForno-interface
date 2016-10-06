@@ -178,15 +178,24 @@ def resultado_dado(self, tipo, d):
         # Adiciona um caracter de fim de linha a string
         data = data + '\n'
         self.ui.textEdit_temperatura.insertPlainText(data)
+        atuadores = str(valor_resistencia01) + "," + str(valor_resistencia02) + "," + \
+        str(valor_resistencia03) + "," + str(valor_resistencia04) + "," + \
+        str(valor_resistencia05) + "," + str(valor_resistencia06) + "," + \
+        str(valor_esteira)
+        calibracao = str(retorna_dados_config())
+        print atuadores, calibracao
         # Adicionando os dados ao bd:
         # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
         if str(self.ui.label_nomeExperimento.text()) == 'Sem Nome':
             adiciona_dado(float(d[0]),float(d[1]),float(d[2]),
-                          float(d[3]),float(d[4]),float(d[5]),float(d[6]))
+                          float(d[3]),float(d[4]),float(d[5]),float(d[6]),
+                          calibracao=calibracao,atuadores=atuadores)
         else:
             adiciona_dado(float(d[0]),float(d[1]),
                           float(d[2]),float(d[3]),float(d[4]),float(d[5]),
-                          float(d[6]),experimento=str(self.ui.label_nomeExperimento.text()))
+                          float(d[6]),
+                          experimento=str(self.ui.label_nomeExperimento.text()),
+                          calibracao=calibracao,atuadores=atuadores)
     # Tipo 2 - Liga ou desliga alguma resistência.
     elif tipo == 2:
         # d[0] - Valores de 2 a 7 = as 6 resistências

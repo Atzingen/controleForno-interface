@@ -166,17 +166,33 @@ def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None,calibracao=None,atuador
 	O instante atual é capturado para salvar na culuna timestap. Caso a variável experimento (que significa o nome do experimento) seja passada,
 	ela tambénm é salva no bd.
 	'''
+	print "add dados ",caminho_banco, t_0,s1,s2,s3,s4,s5,s6,experimento,calibracao,atuadores
 	try:
-		createDB = sqlite3.connect('forno_data.db')
-		#createDB = sqlite3.connect(caminho_banco)
+		createDB = sqlite3.connect(caminho_banco)
 		cursor = createDB.cursor()
 		# Pegando o tempo atual do SO
 		t_abs = datetime.datetime.now()
-		cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6,
-			experimento,calibracao,atuadores) VALUES(?,?,?,?,?,?,?,?,?,?,?)''',
-			(t_abs,t_0,s1,s2,s3,s4,s5,s6,experimento,calibracao,atuadores))
-		createDB.commit()
+		if experimento and calibracao and atuadores:
+			cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6,
+				experimento,calibracao,atuadores) VALUES(?,?,?,?,?,?,?,?,?,?,?)''',
+				(t_abs,t_0,s1,s2,s3,s4,s5,s6,experimento,calibracao,atuadores))
+			createDB.commit()
+		elif experimento:
+			cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6,
+				experimento) VALUES(?,?,?,?,?,?,?,?,?)''',
+				(t_abs,t_0,s1,s2,s3,s4,s5,s6,experimento))
+			createDB.commit()
+		elif calibracao and atuadores:
+			cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6,
+				calibracao,atuadores) VALUES(?,?,?,?,?,?,?,?,?,?)''',
+				(t_abs,t_0,s1,s2,s3,s4,s5,s6,calibracao,atuadores))
+			createDB.commit()
+		else:
+			cursor.execute('''INSERT INTO dados_forno (t_abs,t_0,s1,s2,s3,s4,s5,s6) VALUES(?,?,?,?,?,?,?,?)''',
+				(t_abs,t_0,s1,s2,s3,s4,s5,s6))
+			createDB.commit()
 	except:
+		print "except"
 		pass
 
 def deleta_tabeta():
