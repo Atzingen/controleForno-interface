@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -554,6 +554,394 @@
      <attribute name="title">
       <string>Automatico</string>
      </attribute>
+     <widget class="QToolBox" name="toolBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>581</width>
+        <height>481</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="page">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>581</width>
+         <height>382</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Perfil Resistencia / Tempo</string>
+       </attribute>
+       <widget class="matplotlibWidget" name="widget_perfilResistencia" native="true">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>10</y>
+          <width>461</width>
+          <height>351</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_configPerfilResistencia">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>200</y>
+          <width>111</width>
+          <height>161</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Configuracao</string>
+        </property>
+        <widget class="QPushButton" name="pushButton_apagarPerfilResistencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>110</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Apagar</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_NovoPerfilResistencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Novo</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comboBox_perfilResistencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_controlePerfilResistencia">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>111</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Controle</string>
+        </property>
+        <widget class="QPushButton" name="pushButton_perfilResistencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Iniciar</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_perfilResistenciaFim">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Finalizar</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QComboBox" name="comboBox_displayPerfilResistencia">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>160</y>
+          <width>91</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>Perfil Todos</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R6</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QLabel" name="label_40">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>120</y>
+          <width>111</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Display</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_3">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>581</width>
+         <height>382</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Perfil Potencia Efetiva / Tempo</string>
+       </attribute>
+       <widget class="QComboBox" name="comboBox_displayPerfilPotencia">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>170</y>
+          <width>91</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>Perfil Todos</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R2</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R3</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R4</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Perfil R6</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_controlePerfilResistencia_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>10</y>
+          <width>111</width>
+          <height>121</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Controle</string>
+        </property>
+        <widget class="QPushButton" name="pushButton_perfilPotencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Iniciar</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_perfilPotencia_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Finalizar</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QLabel" name="label_41">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>130</y>
+          <width>111</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Display</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_configPerfilResistencia_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>210</y>
+          <width>111</width>
+          <height>161</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Configuracao</string>
+        </property>
+        <widget class="QPushButton" name="pushButton_apagarPerfilPotencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>110</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Apagar</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_NovoPerfilPotencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Novo</string>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="comboBox_perfilPotencia">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+        </widget>
+       </widget>
+       <widget class="matplotlibWidget" name="widget_perfilPotencia" native="true">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>20</y>
+          <width>461</width>
+          <height>351</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>98</width>
+         <height>28</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Transferenicia de Calor - Simulação Alimento</string>
+       </attribute>
+      </widget>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_9">
      <attribute name="title">
@@ -2177,6 +2565,12 @@
       <height>231</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
     <property name="title">
      <string>Sensores</string>
     </property>
@@ -2252,6 +2646,12 @@
        <width>71</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="smallDecimalPoint">
       <bool>true</bool>
@@ -2385,7 +2785,7 @@
      <rect>
       <x>630</x>
       <y>520</y>
-      <width>151</width>
+      <width>161</width>
       <height>41</height>
      </rect>
     </property>

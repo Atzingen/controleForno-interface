@@ -25,7 +25,7 @@ def cria_tabela_config():
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''CREATE TABLE IF NOT EXISTS config
-		(id INTEGER PRIMARY KEY, calibracao_selecionada TEXT UNIQUE)''')
+		(id INTEGER PRIMARY KEY, calibracao_selecionada TEXT UNIQUE, perfil_resistencia TEXT UNIQUE, perfil_potencia TEXT UNIQUE)''')
 		db.commit()
 		db.close()
 		if cursor.rowcount > 0:
@@ -35,7 +35,7 @@ def cria_tabela_config():
 	except:
 		return False
 
-def retorna_dados_config():
+def retorna_dados_config_calibracao():
 	try:
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
@@ -50,6 +50,65 @@ def retorna_dados_config():
 	except:
 		return None
 
+def retorna_dados_config_potencia():
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''SELECT perfil_potencia FROM config''')
+		row = cursor.fetchall()
+		db.commit()
+		db.close()
+		if row:
+			return row[0][0]
+		else:
+			return None
+	except:
+		return None
+
+def retorna_dados_config_resistencia():
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''SELECT perfil_resistencia FROM config''')
+		row = cursor.fetchall()
+		db.commit()
+		db.close()
+		if row:
+			return row[0][0]
+		else:
+			return None
+	except:
+		return None
+
+def salva_config_perfil_resistencia(nome):
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''UPDATE config SET perfil_resistencia=? WHERE id=?''',(nome,1))
+		db.commit()
+		db.close()
+		if cursor.rowcount > 0:
+			return True
+		else:
+			return False
+	except:
+		return None
+
+def salva_config_perfil_potencia(nome):
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''UPDATE config SET perfil_potencia=? WHERE id=?''',(nome,1))
+		db.commit()
+		db.close()
+		if cursor.rowcount > 0:
+			return True
+		else:
+			return False
+	except:
+		return None
+
+
 def salva_config_calibracao(nome):
 	try:
 		db = sqlite3.connect(caminho_banco)
@@ -63,6 +122,61 @@ def salva_config_calibracao(nome):
 			return False
 	except:
 		return None
+
+def cria_tabela_perfil_resistencia():
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''CREATE TABLE IF NOT EXISTS perfil_resistencia
+		(id INTEGER PRIMARY KEY,nome TEXT,R1 TEXT,R2 TEXT,R3 TEXT,R4 TEXT,
+		R5 TEXT,R6 TEXT,esteira TEXT)''')
+		db.commit()
+		db.close()
+		if cursor.rowcount > 0:
+			return True
+		else:
+			return False
+	except:
+		return None
+
+def cria_tabela_perfil_potencia():
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''CREATE TABLE IF NOT EXISTS perfil_potencia
+		(id INTEGER PRIMARY KEY,nome TEXT,R1 TEXT,R2 TEXT,R3 TEXT,R4 TEXT,
+		R5 TEXT,R6 TEXT,esteira TEXT)''')
+		db.commit()
+		db.close()
+		if cursor.rowcount > 0:
+			return True
+		else:
+			return False
+	except:
+		return None
+
+def insere_perfil(tipo,nome,R1,R2,R3,R4,R5,R6,esteira):
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		if tipo == 'resistencia':
+			cursor.execute('''INSERT INTO perfil_resistencia (nome,R1,R2,R3,
+							R4,R5,R6,esteira) VALUES(?,?,?,?,?,?,?,?)''',
+							(nome,R1,R2,R3,R4,R5,R6,esteira))
+		elif tipo == 'potencia':
+			cursor.execute('''INSERT INTO perfil_potencia (nome,R1,R2,R3,
+							R4,R5,R6,esteira) VALUES(?,?,?,?,?,?,?,?)''',
+							(nome,R1,R2,R3,R4,R5,R6,esteira))
+		else:
+			return False
+		db.commit()
+		db.close()
+		if cursor.rowcount > 0:
+			return True
+		else:
+			return False
+	except:
+		return False
 
 def cria_tabela_calibracao():
 	try:
@@ -80,15 +194,30 @@ def cria_tabela_calibracao():
 	except:
 		return None
 
-def deleta_calibracao_bd(nome):
+def deleta_calibracao_bd(nome,tipo):
 	try:
-		print "bd", nome
+		print "bd", nome, tipo
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
-		cursor.execute('''SELECT id FROM calibracao WHERE nome = ?''',(nome,))
-		numero_ids = cursor.fetchall()
-		for numero_id in numero_ids:
-			cursor.execute("DELETE FROM calibracao WHERE id = ?",(numero_id[0],))
+		if tipo == 'Fit':
+			cursor.execute('''SELECT id FROM calibracao WHERE nome = ?''',(nome,))
+			numero_ids = cursor.fetchall()
+			for numero_id in numero_ids:
+				cursor.execute("DELETE FROM calibracao WHERE id = ?",(numero_id[0],))
+		elif tipo == 'resistencia':
+			cursor.execute('''SELECT id FROM perfil_resistencia WHERE nome = ?''',(nome,))
+			numero_ids = cursor.fetchall()
+			for numero_id in numero_ids:
+				cursor.execute("DELETE FROM perfil_resistencia WHERE id = ?",(numero_id[0],))
+		elif tipo == 'potencia':
+			cursor.execute('''SELECT id FROM perfil_potencia WHERE nome = ?''',(nome,))
+			numero_ids = cursor.fetchall()
+			for numero_id in numero_ids:
+				cursor.execute("DELETE FROM perfil_potencia WHERE id = ?",(numero_id[0],))
+		else:
+			print 'error - deleta_calibracao_bd'
+			db.close()
+			return False
 		db.commit()
 		db.close()
 		if cursor.rowcount > 0:
@@ -115,6 +244,34 @@ def insere_calibracao(nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
 	except:
 		return False
 
+def nomes_perfil_resistencia():
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''SELECT nome FROM perfil_resistencia''')
+		row = cursor.fetchall()
+		db.close()
+		if row:
+			return row
+		else:
+			return None
+	except:
+		return None
+
+def nomes_perfil_potencia():
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		cursor.execute('''SELECT nome FROM perfil_potencia''')
+		row = cursor.fetchall()
+		db.close()
+		if row:
+			return row
+		else:
+			return None
+	except:
+		return None
+
 def nomes_calibracao():
 	try:
 		db = sqlite3.connect(caminho_banco)
@@ -126,6 +283,23 @@ def nomes_calibracao():
 			return row
 		else:
 			return None
+	except:
+		return None
+
+def leitura_perfil(nome,tipo):
+	try:
+		db = sqlite3.connect(caminho_banco)
+		cursor = db.cursor()
+		if tipo == 'resistencia':
+			cursor.execute('''SELECT * FROM perfil_resistencia WHERE nome = ?''',(nome,))
+		elif tipo == 'potencia':
+			cursor.execute('''SELECT * FROM perfil_potencia WHERE nome = ?''',(nome,))
+		row = cursor.fetchone()
+		db.close()
+		if row:
+			return row
+		else:
+			return [1,"sem calibracao",0,0,0,0,0,0,1,1,1,1,1,1]
 	except:
 		return None
 

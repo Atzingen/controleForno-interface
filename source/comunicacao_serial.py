@@ -182,7 +182,7 @@ def resultado_dado(self, tipo, d):
         str(valor_resistencia03) + "," + str(valor_resistencia04) + "," + \
         str(valor_resistencia05) + "," + str(valor_resistencia06) + "," + \
         str(valor_esteira)
-        calibracao = str(retorna_dados_config())
+        calibracao = str(retorna_dados_config_calibracao())
         print atuadores, calibracao
         # Adicionando os dados ao bd:
         # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
@@ -574,3 +574,12 @@ def emergencia(self):
         QtCore.QTimer.singleShot((i-1)*200, partial(envia_serial,'S' + str(i) + '2\n'))
     # teste de retorno para verificar se os valores foram recebidos pelo mc
     QtCore.QTimer.singleShot(4000, partial(teste_retorno,self))
+
+def converte_numero(s):
+    '''
+    Retorna True caso o valor passado seja um int ou float na string
+    '''
+    try:
+        return float(s)
+    except ValueError:
+        return False

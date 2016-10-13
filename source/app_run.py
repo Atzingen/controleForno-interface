@@ -2,7 +2,8 @@
 from __future__ import division
 # Bibliotecas
 import numpy as np
-import sys, os, serial, glob, thread, time, datetime, sqlite3, PIL, scipy, csv, smtplib, shutil, platform
+import sys, os, serial, glob, thread, time, datetime, sqlite3, PIL, scipy
+import csv, smtplib, shutil, platform, ast
 from functools import partial
 from threading import Thread
 from PyQt4 import QtGui, QtCore
@@ -36,8 +37,8 @@ class Main(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()  # Qtdesigner
         self.ui.setupUi(self)
         ###     Vari�veis da calibração        ################################
-        nomes_calibracao = retorna_dados_config()
-        cal = leitura_calibracao(str(nomes_calibracao))
+        nomes = retorna_dados_config_calibracao()
+        cal = leitura_calibracao(str(nomes))
         self.atualiza_valores_calibracoes(cal)
         self.atualiza_lineEdit_calibracao()
 
@@ -84,6 +85,11 @@ class Main(QtGui.QMainWindow):
         #######  Atualizando os valores das portas no inicio do programa #####
         self.add_portas_disponiveis()
 
+        ####### Atualiza o dropbox da calibracao ##############################
+        self.lista_calibracoes()
+        self.lista_perfil_potencia()
+        self.lista_perfil_resistencia()
+
         #######################################################################
         # Adicionando a foto do layout do forno
     	self.ui.label_layoutForno.setScaledContents(True)
@@ -114,6 +120,8 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_leituraAnalogica.pressed.connect(partial(envia_setanalog, self))
         self.ui.comboBox_portaSerial.activated.connect(self.add_portas_disponiveis)
         self.ui.comboBox_fitLinear.activated.connect(self.lista_calibracoes)
+        self.ui.comboBox_perfilPotencia.activated.connect(self.lista_perfil_potencia)
+        self.ui.comboBox_perfilResistencia.activated.connect(self.lista_perfil_resistencia)
         self.ui.radioButton_hold.clicked.connect(partial(hold, self))
         self.ui.pushButton_tiraFoto.pressed.connect(partial(tira_foto, self))
         self.ui.checkBox_cameraAutoUpdate.stateChanged.connect(partial(foto_update, self))
@@ -127,8 +135,13 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_experimento.pressed.connect(partial(novo_exp, self))
         self.ui.pushButton_localArquivo.pressed.connect(partial(local_arquivo, self.ui))
         self.ui.pushButton_salvarFit.pressed.connect(self.salva_calibracao)
-        self.ui.pushButton_deletarFit.pressed.connect(self.deleta_calibracao)
-        self.lista_calibracoes(False)
+        self.ui.comboBox_displayPerfilPotencia.activated.connect(partial(self.plota_perfil,'potencia'))
+        self.ui.comboBox_displayPerfilResistencia.activated.connect(partial(self.plota_perfil,'resistencia'))
+        self.ui.pushButton_NovoPerfilResistencia.pressed.connect(partial(self.novo_perfil,'resistencia'))
+        self.ui.pushButton_NovoPerfilPotencia.pressed.connect(partial(self.novo_perfil,'potencia'))
+        self.ui.pushButton_deletarFit.pressed.connect(partial(self.deleta_calibracao,'Fit'))
+        self.ui.pushButton_apagarPerfilPotencia.pressed.connect(partial(self.deleta_calibracao,'potencia'))
+        self.ui.pushButton_apagarPerfilResistencia.pressed.connect(partial(self.deleta_calibracao,'resistencia'))
 
     #########################  Calibracao linear ###########################
     def salva_calibracao(self):
@@ -160,18 +173,30 @@ class Main(QtGui.QMainWindow):
             else:
                 insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
 
-    def deleta_calibracao(self):
+    def deleta_calibracao(self, tipo):
         try:
-            numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
-            escolha = self.ui.comboBox_fitLinear.itemText(numero_escolha)
+            if tipo == 'Fit':
+                numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
+                escolha = self.ui.comboBox_fitLinear.itemText(numero_escolha)
+            elif tipo == 'potencia':
+                numero_escolha = self.ui.comboBox_perfilPotencia.currentIndex()
+                escolha = self.ui.comboBox_perfilPotencia.itemText(numero_escolha)
+            elif tipo == 'resistencia':
+                numero_escolha = self.ui.comboBox_perfilResistencia.currentIndex()
+                escolha = self.ui.comboBox_perfilResistencia.itemText(numero_escolha)
+            else:
+                print "erro - deleta_calibracao"
+                return None
             reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que deletar a calibracao" + escolha + " ?",
         										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
             if reply == QtGui.QMessageBox.Yes:
-                deleta_calibracao_bd(str(escolha))
-                if ( str(escolha) == retorna_dados_config() ):
+                deleta_calibracao_bd(str(escolha),tipo)
+                if ( str(escolha) == retorna_dados_config_calibracao() ):
                     primeiro_nome = self.ui.comboBox_fitLinear.itemText(0)
                     salva_config_calibracao(primeiro_nome)
                 self.lista_calibracoes()
+                self.lista_perfil_potencia()
+                self.lista_perfil_resistencia()
         except:
             pass
 
@@ -189,22 +214,166 @@ class Main(QtGui.QMainWindow):
         self.ui.lineEdit_S05B.setText(str(self.S_05_B))
         self.ui.lineEdit_S06B.setText(str(self.S_06_B))
 
-    def lista_calibracoes(self,tipo=0):
+    def novo_perfil(self,tipo):
+        flags = QtGui.QMessageBox.Yes
+        flags |= QtGui.QMessageBox.No
+        question = "As potencias das resistencias r1...r6 serao iguais ?"
+        response = QtGui.QMessageBox.question(self, "Question",question,flags)
+        sim = (response == QtGui.QMessageBox.Yes)
+        n, i, sair = 1, 1, False
+        R =  [ [], [], [], [], [], [] ]
+        mensagem = "Digite o tempo e potencia separados por ',': t,p"
+        if sim:
+            while  not sair:
+                dado, result = QtGui.QInputDialog.getText(self,
+                        "Toras Resistencias: Inserir ponto " + str(n),mensagem)
+                if result:
+                    try:
+                        v1_str, v2_str = dado.split(',')
+                        v1, v2 = converte_numero(v1_str),converte_numero(v2_str)
+                        for i in range(6):
+                            R[i].append([v1,v2])
+                    except:
+                        QtGui.QMessageBox.warning(self, "Erro",
+                                    "O valor digitado nao esta no formato (numero,numero)",
+                                    QtGui.QMessageBox.Cancel, QtGui.QMessageBox.NoButton,
+                                    QtGui.QMessageBox.NoButton)
+                        sair = True
+                        break
+                else:
+                    sair = True
+                    break
+                n += 1
+        else:
+            for i in range(6):
+                n = 1
+                sair = False
+                while  not sair:
+                    dado, result = QtGui.QInputDialog.getText(self,
+                            "Inserir ponto " + str(n),
+                            "R" + str(i+1) + " " + mensagem)
+                    if result:
+                        try:
+                            v1_str, v2_str = dado.split(',')
+                            v1, v2 = converte_numero(v1_str),converte_numero(v2_str)
+                            R[i].append([v1,v2])
+                        except:
+                            QtGui.QMessageBox.warning(self, "Erro",
+                                        "O valor digitado nao esta no formato (numero,numero)",
+                                        QtGui.QMessageBox.Cancel, QtGui.QMessageBox.NoButton,
+                                        QtGui.QMessageBox.NoButton)
+                            sair = True
+                            break
+                    else:
+                        sair = True
+                    n += 1
+        text = "Verifique o perfil digitado: \n"
+        for i in range(6):
+            text += "R" + str(i) + ": " + str(R[i]) +  "\n"
+        nome, result = QtGui.QInputDialog.getText(self,"Digitar nome do perfil",text)
+        if result:
+            insere_perfil(tipo,str(nome),str(R[0]),str(R[1]),str(R[2]),
+                                    str(R[3]),str(R[4]),str(R[5]),"1")
+
+
+    def plota_perfil(self,tipo):
+        if tipo == 'resistencia':
+            escolha = unicode(self.ui.comboBox_perfilResistencia.currentText())
+            dados = leitura_perfil(escolha,'resistencia')
+            indice = int(self.ui.comboBox_displayPerfilResistencia.currentIndex())
+            self.ui.widget_perfilResistencia.canvas.ax.clear()
+        elif tipo == 'potencia':
+            escolha = unicode(self.ui.comboBox_perfilPotencia.currentText())
+            dados = leitura_perfil(escolha,'potencia')
+            indice = int(self.ui.comboBox_displayPerfilPotencia.currentIndex())
+            self.ui.widget_perfilPotencia.canvas.ax.clear()
+        x , y = [], []
+        if indice > 0:
+            v = ast.literal_eval(dados[indice + 1])
+            for i in v:
+                x.append(i[0])
+                y.append(i[1])
+            if tipo == 'resistencia':
+                self.ui.widget_perfilResistencia.canvas.ax.plot(x,y)
+                self.ui.widget_perfilResistencia.canvas.draw()
+            elif tipo == 'potencia':
+                self.ui.widget_perfilPotencia.canvas.ax.plot(x,y)
+                self.ui.widget_perfilPotencia.canvas.draw()
+        elif indice == 0:
+            for elemento in range(2,8):
+                x , y = [], []
+                v = ast.literal_eval(dados[elemento])
+                for i in v:
+                    x.append(i[0])
+                    y.append(i[1])
+                if tipo == 'resistencia':
+                    self.ui.widget_perfilResistencia.canvas.ax.plot(x,y)
+                elif tipo == 'potencia':
+                    self.ui.widget_perfilPotencia.canvas.ax.plot(x,y)
+            if tipo == 'resistencia':
+                self.ui.widget_perfilResistencia.canvas.draw()
+            elif tipo == 'potencia':
+                self.ui.widget_perfilPotencia.canvas.draw()
+        else:
+            return None
+
+
+    def lista_perfil_resistencia(self):
+        self.ui.comboBox_perfilResistencia.blockSignals(True)
+        nomes = nomes_perfil_resistencia()
+        numero_escolha = self.ui.comboBox_perfilResistencia.currentIndex()
+        escolha = retorna_dados_config_resistencia()
+        self.ui.comboBox_perfilResistencia.clear()
+        i = 0
+        for nome in nomes:
+            self.ui.comboBox_perfilResistencia.addItem(str(nome[0]))
+            if escolha == nome[0] and numero_escolha == -1:
+                numero_escolha = i
+            i = i + 1
+        self.ui.comboBox_perfilResistencia.setCurrentIndex(numero_escolha)
+        self.ui.comboBox_perfilResistencia.blockSignals(False)
+        escolha = unicode(self.ui.comboBox_perfilResistencia.currentText())
+        salva_config_perfil_resistencia(escolha)
+        self.plota_perfil('resistencia')
+
+
+    def lista_perfil_potencia(self):
+        self.ui.comboBox_perfilPotencia.blockSignals(True)
+        nomes = nomes_perfil_potencia()
+        numero_escolha = self.ui.comboBox_perfilPotencia.currentIndex()
+        escolha = retorna_dados_config_potencia()
+        self.ui.comboBox_perfilPotencia.clear()
+        i = 0
+        for nome in nomes:
+            self.ui.comboBox_perfilPotencia.addItem(str(nome[0]))
+            if escolha == nome[0] and numero_escolha == -1:
+                numero_escolha = i
+            i = i + 1
+        self.ui.comboBox_perfilPotencia.setCurrentIndex(numero_escolha)
+        self.ui.comboBox_perfilPotencia.blockSignals(False)
+        escolha = unicode(self.ui.comboBox_perfilPotencia.currentText())
+        print escolha
+        salva_config_perfil_potencia(escolha)
+        self.plota_perfil('potencia')
+
+    def lista_calibracoes(self):
         self.ui.comboBox_portaSerial.blockSignals(True)
         nomes = nomes_calibracao()
         numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
+        escolha = retorna_dados_config_calibracao()
         self.ui.comboBox_fitLinear.clear()
+        i = 0
         for nome in nomes:
             self.ui.comboBox_fitLinear.addItem(str(nome[0]))
+            if escolha == nome[0] and numero_escolha == -1:
+                numero_escolha = i
+            i = i + 1
+        print numero_escolha
         self.ui.comboBox_fitLinear.setCurrentIndex(numero_escolha)
         self.ui.comboBox_fitLinear.blockSignals(False)
         escolha = unicode(self.ui.comboBox_fitLinear.currentText())
-        if ( tipo is False):
-            padrao = retorna_dados_config()
-            valores = leitura_calibracao(padrao)
-        else:
-            valores = leitura_calibracao(escolha)
-            salva_config_calibracao(escolha)
+        valores = leitura_calibracao(escolha)
+        salva_config_calibracao(escolha)
         self.atualiza_valores_calibracoes(valores)
         self.atualiza_lineEdit_calibracao()
 
