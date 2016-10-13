@@ -14,7 +14,10 @@ sendo que um objeto de tela comum do qt herdará suas propriedades.
 class MplCanvas(FigureCanvas):
     def __init__(self):
         self.fig = Figure()
+        self.fig.set_facecolor('white')
+        self.fig.subplots_adjust(bottom=0.15)
         self.ax = self.fig.add_subplot(111)
+        self.ax.grid(True)
         FigureCanvas.__init__(self, self.fig)
         FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
@@ -55,6 +58,9 @@ def plotar(self):
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,7])
             if self.ui.checkBox_sensor6.isChecked():
                 self.ui.widget.canvas.ax.plot(d[:,2],d[:,8])
+            self.ui.widget.canvas.ax.set_title('Sensores Forno')
+            self.ui.widget.canvas.ax.set_xlabel('tempo (minutos)')
+            self.ui.widget.canvas.ax.set_ylabel('temperatura (Celcius)')
             self.ui.widget.canvas.draw()
     except:
         pass

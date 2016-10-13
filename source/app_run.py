@@ -295,9 +295,17 @@ class Main(QtGui.QMainWindow):
                 y.append(i[1])
             if tipo == 'resistencia':
                 self.ui.widget_perfilResistencia.canvas.ax.plot(x,y)
+                self.ui.widget_perfilResistencia.canvas.ax.set_title('Perfil Resistencias')
+                self.ui.widget_perfilResistencia.canvas.ax.set_xlabel('Tempo (minutos)')
+                self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
+                self.ui.widget_perfilResistencia.canvas.ax.grid(True)
                 self.ui.widget_perfilResistencia.canvas.draw()
             elif tipo == 'potencia':
                 self.ui.widget_perfilPotencia.canvas.ax.plot(x,y)
+                self.ui.widget_perfilPotencia.canvas.ax.set_title('Perfil Potencia')
+                self.ui.widget_perfilPotencia.canvas.ax.set_xlabel('Tempo (minutos)')
+                self.ui.widget_perfilPotencia.canvas.ax.set_ylabel('Potencia ()%)')
+                self.ui.widget_perfilPotencia.canvas.ax.grid(True)
                 self.ui.widget_perfilPotencia.canvas.draw()
         elif indice == 0:
             for elemento in range(2,8):
@@ -307,9 +315,17 @@ class Main(QtGui.QMainWindow):
                     x.append(i[0])
                     y.append(i[1])
                 if tipo == 'resistencia':
+                    self.ui.widget_perfilResistencia.canvas.ax.set_title('Perfil Resistencias')
+                    self.ui.widget_perfilResistencia.canvas.ax.set_xlabel('Tempo (minutos)')
+                    self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
+                    self.ui.widget_perfilResistencia.canvas.ax.grid(True)
                     self.ui.widget_perfilResistencia.canvas.ax.plot(x,y)
                 elif tipo == 'potencia':
                     self.ui.widget_perfilPotencia.canvas.ax.plot(x,y)
+                    self.ui.widget_perfilPotencia.canvas.ax.grid(True)
+                    self.ui.widget_perfilPotencia.canvas.ax.set_title('Perfil Potencia')
+                    self.ui.widget_perfilPotencia.canvas.ax.set_xlabel('Tempo (minutos)')
+                    self.ui.widget_perfilPotencia.canvas.ax.set_ylabel('Potencia ()%)')
             if tipo == 'resistencia':
                 self.ui.widget_perfilResistencia.canvas.draw()
             elif tipo == 'potencia':
