@@ -829,7 +829,7 @@
           <string>Iniciar</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_perfilPotencia_2">
+        <widget class="QPushButton" name="pushButton_perfilPotenciaFim">
          <property name="geometry">
           <rect>
            <x>10</x>

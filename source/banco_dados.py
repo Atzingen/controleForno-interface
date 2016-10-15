@@ -299,7 +299,7 @@ def leitura_perfil(nome,tipo):
 		if row:
 			return row
 		else:
-			return [1,"sem calibracao",0,0,0,0,0,0,1,1,1,1,1,1]
+			return None
 	except:
 		return None
 

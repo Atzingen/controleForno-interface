@@ -18,6 +18,9 @@ desliga_01 = 'S72\n'
 global s  				# objeto da comunição serial
 s = serial.Serial()
 
+global tempo_pwm
+tempo_pwm = 30
+
 global texto
 texto = ""
 

@@ -142,6 +142,128 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_deletarFit.pressed.connect(partial(self.deleta_calibracao,'Fit'))
         self.ui.pushButton_apagarPerfilPotencia.pressed.connect(partial(self.deleta_calibracao,'potencia'))
         self.ui.pushButton_apagarPerfilResistencia.pressed.connect(partial(self.deleta_calibracao,'resistencia'))
+        self.ui.pushButton_perfilResistencia.pressed.connect(partial(self.inicia_perfil,'resistencia','inicia'))
+        self.ui.pushButton_perfilResistenciaFim.pressed.connect(partial(self.inicia_perfil,'resistencia','fim'))
+        self.ui.pushButton_perfilPotencia.pressed.connect(partial(self.inicia_perfil,'potencia','inicia'))
+        self.ui.pushButton_perfilPotenciaFim.pressed.connect(partial(self.inicia_perfil,'potencia','fim'))
+
+    ######################### Automatico  ##################################
+    def automatico_perfil_update(self,tipo,estados):
+        print "automatico", tipo,estados
+        global tempo_pwm
+        tempo_pwm = 30
+        if tipo == 'resistencia':
+            nome = unicode(self.ui.comboBox_perfilResistencia.currentText())
+        elif tipo == 'potencia':
+            nome = unicode(self.ui.comboBox_perfilPotencia.currentText())
+        else:
+            print "erro tipo "
+            return None
+        perfil = leitura_perfil(nome,tipo)
+        n_terminos = 0
+        # r 0..5 para passar pela info de todas as resistencias
+        for r in range(6):
+            # perfir[i+2] -> +2 pois as duas primeiras linhas recebidas
+            # do bd são a chave primária e o nome.
+            perfil_r = ast.literal_eval(perfil[r+2])
+            # pega o número de pontos para a resistencia r:
+            numero_pontos = len(perfil_r)
+            # pega em que ponto específico o controle do perfil está:
+            ponto_atual = int(estados[r,0])
+            if ( numero_pontos  > ponto_atual + 1):
+                passo = estados[r,1]
+                #informacao dos pontos Pn e Pn+1
+                t_inicial = perfil_r[ponto_atual][0]
+                t_final = perfil_r[ponto_atual+1][0]
+                r_inicial = perfil_r[ponto_atual][1]
+                r_final = perfil_r[ponto_atual+1][1]
+                delta_r = r_final - r_inicial
+                delta_t = (t_final - t_inicial)*60.0
+                numero_passos = delta_t//tempo_pwm
+                if (t_final == t_inicial):
+                    # zera o passo
+                    estados[r,1] = 0
+                    # incrementa 1 no ponto atual
+                    estados[r,0] += 1
+                    pwm = r_inicial
+                else:
+                    if (numero_passos > passo):
+                        estados[r,1] += 1
+                    else:
+                        estados[r,1] = 0
+                        estados[r,0] += 1
+                        t_inicial = perfil_r[ponto_atual+1][0]
+                    passo = estados[r,1]
+                    pwm = r_inicial + float((passo+0.5)*delta_r)/float(numero_passos)
+
+            else:
+                n_terminos += 1
+                pwm = 0
+            #print pwm, estados[r,0], estados[r,1]
+        if n_terminos < 6:
+            dt = t_final - t_inicial
+            #print t_inicial, t_final, dt, numero_passos, passo
+            self.plota_perfil(tipo,(t_inicial + passo*dt/numero_passos,
+                                             t_inicial + passo*dt/numero_passos,
+                                             0  ,100 ))
+            self.timer_serial.singleShot(2*1000,partial(self.automatico_perfil_update,
+                                                   tipo,estados))
+        else:
+            print "fim do controle automático"
+
+    def inicia_perfil(self, quem, tipo):
+        global s
+        print quem, tipo
+        if tipo == 'inicia':# and s.is_open:
+            if quem == 'resistencia':
+                if self.ui.pushButton_perfilResistencia.text() == "Iniciar":
+                    self.ui.pushButton_perfilResistencia.setText("Pausar")
+                    # variavel estado: vetor 6,2 com as informações de indice e
+                    # passo de cada resistencia
+                    estados = np.zeros([6,2])
+                    self.automatico_perfil_update('resistencia',estados)
+                elif self.ui.pushButton_perfilResistencia.text() == "Pausar":
+                    self.ui.pushButton_perfilResistencia.setText("Iniciar")
+                else:
+                    return None
+            elif quem == 'potencia':
+                if self.ui.pushButton_perfilPotencia.text() == "Iniciar":
+                    self.ui.pushButton_perfilPotencia.setText("Pausar")
+                    estados = np.zeros([6,2])
+                    self.automatico_perfil_update('potencia',estados)
+                elif self.ui.pushButton_perfilPotencia.text() == "Pausar":
+                    self.ui.pushButton_perfilPotencia.setText("Iniciar")
+                    t0 = time.time()
+                else:
+                    return None
+            else:
+                return None
+        elif tipo == 'fim':
+            if quem == 'resistencia':
+                if self.ui.pushButton_perfilResistencia.text() == "Pausar":
+                    reply = QtGui.QMessageBox.question(self,'Mensagem',
+                                        "Tem certeza que terminar ?",
+            							QtGui.QMessageBox.Yes |QtGui.QMessageBox.No,
+                                        QtGui.QMessageBox.No)
+                    if reply == QtGui.QMessageBox.Yes:
+                        self.ui.pushButton_perfilResistencia.setText("Iniciar")
+                    else:
+                        pass
+            elif quem == 'potencia':
+                if self.ui.pushButton_perfilPotencia.text() == "Pausar":
+                    reply = QtGui.QMessageBox.question(self,'Mensagem',
+                                        "Tem certeza que terminar ?",
+            							QtGui.QMessageBox.Yes |QtGui.QMessageBox.No,
+                                        QtGui.QMessageBox.No)
+                    if reply == QtGui.QMessageBox.Yes:
+                        self.ui.pushButton_perfilPotencia.setText("Iniciar")
+                    else:
+                        pass
+            else:
+                pass
+        else:
+            pass
+
 
     #########################  Calibracao linear ###########################
     def salva_calibracao(self):
@@ -276,7 +398,7 @@ class Main(QtGui.QMainWindow):
                                     str(R[3]),str(R[4]),str(R[5]),"1")
 
 
-    def plota_perfil(self,tipo):
+    def plota_perfil(self,tipo,posicao_atual):
         if tipo == 'resistencia':
             escolha = unicode(self.ui.comboBox_perfilResistencia.currentText())
             dados = leitura_perfil(escolha,'resistencia')
@@ -295,6 +417,9 @@ class Main(QtGui.QMainWindow):
                 y.append(i[1])
             if tipo == 'resistencia':
                 self.ui.widget_perfilResistencia.canvas.ax.plot(x,y)
+                if posicao_atual:
+                    self.ui.widget_perfilResistencia.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
+                                        (posicao_atual[2], posicao_atual[3]), 'k--')
                 self.ui.widget_perfilResistencia.canvas.ax.set_title('Perfil Resistencias')
                 self.ui.widget_perfilResistencia.canvas.ax.set_xlabel('Tempo (minutos)')
                 self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
@@ -302,6 +427,9 @@ class Main(QtGui.QMainWindow):
                 self.ui.widget_perfilResistencia.canvas.draw()
             elif tipo == 'potencia':
                 self.ui.widget_perfilPotencia.canvas.ax.plot(x,y)
+                if posicao_atual:
+                    self.ui.widget_perfilResistencia.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
+                                    (posicao_atual[2], posicao_atual[3]), 'k--')
                 self.ui.widget_perfilPotencia.canvas.ax.set_title('Perfil Potencia')
                 self.ui.widget_perfilPotencia.canvas.ax.set_xlabel('Tempo (minutos)')
                 self.ui.widget_perfilPotencia.canvas.ax.set_ylabel('Potencia ()%)')
@@ -320,8 +448,14 @@ class Main(QtGui.QMainWindow):
                     self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
                     self.ui.widget_perfilResistencia.canvas.ax.grid(True)
                     self.ui.widget_perfilResistencia.canvas.ax.plot(x,y)
+                    if posicao_atual:
+                        self.ui.widget_perfilResistencia.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
+                                            (posicao_atual[2], posicao_atual[3]), 'k--')
                 elif tipo == 'potencia':
                     self.ui.widget_perfilPotencia.canvas.ax.plot(x,y)
+                    if posicao_atual:
+                        self.ui.widget_perfilPotencia.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
+                                            (posicao_atual[2], posicao_atual[3]), 'k--')
                     self.ui.widget_perfilPotencia.canvas.ax.grid(True)
                     self.ui.widget_perfilPotencia.canvas.ax.set_title('Perfil Potencia')
                     self.ui.widget_perfilPotencia.canvas.ax.set_xlabel('Tempo (minutos)')
@@ -350,7 +484,7 @@ class Main(QtGui.QMainWindow):
         self.ui.comboBox_perfilResistencia.blockSignals(False)
         escolha = unicode(self.ui.comboBox_perfilResistencia.currentText())
         salva_config_perfil_resistencia(escolha)
-        self.plota_perfil('resistencia')
+        self.plota_perfil('resistencia',None)
 
 
     def lista_perfil_potencia(self):
@@ -370,7 +504,7 @@ class Main(QtGui.QMainWindow):
         escolha = unicode(self.ui.comboBox_perfilPotencia.currentText())
         print escolha
         salva_config_perfil_potencia(escolha)
-        self.plota_perfil('potencia')
+        self.plota_perfil('potencia',None)
 
     def lista_calibracoes(self):
         self.ui.comboBox_portaSerial.blockSignals(True)
@@ -457,11 +591,16 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_emergencia.setEnabled(estado)
         self.ui.checkBox_serialAuto.setEnabled(estado)
         self.ui.checkBox_graficoAuto.setEnabled(estado)
+        self.ui.checkBox_graficoAuto.setChecked(False)
         self.ui.radioButton_hold.setEnabled(estado)
         self.ui.radioButton_esteiraTras.setEnabled(estado)
         self.ui.radioButton_esteiraFrente.setEnabled(estado)
         self.ui.pushButton_periodoPWM.setEnabled(estado)
         self.ui.pushButton_leituraAnalogica.setEnabled(estado)
+        #self.ui.pushButton_perfilPotencia.setEnabled(estado)
+        #self.ui.pushButton_perfilPotenciaFim.setEnabled(estado)
+        #self.ui.pushButton_perfilResistencia.setEnabled(estado)
+        #self.ui.pushButton_perfilResistenciaFim.setEnabled(estado)
 
     def add_portas_disponiveis(self):
         ''' M�todo que altera os valores da combobox que mostra as portas dispon�veis
