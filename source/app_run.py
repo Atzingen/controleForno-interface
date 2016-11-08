@@ -31,17 +31,24 @@ class Main(QtGui.QMainWindow):
 	arquivo gui_forno_gui, compilada com o pyuic4
 	'''
     def __init__(self):
-        ''' Construtor do objeto da tela principal. Executa quando o programa inicia'''
+        '''
+            Construtor do objeto da tela principal. Executa quando o programa
+            inicia e cria o objeto tela principal.
+        '''
         # Iniciando a ui
         QtGui.QMainWindow.__init__(self)  # Interface Gr�fica
         self.ui = Ui_MainWindow()  # Qtdesigner
         self.ui.setupUi(self)
-        ###     Vari�veis da calibração        ################################
+        ###     Variáveis da calibração        ################################
         nomes = retorna_dados_config_calibracao()
         cal = leitura_calibracao(str(nomes))
         self.atualiza_valores_calibracoes(cal)
         self.atualiza_lineEdit_calibracao()
 
+        #####  testes #########################################################
+
+
+        ##### Efeitos visuais para outros OS (teste)
         if (platform.system() == 'Darwin'):
             self.ui.horizontalSlider_r01.setStyle(QtGui.QStyleFactory.create("macintosh"))
             self.ui.horizontalSlider_r02.setStyle(QtGui.QStyleFactory.create("macintosh"))
@@ -67,7 +74,8 @@ class Main(QtGui.QMainWindow):
 
         ####### Banco de dados ################################################
         tempo_coleta = time.time()
-        cria_tabela()
+        cria_tabela()#Caso não exista, cria a tabela com os esquemas necessários
+
         #####  QTimers ########################################################
         self.timer_foto = QtCore.QTimer()
         self.timer_grafico = QtCore.QTimer()
@@ -80,7 +88,6 @@ class Main(QtGui.QMainWindow):
         antes = agora.addDays(-5)
         self.ui.dateTimeEdit_inicio.setDateTime(antes)
         self.ui.dateTimeEdit_fim.setDateTime(agora)
-        #####  testes #########################################################
 
         #######  Atualizando os valores das portas no inicio do programa #####
         self.add_portas_disponiveis()
@@ -97,8 +104,8 @@ class Main(QtGui.QMainWindow):
         ## Remover depois				- Porta serial com4 pc de casa
         if sys.platform.startswith('win'):
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
+
         ####### Connexões #####################################################
-        # Slider do tempo de intervalo grafico
         self.ui.horizontalSlider_graficoPeriodo.sliderReleased.connect(partial(tempo_grafico, self))
         self.ui.horizontalSlider_r01.sliderReleased.connect(partial(resistencia01, self))
         self.ui.horizontalSlider_r02.sliderReleased.connect(partial(resistencia02, self))
@@ -142,10 +149,8 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_deletarFit.pressed.connect(partial(self.deleta_calibracao,'Fit'))
         self.ui.pushButton_apagarPerfilPotencia.pressed.connect(partial(self.deleta_calibracao,'potencia'))
         self.ui.pushButton_apagarPerfilResistencia.pressed.connect(partial(self.deleta_calibracao,'resistencia'))
-        self.ui.pushButton_perfilResistencia.pressed.connect(partial(self.inicia_perfil,'resistencia','inicia'))
-        self.ui.pushButton_perfilResistenciaFim.pressed.connect(partial(self.inicia_perfil,'resistencia','fim'))
-        self.ui.pushButton_perfilPotencia.pressed.connect(partial(self.inicia_perfil,'potencia','inicia'))
-        self.ui.pushButton_perfilPotenciaFim.pressed.connect(partial(self.inicia_perfil,'potencia','fim'))
+        self.ui.pushButton_perfilResistencia.pressed.connect(partial(self.inicia_perfil,'resistencia'))
+        self.ui.pushButton_perfilPotencia.pressed.connect(partial(self.inicia_perfil,'potencia'))
 
     ######################### Automatico  ##################################
     def automatico_perfil_update(self,tipo,estados):
@@ -158,7 +163,7 @@ class Main(QtGui.QMainWindow):
         estados -> || ponto, passo |    (R1)
                     | ...  , ...   |    (R2)
                     ...
-                    | ponti, passo ||   (R6)
+                    | ponto, passo ||   (R6)
 
                 ponto: mostra qual o ultimo ponto* que o perfil passou,
                 sendo o instante atual um tempo entre ponto e ponto + 1
@@ -168,13 +173,9 @@ class Main(QtGui.QMainWindow):
                 separando o tempo entre ponto e ponto + 1 entre pwm segundos,
                 que é o período completo.
 
-                ponto: São os valores do perfil escolhido, salvo no banco de
-                dados no formato Pn = [x,y], com x o tempo em minutos e y a
-                potencia de acordo com o tipo.
         '''
-        #print "DEBUG automatico", tipo,estados
         global tempo_pwm
-        tempo_pwm = 30
+        tempo_pwm = 3           # Apenas para testes, para acelerar o processo.
         if tipo == 'resistencia':
             nome = unicode(self.ui.comboBox_perfilResistencia.currentText())
         elif tipo == 'potencia':
@@ -205,10 +206,14 @@ class Main(QtGui.QMainWindow):
                 delta_r = r_final - r_inicial
                 delta_t = (t_final - t_inicial)*60.0 # convertendo para segundos
                 numero_passos = delta_t//tempo_pwm
-                t_atual = t_inicial + float(passo*delta_t)/float(numero_passos)
-                pwm = r_inicial + float(passo*delta_r)/float(numero_passos)
+                if numero_passos > 0:
+                    pwm = r_inicial + float(passo*delta_r)/float(numero_passos)
+                    t_atual = t_inicial + float(passo*delta_t)/float(numero_passos)
+                else:
+                    pwm = r_inicial
+                    t_atual = t_inicial
                 if (r+1)%6 == 0:
-                    print t_atual, pwm, estados
+                    print pwm, t_atual
                 # if - condição de mudança abrusca (slope 90 graus)
                 if t_final <= t_inicial:
                     # zera o passo
@@ -229,151 +234,80 @@ class Main(QtGui.QMainWindow):
             else:
                 n_terminos += 1
                 pwm = 0
-            #print pwm, estados[r,0], estados[r,1]
         if n_terminos < 6:
             dt = t_final - t_inicial
-            #print t_inicial, t_final, dt, numero_passos, passo
             self.plota_perfil(tipo,(t_inicial + passo*dt/numero_passos,
-                                             t_inicial + passo*dt/numero_passos,
-                                             0  ,100 ))
-            if self.ui.pushButton_perfilResistencia.text() == "Pausar" or \
-            self.ui.pushButton_perfilPotencia.text() == "Pausar":
-                self.timer_serial.singleShot(2*1000,partial(self.automatico_perfil_update,
+                                    t_inicial + passo*dt/numero_passos,
+                                    0  ,100 ))
+            if self.ui.pushButton_perfilResistencia.text() == "Cancelar" or \
+            self.ui.pushButton_perfilPotencia.text() == "Cancelar":
+                self.timer_serial.singleShot(tempo_pwm*100,partial(self.automatico_perfil_update,
                                                     tipo,estados))
         else:
-            print "DEBUG: fim do controle automático"
-
-    def inicia_perfil(self, quem, tipo):
-        global s
-        print "DEBUG ", quem, tipo
-        if tipo == 'inicia':# and s.is_open:
-            if quem == 'resistencia':
-                if self.ui.pushButton_perfilResistencia.text() == "Iniciar":
-                    self.ui.pushButton_perfilResistencia.setText("Pausar")
-                    # variavel estado: vetor 6,2 com as informações de indice e
-                    # passo de cada resistencia
-                    estados = np.zeros([6,2])
-                    self.automatico_perfil_update('resistencia',estados)
-                elif self.ui.pushButton_perfilResistencia.text() == "Pausar":
-                    self.ui.pushButton_perfilResistencia.setText("Iniciar")
-                else:
-                    return None
-            elif quem == 'potencia':
-                if self.ui.pushButton_perfilPotencia.text() == "Iniciar":
-                    self.ui.pushButton_perfilPotencia.setText("Pausar")
-                    estados = np.zeros([6,2])
-                    self.automatico_perfil_update('potencia',estados)
-                elif self.ui.pushButton_perfilPotencia.text() == "Pausar":
-                    self.ui.pushButton_perfilPotencia.setText("Iniciar")
-                else:
-                    return None
-            else:
-                return None
-        elif tipo == 'fim':
-            if quem == 'resistencia':
-                if self.ui.pushButton_perfilResistencia.text() == "Pausar":
-                    reply = QtGui.QMessageBox.question(self,'Mensagem',
-                                        "Tem certeza que terminar ?",
-            							QtGui.QMessageBox.Yes |QtGui.QMessageBox.No,
-                                        QtGui.QMessageBox.No)
-                    if reply == QtGui.QMessageBox.Yes:
-                        self.ui.pushButton_perfilResistencia.setText("Iniciar")
-                    else:
-                        pass
-            elif quem == 'potencia':
-                if self.ui.pushButton_perfilPotencia.text() == "Pausar":
-                    reply = QtGui.QMessageBox.question(self,'Mensagem',
-                                        "Tem certeza que terminar ?",
-            							QtGui.QMessageBox.Yes |QtGui.QMessageBox.No,
-                                        QtGui.QMessageBox.No)
-                    if reply == QtGui.QMessageBox.Yes:
-                        self.ui.pushButton_perfilPotencia.setText("Iniciar")
-                    else:
-                        pass
-            else:
-                pass
-        else:
-            pass
-
-    #########################  Calibracao linear ###########################
-    def salva_calibracao(self):
-        '''
-        Função que salva o valor da calibração linear para a conversao do valor
-        de tensao obtido pelo termopar para temperatura.
-        '''
-        # Retira os dados da ui.
-        s_01_A = float(self.ui.lineEdit_S01A.text())
-        s_02_A = float(self.ui.lineEdit_S02A.text())
-        s_03_A = float(self.ui.lineEdit_S03A.text())
-        s_04_A = float(self.ui.lineEdit_S04A.text())
-        s_05_A = float(self.ui.lineEdit_S05A.text())
-        s_06_A = float(self.ui.lineEdit_S06A.text())
-        s_01_B = float(self.ui.lineEdit_S01B.text())
-        s_02_B = float(self.ui.lineEdit_S02B.text())
-        s_03_B = float(self.ui.lineEdit_S03B.text())
-        s_04_B = float(self.ui.lineEdit_S04B.text())
-        s_05_B = float(self.ui.lineEdit_S05B.text())
-        s_06_B = float(self.ui.lineEdit_S06B.text())
-        text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog',
-            'Digite o nome da calibracao')
-        self.alerta_toolbar("Salvando cal: " + text)
-        if ok:
-            nomes = nomes_calibracao()
-            for nome in nomes:
-                if nome[0] == text:
-                    igual = True
-                    break
-                else:
-                    igual = False
-            if igual:
-                self.alerta_toolbar("nome já existe")
-                print "nome já existe"
-            else:
-                insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
-
-    def deleta_calibracao(self, tipo):
-        try:
-            if tipo == 'Fit':
-                numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
-                escolha = self.ui.comboBox_fitLinear.itemText(numero_escolha)
+            if tipo == 'resistencia':
+                self.ui.pushButton_perfilResistencia.setText("Iniciar")
             elif tipo == 'potencia':
-                numero_escolha = self.ui.comboBox_perfilPotencia.currentIndex()
-                escolha = self.ui.comboBox_perfilPotencia.itemText(numero_escolha)
-            elif tipo == 'resistencia':
-                numero_escolha = self.ui.comboBox_perfilResistencia.currentIndex()
-                escolha = self.ui.comboBox_perfilResistencia.itemText(numero_escolha)
-            else:
-                self.alerta_toolbar("nome já existe")
-                print "erro - deleta_calibracao"
-                return None
-            reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que deletar a calibracao" + escolha + " ?",
-        										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-            if reply == QtGui.QMessageBox.Yes:
-                deleta_calibracao_bd(str(escolha),tipo)
-                if ( str(escolha) == retorna_dados_config_calibracao() ):
-                    primeiro_nome = self.ui.comboBox_fitLinear.itemText(0)
-                    salva_config_calibracao(primeiro_nome)
-                self.lista_calibracoes()
-                self.lista_perfil_potencia()
-                self.lista_perfil_resistencia()
-        except:
-            pass
+                self.ui.pushButton_perfilPotencia.setText("Iniciar")
+            print "DEBUG: fim do controle automatico"
+            self.alerta_toolbar("fim do controle automatico")
 
-    def atualiza_lineEdit_calibracao(self):
-        self.ui.lineEdit_S01A.setText(str(self.S_01_A))
-        self.ui.lineEdit_S02A.setText(str(self.S_02_A))
-        self.ui.lineEdit_S03A.setText(str(self.S_03_A))
-        self.ui.lineEdit_S04A.setText(str(self.S_04_A))
-        self.ui.lineEdit_S05A.setText(str(self.S_05_A))
-        self.ui.lineEdit_S06A.setText(str(self.S_06_A))
-        self.ui.lineEdit_S01B.setText(str(self.S_01_B))
-        self.ui.lineEdit_S02B.setText(str(self.S_02_B))
-        self.ui.lineEdit_S03B.setText(str(self.S_03_B))
-        self.ui.lineEdit_S04B.setText(str(self.S_04_B))
-        self.ui.lineEdit_S05B.setText(str(self.S_05_B))
-        self.ui.lineEdit_S06B.setText(str(self.S_06_B))
+    def inicia_perfil(self, tipo):
+        '''
+        Função acionada pelo sinal do botão Inicia/Fim do perfil_resistencia
+        ou perfil_potencia.
+        Altera o texto do botão inicia/fim e chama a função
+        automatico_perfil_update
+        '''
+        if tipo == 'resistencia':
+            if self.ui.pushButton_perfilResistencia.text() == "Iniciar":
+                self.ui.pushButton_perfilResistencia.setText("Cancelar")
+                # variavel estado: vetor 6,2 com as informações de indice e
+                # passo de cada resistencia
+                estados = np.zeros([6,2])
+                self.automatico_perfil_update('resistencia',estados)
+            elif self.ui.pushButton_perfilResistencia.text() == "Cancelar":
+                reply = QtGui.QMessageBox.question(self,'Mensagem',
+                                    "Tem certeza que terminar ?",
+        							QtGui.QMessageBox.Yes |QtGui.QMessageBox.No,
+                                    QtGui.QMessageBox.No)
+                if reply == QtGui.QMessageBox.Yes:
+                    self.ui.pushButton_perfilResistencia.setText("Iniciar")
+                    self.alerta_toolbar("Fim perfil Automatico")
+                else:
+                    self.alerta_toolbar("Perfil Automatico continua")
+                    pass
+            else:
+                self.alerta_toolbar("Erro IniciaPerfil")
+                return None
+        elif tipo == 'potencia':
+            if self.ui.pushButton_perfilPotencia.text() == "Iniciar":
+                self.ui.pushButton_perfilPotencia.setText("Cancelar")
+                estados = np.zeros([6,2])
+                self.automatico_perfil_update('potencia',estados)
+            elif self.ui.pushButton_perfilPotencia.text() == "Cancelar":
+                reply = QtGui.QMessageBox.question(self,'Mensagem',
+                                    "Tem certeza que terminar ?",
+        							QtGui.QMessageBox.Yes |QtGui.QMessageBox.No,
+                                    QtGui.QMessageBox.No)
+                if reply == QtGui.QMessageBox.Yes:
+                    self.ui.pushButton_perfilPotencia.setText("Iniciar")
+                    self.alerta_toolbar("Fim perfil Automatico")
+                else:
+                    self.alerta_toolbar("Perfil Automatico continua")
+                    pass
+            else:
+                self.alerta_toolbar("Erro IniciaPerfil")
+                return None
+        else:
+            self.alerta_toolbar("Erro IniciaPerfil")
+            return None
 
     def novo_perfil(self,tipo):
+        '''
+        Abre um Dialog box para o usuário preencher as informações sobre
+        um novo perfil, com os dados tempo e velor para todas as resistencias
+        ou tempo e valor comum (caso de todas as resistencias iguais).
+        '''
         flags = QtGui.QMessageBox.Yes
         flags |= QtGui.QMessageBox.No
         question = "As potencias das resistencias r1...r6 serao iguais ?"
@@ -436,7 +370,9 @@ class Main(QtGui.QMainWindow):
 
 
     def plota_perfil(self,tipo,posicao_atual):
-        print tipo, 'ps-at ',posicao_atual
+        '''
+        Plota o gráfico mostrando o perfil escolhido
+        '''
         if tipo == 'resistencia':
             escolha = unicode(self.ui.comboBox_perfilResistencia.currentText())
             dados = leitura_perfil(escolha,'resistencia')
@@ -463,10 +399,11 @@ class Main(QtGui.QMainWindow):
                 self.ui.widget_perfilResistencia.canvas.ax.set_title('Perfil Resistencias')
                 self.ui.widget_perfilResistencia.canvas.ax.set_xlabel('Tempo (minutos)')
                 self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
+                self.ui.widget_perfilResistencia.canvas.ax.set_ylim([0,400])
                 self.ui.widget_perfilResistencia.canvas.ax.grid(True)
                 self.ui.widget_perfilResistencia.canvas.draw()
             elif tipo == 'potencia':
-                self.ui.widget_perfilPotencia.canvas.ax.plot(x,label="R" + str(indice))
+                self.ui.widget_perfilPotencia.canvas.ax.plot(x,y,label="R" + str(indice))
                 self.ui.widget_perfilPotencia.canvas.ax.legend(loc='lower right',
                     frameon=True,shadow=True, fancybox=True)
                 if posicao_atual:
@@ -475,6 +412,7 @@ class Main(QtGui.QMainWindow):
                 self.ui.widget_perfilPotencia.canvas.ax.set_title('Perfil Potencia')
                 self.ui.widget_perfilPotencia.canvas.ax.set_xlabel('Tempo (minutos)')
                 self.ui.widget_perfilPotencia.canvas.ax.set_ylabel('Potencia ()%)')
+                self.ui.widget_perfilPotencia.canvas.ax.set_ylim([0,110])
                 self.ui.widget_perfilPotencia.canvas.ax.grid(True)
                 self.ui.widget_perfilPotencia.canvas.draw()
         elif indice == 0:
@@ -488,6 +426,7 @@ class Main(QtGui.QMainWindow):
                     self.ui.widget_perfilResistencia.canvas.ax.set_title('Perfil Resistencias')
                     self.ui.widget_perfilResistencia.canvas.ax.set_xlabel('Tempo (minutos)')
                     self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
+                    self.ui.widget_perfilResistencia.canvas.ax.set_ylim([0,400])
                     self.ui.widget_perfilResistencia.canvas.ax.grid(True)
                     self.ui.widget_perfilResistencia.canvas.ax.plot(x,y,label="R" + str(elemento-1))
                     self.ui.widget_perfilResistencia.canvas.ax.legend(loc='lower right',
@@ -506,6 +445,7 @@ class Main(QtGui.QMainWindow):
                     self.ui.widget_perfilPotencia.canvas.ax.set_title('Perfil Potencia')
                     self.ui.widget_perfilPotencia.canvas.ax.set_xlabel('Tempo (minutos)')
                     self.ui.widget_perfilPotencia.canvas.ax.set_ylabel('Potencia ()%)')
+                    self.ui.widget_perfilPotencia.canvas.ax.set_ylim([0,110])
             if tipo == 'resistencia':
                 self.ui.widget_perfilResistencia.canvas.draw()
             elif tipo == 'potencia':
@@ -547,9 +487,87 @@ class Main(QtGui.QMainWindow):
         self.ui.comboBox_perfilPotencia.setCurrentIndex(numero_escolha)
         self.ui.comboBox_perfilPotencia.blockSignals(False)
         escolha = unicode(self.ui.comboBox_perfilPotencia.currentText())
-        print escolha
         salva_config_perfil_potencia(escolha)
         self.plota_perfil('potencia',None)
+
+    #########################  Calibracao linear ###########################
+    def salva_calibracao(self):
+        '''
+        Função que salva o valor da calibração linear para a conversao do valor
+        de tensao obtido pelo termopar para temperatura.
+        '''
+        # Retira os dados da ui.
+        s_01_A = float(self.ui.lineEdit_S01A.text())
+        s_02_A = float(self.ui.lineEdit_S02A.text())
+        s_03_A = float(self.ui.lineEdit_S03A.text())
+        s_04_A = float(self.ui.lineEdit_S04A.text())
+        s_05_A = float(self.ui.lineEdit_S05A.text())
+        s_06_A = float(self.ui.lineEdit_S06A.text())
+        s_01_B = float(self.ui.lineEdit_S01B.text())
+        s_02_B = float(self.ui.lineEdit_S02B.text())
+        s_03_B = float(self.ui.lineEdit_S03B.text())
+        s_04_B = float(self.ui.lineEdit_S04B.text())
+        s_05_B = float(self.ui.lineEdit_S05B.text())
+        s_06_B = float(self.ui.lineEdit_S06B.text())
+        text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog',
+            'Digite o nome da calibracao')
+        self.alerta_toolbar("Salvando cal: " + text)
+        if ok:
+            nomes = nomes_calibracao()
+            for nome in nomes:
+                if nome[0] == text:
+                    igual = True
+                    break
+                else:
+                    igual = False
+            if igual:
+                self.alerta_toolbar("nome ja existe")
+                print "nome já existe"
+            else:
+                insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
+
+    def deleta_calibracao(self, tipo):
+        try:
+            if tipo == 'Fit':
+                numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
+                escolha = self.ui.comboBox_fitLinear.itemText(numero_escolha)
+            elif tipo == 'potencia':
+                numero_escolha = self.ui.comboBox_perfilPotencia.currentIndex()
+                escolha = self.ui.comboBox_perfilPotencia.itemText(numero_escolha)
+            elif tipo == 'resistencia':
+                numero_escolha = self.ui.comboBox_perfilResistencia.currentIndex()
+                escolha = self.ui.comboBox_perfilResistencia.itemText(numero_escolha)
+            else:
+                self.alerta_toolbar("nome ja existe")
+                print "erro - deleta_calibracao"
+                return None
+            reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que deletar a calibracao" + escolha + " ?",
+        										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+            if reply == QtGui.QMessageBox.Yes:
+                deleta_calibracao_bd(str(escolha),tipo)
+                if ( str(escolha) == retorna_dados_config_calibracao() ):
+                    primeiro_nome = self.ui.comboBox_fitLinear.itemText(0)
+                    salva_config_calibracao(primeiro_nome)
+                self.lista_calibracoes()
+                self.lista_perfil_potencia()
+                self.lista_perfil_resistencia()
+        except:
+            pass
+
+    def atualiza_lineEdit_calibracao(self):
+        self.ui.lineEdit_S01A.setText(str(self.S_01_A))
+        self.ui.lineEdit_S02A.setText(str(self.S_02_A))
+        self.ui.lineEdit_S03A.setText(str(self.S_03_A))
+        self.ui.lineEdit_S04A.setText(str(self.S_04_A))
+        self.ui.lineEdit_S05A.setText(str(self.S_05_A))
+        self.ui.lineEdit_S06A.setText(str(self.S_06_A))
+        self.ui.lineEdit_S01B.setText(str(self.S_01_B))
+        self.ui.lineEdit_S02B.setText(str(self.S_02_B))
+        self.ui.lineEdit_S03B.setText(str(self.S_03_B))
+        self.ui.lineEdit_S04B.setText(str(self.S_04_B))
+        self.ui.lineEdit_S05B.setText(str(self.S_05_B))
+        self.ui.lineEdit_S06B.setText(str(self.S_06_B))
+
 
     def lista_calibracoes(self):
         self.ui.comboBox_portaSerial.blockSignals(True)
@@ -563,7 +581,6 @@ class Main(QtGui.QMainWindow):
             if escolha == nome[0] and numero_escolha == -1:
                 numero_escolha = i
             i = i + 1
-        print numero_escolha
         self.ui.comboBox_fitLinear.setCurrentIndex(numero_escolha)
         self.ui.comboBox_fitLinear.blockSignals(False)
         escolha = unicode(self.ui.comboBox_fitLinear.currentText())
@@ -590,19 +607,20 @@ class Main(QtGui.QMainWindow):
     #####################  Fun��es da GUI #################################
     def alerta_toolbar(self, texto):
     	'''
-		Fun��o que coloca o texto na statusbar. O texto passado como par�metro na fun��o � anexado
-		ao texto j� existente.
-		Ao final da fun��o, um Qtimer � acionado, chamando a fun��o apaga_alterta, que retirar� o aviso
-		da statusbar.
+		Função que coloca o texto na statusbar. O texto passado como parâmetro
+        na função é anexado ao texto já existente.
+		Ao final da função, um Qtimer é acionado, chamando a função
+        apaga_alterta, que retira o aviso da statusbar 5 segundos após ser
+        adicionado devido a thread singleShot.
     	'''
         texto_inicial = str(self.statusBar().currentMessage())
         texto_append = texto + ' | '
         self.statusBar().showMessage(texto_inicial + texto_append)
-        self.timer_status.singleShot(5000,partial(self.apaga_alterta,texto_append))
+        self.timer_status.singleShot(3000,partial(self.apaga_alterta,texto_append))
 
     def apaga_alterta(self, texto):
     	'''
-		Fun��o que apaga o texto passado como par�metro da statusbar.
+		Função que apaga o texto passado como parâmetro da statusbar.
     	'''
         mensagem_total = str(self.statusBar().currentMessage())
         try:
@@ -610,6 +628,7 @@ class Main(QtGui.QMainWindow):
             self.statusBar().clearMessage()
             self.statusBar().showMessage(mensagem_total)
         except:
+            print "DEBUG: Erro ao apagar msg da statusbar - texto:", texto
             pass
 
 

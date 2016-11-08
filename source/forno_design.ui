@@ -564,7 +564,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="geometry">
@@ -595,9 +595,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>200</y>
+          <y>190</y>
           <width>111</width>
-          <height>161</height>
+          <height>171</height>
          </rect>
         </property>
         <property name="title">
@@ -607,7 +607,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>110</y>
+           <y>80</y>
            <width>91</width>
            <height>31</height>
           </rect>
@@ -633,7 +633,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>70</y>
+           <y>130</y>
            <width>91</width>
            <height>31</height>
           </rect>
@@ -650,9 +650,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>10</y>
           <width>111</width>
-          <height>121</height>
+          <height>81</height>
          </rect>
         </property>
         <property name="title">
@@ -671,25 +671,12 @@
           <string>Iniciar</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_perfilResistenciaFim">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>70</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Finalizar</string>
-         </property>
-        </widget>
        </widget>
        <widget class="QComboBox" name="comboBox_displayPerfilResistencia">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>160</y>
+          <y>140</y>
           <width>91</width>
           <height>31</height>
          </rect>
@@ -734,7 +721,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>120</y>
+          <y>100</y>
           <width>111</width>
           <height>31</height>
          </rect>
@@ -763,7 +750,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>170</y>
+          <y>150</y>
           <width>91</width>
           <height>31</height>
          </rect>
@@ -808,9 +795,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>10</y>
+          <y>20</y>
           <width>111</width>
-          <height>121</height>
+          <height>81</height>
          </rect>
         </property>
         <property name="title">
@@ -829,25 +816,12 @@
           <string>Iniciar</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_perfilPotenciaFim">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>70</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Finalizar</string>
-         </property>
-        </widget>
        </widget>
        <widget class="QLabel" name="label_41">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>130</y>
+          <y>110</y>
           <width>111</width>
           <height>31</height>
          </rect>
@@ -875,7 +849,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>110</y>
+           <y>70</y>
            <width>91</width>
            <height>31</height>
           </rect>
@@ -901,7 +875,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>70</y>
+           <y>110</y>
            <width>91</width>
            <height>31</height>
           </rect>
