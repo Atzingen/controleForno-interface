@@ -1,5 +1,22 @@
 # -*- coding: latin-1 -*-
-import serial
+import os, sys, serial
+
+def local_parent():
+	#caminho_source = os.getcwd()
+	caminho_source = os.path.dirname(os.path.realpath(__file__))
+	source_parent = os.path.abspath(os.path.join(caminho_source, os.pardir))
+	if sys.platform.startswith('win'):
+		barra = '\\'
+	else:
+		barra = '/'
+	source_parent += barra
+	return str(source_parent), barra
+
+def caminho_banco():
+    nome_arquivo_db = 'forno_data.db'
+    caminho, barra = local_parent()
+    return caminho + "bancoDados" + barra +  nome_arquivo_db
+
 ############ Comandos do forno ################################
 ubee       = '0010'		# primeiros 4 dados que chegam (código do ubee)
 liga_02    = 'S21\n'	# Resistência 2

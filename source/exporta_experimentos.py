@@ -1,15 +1,11 @@
 # -*- coding: latin-1 -*-
 from __future__ import division
-import sys, os, datetime, glob, smtplib, shutil, csv
+import os, datetime, glob, smtplib, shutil, csv
 import numpy as np
-from functools import partial
-from PyQt4 import QtGui, QtCore
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-from email.MIMEBase import MIMEBase
-from email import Encoders
-from banco_dados import *
-from modulo_global import *
+from PyQt4 import QtGui
+import email
+import bd_sensores
+import modulo_global
 
 def local_arquivo(self):
 	''' Altera o texto do lable que mostra o caminho onde s�o salvos os arquivos'''
@@ -33,10 +29,10 @@ def gera_arquivo(self):
 	if self.ui.checkBox_experimentoPeriodo.isChecked():
 		Tf = self.ui.dateTimeEdit_fim.dateTime().toPyDateTime()
 		Ti = self.ui.dateTimeEdit_inicio.dateTime().toPyDateTime()
-		d = retorna_dados(1,Ti=Ti,Tf=Tf)
+		d = bd_sensores.retorna_dados(1,Ti=Ti,Tf=Tf)
 	elif self.ui.checkBox_experimentoAtualData.isChecked():
 		print str(self.ui.label_nomeExperimento.text())
-		d = retorna_dados(1,experimento=str(self.ui.label_nomeExperimento.text()))
+		d = bd_sensores.retorna_dados(1,experimento=str(self.ui.label_nomeExperimento.text()))
 		tempo = str(self.ui.label_nomeExperimento.text()) + '_' + tempo
 	for a in glob.glob('*'):
 		if tempo in a:
@@ -78,7 +74,9 @@ def gera_arquivo(self):
 		pass
 
 def envia_email(self):
-	''' M�todo que envia os dados do experimento por email'''
+	'''
+		Função que envia os dados do experimento por email
+	'''
 	f = str(QtGui.QFileDialog.getOpenFileName())										# popup que pede para selecionar o arquivo (retorna o caminho do arquivo)
 	endereco = str(self.ui.lineEdit_email.text())
 	senha    = str(self.ui.lineEdit_senha.text())
@@ -87,16 +85,16 @@ def envia_email(self):
 		t = datetime.datetime.now()
 		tempo = str(t.month) + '-' + str(t.day) + '-' + str(t.hour) + '-' + str(t.minute)
 		arquivo = os.path.basename(f)
-		msg = MIMEMultipart()
+		msg = email.MIMEMultipart()
 		msg['From'] = endereco
 		msg['To'] = endereco
 		msg['Subject'] = "Dados: " + os.path.basename(f) + ' ' + tempo
 		corpo_email = "E-mail gerado automaticamente \n\n Programa de controle - Forno Lafac \n\n formato da data (Assunto do e-mail: Mes - dia - hora - minuto) "
-		msg.attach(MIMEText(corpo_email))
+		msg.attach(email.MIMEText(corpo_email))
 
-		part = MIMEBase('application', "octet-stream")
+		part = email.MIMEBase('application', "octet-stream")
 		part.set_payload(open(f,'rb').read())
-		Encoders.encode_base64(part)
+		email.Encoders.encode_base64(part)
 		part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(f))
 		msg.attach(part)
 
@@ -110,8 +108,11 @@ def envia_email(self):
 		self.alerta_toolbar('erro de parametros-smtp')
 
 def pendrive(self):
-	''' M�todo � acionado ao clicar no bot�o 'pendrive'.
-	� aberto um popup para pegar o caminho do arquivo a ser salvo e depois o local aonde ser� salvo (no pendrive) '''
+	'''
+		Função que é acionada ao clicar no botão 'pendrive'.
+		É aberto um popup para pegar o caminho do arquivo a ser salvo e depois
+		o local aonde será salvo (no pendrive)
+	'''
 	self.alerta_toolbar("teste-pendrive")
 	fonte   = str(QtGui.QFileDialog.getOpenFileName())
 	destino = str(QtGui.QFileDialog.getExistingDirectory())
@@ -119,7 +120,9 @@ def pendrive(self):
 		shutil.copy2(fonte,destino)
 
 def limpa_senha(self):
-	''' Limpa o campo senha e email '''
+	'''
+		Limpa o campo senha e email
+	'''
 	self.mensagem = "teste"
 	self.alerta_toolbar("teste-limpasenha")
 	reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que quer limpar senha e e-mail?",
@@ -130,22 +133,44 @@ def limpa_senha(self):
 		self.ui.lineEdit_senha.setText("")
 
 def novo_exp(self):
-	''' Inicia ou termina um novo experimento.
-	Caso haja um experimento em andamento, o experimento � terminado.
-	Caso n�o haja, uma janela de di�logo abre perguntando o nome do experimento
-	e este � salvo. Todos os dados ap�s isto s�o salvos com o nome deste experimento.'''
-	if self.ui.pushButton_experimento.text() == 'Encerrar Experimento':		# Caso o bot�o esteja no modo Encerrar Experimento
-		self.ui.pushButton_experimento.setText('Novo Experimento')			# Altera o lable do bot�o para Novo Experimento
+	'''
+	Inicia ou termina um novo experimento.
+	Caso haja um experimento em andamento, o experimento é terminado.
+	Caso não haja, uma janela de diálogo abre perguntando o nome do experimento
+	e este é salvo. Todos os dados após isto são salvos com o nome deste
+	experimento.
+	'''
+	if self.ui.pushButton_experimento.text() == 'Encerrar Experimento':
+		self.ui.pushButton_experimento.setText('Novo Experimento')
 		self.ui.label_nomeExperimento.setText("Sem Nome")
-		self.ui.checkBox_experimentoAtualData.setEnabled(False)						# Desabilita o checkbox de sele��o do experimento atual
-		self.ui.checkBox_experimentoPeriodo.setChecked(True)						# Marca a checkbox de salvar dados por per�odo
-		self.ui.checkBox_experimentoAtualData.setChecked(False)						# Desmarca o checbox de sele��o do experimento atual (plot)
+		self.ui.checkBox_experimentoAtualData.setEnabled(False)
+		self.ui.checkBox_experimentoPeriodo.setChecked(True)
+		self.ui.checkBox_experimentoAtualData.setChecked(False)
 		self.ui.label_nomeExperimento.setText('Sem Nome')
 	else:
-		text, ok = QtGui.QInputDialog.getText(self, '', 			# Caixa de dialogo para nome do experimento
-											'Digite o nome do seu experimento')
+		text, ok = QtGui.QInputDialog.getText(self, '',
+						'Digite o nome do seu experimento')
 		if ok and len(text) > 1:
-			self.ui.label_nomeExperimento.setText(str(text))			# Altera o label do nome do experimento
-			self.ui.pushButton_experimento.setText('Encerrar Experimento')	# Altera o texto do bot�o
-			self.ui.checkBox_experimentoAtualData.setEnabled(True)					# Habilita o checkbox de sele��o do experimento atual
-			self.ui.checkBox_experimentoAtualData.setChecked(True)					# Marca a checkbox de salvar dados do ultimo experimento
+			self.ui.label_nomeExperimento.setText(str(text))
+			self.ui.pushButton_experimento.setText('Encerrar Experimento')
+			self.ui.checkBox_experimentoAtualData.setEnabled(True)
+			self.ui.checkBox_experimentoAtualData.setChecked(True)
+
+def zerabd_gui(self):
+	'''
+		Método para zerar o banco de dados (acionado pelo botão 'Zerar
+		Bando de dados').
+		Um popup é aberto para confirmar que os dados serão mesmo apagados.
+	'''
+	reply = QtGui.QMessageBox.question(self, 'Mensagem',
+						"Tem certeza que quer zerar o banco de dados?",
+						QtGui.QMessageBox.Yes |
+						QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+	if reply == QtGui.QMessageBox.Yes:
+		reply = QtGui.QMessageBox.question(self,
+		  				'Mensagem',"Ter certeza ? Isto apagara TODOS os dados",
+						QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
+						QtGui.QMessageBox.No)
+		if reply == QtGui.QMessageBox.Yes:
+			self.alerta_toolbar("Apagando bd")
+			bd_sensores.deleta_tabeta()

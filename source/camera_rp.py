@@ -1,7 +1,6 @@
 # -*- coding: latin-1 -*-
 from __future__ import division
-from app_run import Ui_MainWindow
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 from functools import partial
 import sys, time
 try:

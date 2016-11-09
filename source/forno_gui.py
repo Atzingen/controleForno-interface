@@ -1151,4 +1151,4 @@ class Ui_MainWindow(object):
         self.actionResolu_o_2.setText(_translate("MainWindow", "Resolução 2", None))
         self.actionExclusive.setText(_translate("MainWindow", "exclusive", None))
 
-from matplotlibwidgetFile import matplotlibWidget
+from graficos import matplotlibWidget
