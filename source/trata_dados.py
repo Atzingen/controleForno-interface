@@ -1,6 +1,8 @@
 # -*- coding: latin-1 -*-
+import time
 import numpy as np
-import bd_sensores
+from modulo_global import *
+import comunicacao_serial, bd_sensores, bd_config
 
 def converte_numero(s):
     '''
@@ -109,13 +111,6 @@ def resultado_dado(self, tipo, d):
     Com estas informações, as alterações da GUI e nas variáveis de controle
     são feitas para mosrtar o recebimento dos dados.
     '''
-    global valor_resistencia01
-    global valor_resistencia02
-    global valor_resistencia03
-    global valor_resistencia04
-    global valor_resistencia05
-    global valor_resistencia06
-    global valor_esteira
     # tipo 1: retono de dados de temperatura.
     if tipo == 1:
         # Altera os valores dos displays de temperatura.
@@ -131,11 +126,11 @@ def resultado_dado(self, tipo, d):
         # Adiciona um caracter de fim de linha a string
         data = data + '\n'
         self.ui.textEdit_temperatura.insertPlainText(data)
-        atuadores = str(valor_resistencia01) + "," + str(valor_resistencia02) + "," + \
-        str(valor_resistencia03) + "," + str(valor_resistencia04) + "," + \
-        str(valor_resistencia05) + "," + str(valor_resistencia06) + "," + \
-        str(valor_esteira)
-        calibracao = str(retorna_dados_config_calibracao())
+        atuadores = str(self.valor_resistencia01) + "," + str(self.valor_resistencia02) + "," + \
+        str(self.valor_resistencia03) + "," + str(self.valor_resistencia04) + "," + \
+        str(self.valor_resistencia05) + "," + str(self.valor_resistencia06) + "," + \
+        str(self.valor_esteira)
+        calibracao = str(bd_config.retorna_dados_config_calibracao())
         print atuadores, calibracao
         # Adicionando os dados ao bd:
         # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
@@ -156,47 +151,47 @@ def resultado_dado(self, tipo, d):
             # d[1] : 1 para ligar e 0 para desligar
             if d[1] == '1':
                 # Altera o valor da variável de controle da resistência
-                valor_resistencia01 = 100
+                self.valor_resistencia01 = 100
                 # Altera a barra da GUI para a respectiva resistência
                 self.ui.progressBar_r01.setValue(100)
             else:
-                valor_resistencia01 = 0
+                self.valor_resistencia01 = 0
                 self.ui.progressBar_r01.setValue(0)
         # Idem para as outras 5 resistências
         elif d[0] == '3':									# Resustência 2
             if d[1] == '1':
-                valor_resistencia02 = 100
+                self.valor_resistencia02 = 100
                 self.ui.progressBar_r02.setValue(100)
             else:
-                valor_resistencia02 = 0
+                self.valor_resistencia02 = 0
                 self.ui.progressBar_r02.setValue(0)
         elif d[0] == '4':									# Resustência 3
             if d[1] == '1':
-                valor_resistencia03 = 100
+                self.valor_resistencia03 = 100
                 self.ui.progressBar_r03.setValue(100)
             else:
-                valor_resistencia03 = 0
+                self.valor_resistencia03 = 0
                 self.ui.progressBar_r03.setValue(0)
         elif d[0] == '5':									# Resustência 4
             if d[1] == '1':
-                valor_resistencia04 = 100
+                self.valor_resistencia04 = 100
                 self.ui.progressBar_r04.setValue(100)
             else:
-                valor_resistencia04 = 0
+                self.valor_resistencia04 = 0
                 self.ui.progressBar_r04.setValue(0)
         elif d[0] == '6':									# Resustência 5
             if d[1] == '1':
-                valor_resistencia05 = 100
+                self.valor_resistencia05 = 100
                 self.ui.progressBar_r05.setValue(100)
             else:
-                valor_resistencia05 = 0
+                self.valor_resistencia05 = 0
                 self.ui.progressBar_r05.setValue(0)
         elif d[0] == '7':									# Resustência 6
             if d[1] == '1':
-                valor_resistencia06 = 100
+                self.valor_resistencia06 = 100
                 self.ui.progressBar_r06.setValue(100)
             else:
-                valor_resistencia06 = 0
+                self.valor_resistencia06 = 0
                 self.ui.progressBar_r06.setValue(0)
 
     # tipo 8 - Potência parcial de uma resistência
@@ -204,44 +199,46 @@ def resultado_dado(self, tipo, d):
         # d[0] - Valores de 2 a 7 - respectivo a cada resistência
         if d[0] == '2':
             # Altera o valor da variável de controle da resistência
-            valor_resistencia01 = int(d[1:])
+            self.valor_resistencia01 = int(d[1:])
             # Altera a barra da GUI para a respectiva resistência
             self.ui.progressBar_r01.setValue(int(d[1:]))
         # Idem para as outas 5 resistências
         elif d[0] == '3':
-            valor_resistencia02 = int(d[1:])
+            self.valor_resistencia02 = int(d[1:])
             self.ui.progressBar_r02.setValue(int(d[1:]))
         elif d[0] == '4':
-            valor_resistencia03 = int(d[1:])
+            self.valor_resistencia03 = int(d[1:])
             self.ui.progressBar_r03.setValue(int(d[1:]))
         elif d[0] == '5':
-            valor_resistencia04 = int(d[1:])
+            self.valor_resistencia04 = int(d[1:])
             self.ui.progressBar_r04.setValue(int(d[1:]))
         elif d[0] == '6':
-            valor_resistencia05 = int(d[1:])
+            self.valor_resistencia05 = int(d[1:])
             self.ui.progressBar_r05.setValue(int(d[1:]))
         elif d[0] == '7':
-            valor_resistencia06 = int(d[1:])
+            self.valor_resistencia06 = int(d[1:])
             self.ui.progressBar_r06.setValue(int(d[1:]))
     # Tipo 3 - Para completamente a esteira
     elif tipo == 3:
-        valor_esteira = 0
+        self.valor_esteira = 0
     # tipo 4 - Velocidade da esteira para frente (1 a 99)
     elif tipo == 4:
-        valor_esteira = int(d)
+        print "alterando esteira (4)", d
+        self.valor_esteira = int(d)
+        print "valor_esteira", self.valor_esteira
     # Tipo 5 - Velocidade da esteira para tras (1 a 99)
     elif tipo == 5:
-        valor_esteira = -1*int(d)
+        self.valor_esteira = -1*int(d)
     elif tipo == 9:
         # Atualiza o valor das variaveis globais
-        valor_resistencia01 = int(d[1])
-        valor_resistencia02 = int(d[2])
-        valor_resistencia03 = int(d[3])
-        valor_resistencia04 = int(d[4])
-        valor_resistencia05 = int(d[5])
-        valor_resistencia06 = int(d[6])
-        valor_esteira = int(x=d[7])
+        self.valor_resistencia01 = int(d[1])
+        self.valor_resistencia02 = int(d[2])
+        self.valor_resistencia03 = int(d[3])
+        self.valor_resistencia04 = int(d[4])
+        self.valor_resistencia05 = int(d[5])
+        self.valor_resistencia06 = int(d[6])
+        self.valor_esteira = int(x=d[7])
         # Atualiza os slides e controles da GUI
-        QtCore.QTimer.singleShot(10, partial(teste_retorno,self))
+        QtCore.QTimer.singleShot(10, partial(comunicacao_serial.teste_retorno,self))
     else:
         print "erro no recebimento !!!!!!!"

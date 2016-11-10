@@ -1,9 +1,11 @@
 # -*- coding: latin-1 -*-
-import sqlite3, datetime, modulo_global
+from modulo_global import *
+import sqlite3, datetime
 
 def cria_tabela_calibracao():
 	try:
-		db = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''CREATE TABLE IF NOT EXISTS calibracao
 		(id INTEGER PRIMARY KEY,nome TEXT,s1_A REAL,s2_A REAL,s3_A REAL,s4_A REAL,s5_A REAL,s6_A REAL,
@@ -19,8 +21,8 @@ def cria_tabela_calibracao():
 
 def deleta_calibracao_bd(nome,tipo):
 	try:
-		print "bd", nome, tipo
-		db = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		if tipo == 'Fit':
 			cursor.execute('''SELECT id FROM calibracao WHERE nome = ?''',(nome,))
@@ -53,7 +55,8 @@ def deleta_calibracao_bd(nome,tipo):
 def insere_calibracao(nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
 					s1_B,s2_B,s3_B,s4_B,s5_B,s6_B):
 	try:
-		db = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''INSERT INTO calibracao (nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
 						s1_B,s2_B,s3_B,s4_B,s5_B,s6_B) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)''',
@@ -69,7 +72,8 @@ def insere_calibracao(nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
 
 def nomes_calibracao():
 	try:
-		db = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''SELECT nome FROM calibracao''')
 		row = cursor.fetchall()
@@ -83,7 +87,8 @@ def nomes_calibracao():
 
 def leitura_calibracao(nome):
 	try:
-		db = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''SELECT * FROM calibracao WHERE nome = ?''',(nome,))
 		row = cursor.fetchone()

@@ -1,5 +1,6 @@
 # -*- coding: latin-1 -*-
-import sqlite3, scipy, datetime, modulo_global
+from modulo_global import *
+import sqlite3, scipy, datetime
 
 def cria_tabela():
 	'''
@@ -8,7 +9,8 @@ def cria_tabela():
 	caminho_banco e esta na mesma pasta /bandoDados.
 	'''
 	try:
-		createDB = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		createDB = sqlite3.connect(caminho_banco)
 		queryCurs = createDB.cursor()
 		queryCurs.execute('''CREATE TABLE IF NOT EXISTS dados_forno
 		(id INTEGER PRIMARY KEY,t_abs TIMESTAMP DEFAULT (DATETIME('now')),t_0 REAL,
@@ -24,9 +26,9 @@ def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None,calibracao=None,atuador
 	O instante atual é capturado para salvar na culuna timestap. Caso a variável experimento (que significa o nome do experimento) seja passada,
 	ela tambénm é salva no bd.
 	'''
-	print "add dados ",caminho_banco, t_0,s1,s2,s3,s4,s5,s6,experimento,calibracao,atuadores
 	try:
-		createDB = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		createDB = sqlite3.connect(caminho_banco)
 		cursor = createDB.cursor()
 		# Pegando o tempo atual do SO
 		t_abs = datetime.datetime.now()
@@ -58,7 +60,8 @@ def deleta_tabeta():
 	Função que deleta dodos os dados do bd.
 	'''
 	try:
-		createDB = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		createDB = sqlite3.connect(caminho_banco)
 		cursor = createDB.cursor()
 		cursor.execute("DELETE FROM dados_forno WHERE id > -1")
 		createDB.commit()
@@ -73,7 +76,8 @@ def retorna_dados(delta_t,experimento=None,Ti=None,Tf=None):
 		-Tempo delta (padrão) - Retorna dados entre o tempo atual e o tempo atual - delta_t.
 	'''
 	try:
-		createDB = sqlite3.connect(modulo_global.caminho_banco())
+		global caminho_banco
+		createDB = sqlite3.connect(caminho_banco)
 		cursor = createDB.cursor()
 		if experimento:
 			cursor.execute("SELECT * FROM dados_forno WHERE experimento = ?",(experimento,))

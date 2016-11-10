@@ -1,15 +1,18 @@
 # -*- coding: latin-1 -*-
 from __future__ import division
-import os, datetime, glob, smtplib, shutil, csv
+import os, sys, datetime, glob, smtplib, shutil, csv
 import numpy as np
 from PyQt4 import QtGui
-import email
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+from email.MIMEBase import MIMEBase
+from email import Encoders
 import bd_sensores
 import modulo_global
 
 def local_arquivo(self):
 	''' Altera o texto do lable que mostra o caminho onde s�o salvos os arquivos'''
-	source_parent, _ = local_parent()
+	source_parent, _ = modulo_global.local_parent()
 	local = str(QtGui.QFileDialog.getExistingDirectory(caption="Escolha a pasta em que os arquivos serao salvos",
 													   directory=source_parent + "dadosExperimento"))
 	if sys.platform.startswith('win'):
@@ -31,7 +34,6 @@ def gera_arquivo(self):
 		Ti = self.ui.dateTimeEdit_inicio.dateTime().toPyDateTime()
 		d = bd_sensores.retorna_dados(1,Ti=Ti,Tf=Tf)
 	elif self.ui.checkBox_experimentoAtualData.isChecked():
-		print str(self.ui.label_nomeExperimento.text())
 		d = bd_sensores.retorna_dados(1,experimento=str(self.ui.label_nomeExperimento.text()))
 		tempo = str(self.ui.label_nomeExperimento.text()) + '_' + tempo
 	for a in glob.glob('*'):
@@ -41,7 +43,6 @@ def gera_arquivo(self):
 
 	# Opção para salvar o arquivo em txt (checkbox .txt selecionado)
 	if self.ui.checkBox_formatoTxt.isChecked():
-		print "txt", caminho, tempo
 		with open(caminho + tempo + '.txt', "w") as arquivo_texto:
 			# Cabeçalho do arquivo:
 			arquivo_texto.write('Arquivo gerado automaticamente - Dados do forno - LAFAC USP \n \n \n')
@@ -50,7 +51,6 @@ def gera_arquivo(self):
 			try:
 				for i in d:
 					arquivo_texto.write('\n')
-					print "linha"
 					for j in i:
 						arquivo_texto.write(str(j) + '\t')
 			except:
@@ -59,7 +59,6 @@ def gera_arquivo(self):
 
 	# Opção para salvar o arquivo em csv (checkbox .csv selecionado)
 	elif self.ui.checkBox_formatoCsv.isChecked():
-		print "csv", caminho, tempo
 		with open(caminho + tempo + '.csv', 'wt') as arquivo_csv:
 			writer = csv.writer(arquivo_csv,lineterminator = '\n',dialect='excel')
 			writer.writerow(('chave','Data e horario completo','t_0','s1','s2','s3','s4','s5','s6','experimento'))																	# Caso d n�o esteja vazio
@@ -85,16 +84,16 @@ def envia_email(self):
 		t = datetime.datetime.now()
 		tempo = str(t.month) + '-' + str(t.day) + '-' + str(t.hour) + '-' + str(t.minute)
 		arquivo = os.path.basename(f)
-		msg = email.MIMEMultipart()
+		msg = MIMEMultipart()
 		msg['From'] = endereco
 		msg['To'] = endereco
 		msg['Subject'] = "Dados: " + os.path.basename(f) + ' ' + tempo
-		corpo_email = "E-mail gerado automaticamente \n\n Programa de controle - Forno Lafac \n\n formato da data (Assunto do e-mail: Mes - dia - hora - minuto) "
-		msg.attach(email.MIMEText(corpo_email))
+		corpo_email = "E-mail gerado automaticamente  Programa de controle - Forno Lafac  formato da data (Assunto do e-mail: Mes - dia - hora - minuto) "
+		msg.attach(MIMEText(corpo_email))
 
-		part = email.MIMEBase('application', "octet-stream")
+		part = MIMEBase('application', "octet-stream")
 		part.set_payload(open(f,'rb').read())
-		email.Encoders.encode_base64(part)
+		Encoders.encode_base64(part)
 		part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(f))
 		msg.attach(part)
 

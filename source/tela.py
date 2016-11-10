@@ -1,10 +1,11 @@
 # -*- coding: latin-1 -*-
 from __future__ import division
-import sys, os, time, platform
+import sys, os, time, platform, serial
 from functools import partial
 from PyQt4 import QtGui, QtCore
+from modulo_global import *
 import bd_config, bd_calibracao, bd_sensores
-import forno_gui, calibracao, modulo_global, comunicacao_serial, automatico
+import forno_gui, calibracao, comunicacao_serial, automatico
 import camera_rp, graficos, exporta_experimentos
 
 class Main(QtGui.QMainWindow):
@@ -30,6 +31,21 @@ class Main(QtGui.QMainWindow):
         calibracao.atualiza_valores_calibracoes(self,cal)
         calibracao.atualiza_lineEdit_calibracao(self)
 
+        ##### Variáveis para acesso entre scripts #############################
+        self.valor_resistencia01 = 0
+        self.valor_resistencia02 = 0
+        self.valor_resistencia03 = 0
+        self.valor_resistencia04 = 0
+        self.valor_resistencia05 = 0
+        self.valor_resistencia06 = 0
+        self.valor_esteira = 0
+
+        self.s = serial.Serial()
+
+        self.texto = ""
+        self.tempo_pwm = 30
+
+
         #####  testes #########################################################
 
 
@@ -54,7 +70,7 @@ class Main(QtGui.QMainWindow):
             self.ui.horizontalSlider_graficoPeriodo.setStyle(QtGui.QStyleFactory.create("windows"))
 
         ######## Caminho para os experimentos salvos #########################
-        source_parent, _ = modulo_global.local_parent()
+        source_parent, _ = local_parent()
         self.ui.label_caminho.setText(source_parent + "dadosExperimento")
 
         ####### Banco de dados ################################################
@@ -98,14 +114,14 @@ class Main(QtGui.QMainWindow):
         self.ui.horizontalSlider_r04.sliderReleased.connect(partial(comunicacao_serial.resistencia04, self))
         self.ui.horizontalSlider_r05.sliderReleased.connect(partial(comunicacao_serial.resistencia05, self))
         self.ui.horizontalSlider_r06.sliderReleased.connect(partial(comunicacao_serial.resistencia06, self))
-        self.ui.horizontalSlider_esteira.sliderReleased.connect(partial(comunicacao_serial.esteira, [self, 'slider']))
-        self.ui.radioButton_esteiraTras.pressed.connect(partial(comunicacao_serial.esteira, [self,'tras']))
-        self.ui.radioButton_esteiraFrente.pressed.connect(partial(comunicacao_serial.esteira, [self,'frente']))
-        self.ui.pushButton_esteiraParar.pressed.connect(partial(comunicacao_serial.esteira, [self,'parar']))
+        self.ui.horizontalSlider_esteira.sliderReleased.connect(partial(comunicacao_serial.esteira, self, 'slider'))
+        self.ui.radioButton_esteiraTras.pressed.connect(partial(comunicacao_serial.esteira,self,'tras'))
+        self.ui.radioButton_esteiraFrente.pressed.connect(partial(comunicacao_serial.esteira, self,'frente'))
+        self.ui.pushButton_esteiraParar.pressed.connect(partial(comunicacao_serial.esteira,self,'parar'))
         self.ui.pushButton_conectar.pressed.connect(partial(comunicacao_serial.conecta, self))
         self.ui.pushButton_emergencia.pressed.connect(partial(comunicacao_serial.emergencia, self))
-        self.ui.pushButton_serialAtualiza.pressed.connect(partial(comunicacao_serial.envia_serial, 'ST\n'))
-        self.ui.pushButton_updateInfo.pressed.connect(partial(comunicacao_serial.envia_serial, 'SK\n'))
+        self.ui.pushButton_serialAtualiza.pressed.connect(partial(comunicacao_serial.envia_serial,self, 'ST\n'))
+        self.ui.pushButton_updateInfo.pressed.connect(partial(comunicacao_serial.envia_serial,self, 'SK\n'))
         self.ui.pushButton_limpaTexto.pressed.connect(self.limpa_texto)
         self.ui.pushButton_serialEnviaLinha.pressed.connect(partial(comunicacao_serial.envia_manual, self))
         self.ui.pushButton_periodoPWM.pressed.connect(partial(comunicacao_serial.envia_setpwm, self))
@@ -134,8 +150,8 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_deletarFit.pressed.connect(partial(calibracao.deleta_calibracao,'Fit'))
         self.ui.pushButton_apagarPerfilPotencia.pressed.connect(partial(calibracao.deleta_calibracao,'potencia'))
         self.ui.pushButton_apagarPerfilResistencia.pressed.connect(partial(calibracao.deleta_calibracao,'resistencia'))
-        self.ui.pushButton_perfilResistencia.pressed.connect(partial(automatico.inicia_perfil,'resistencia'))
-        self.ui.pushButton_perfilPotencia.pressed.connect(partial(automatico.inicia_perfil,'potencia'))
+        self.ui.pushButton_perfilResistencia.pressed.connect(partial(automatico.inicia_perfil,self,'resistencia'))
+        self.ui.pushButton_perfilPotencia.pressed.connect(partial(automatico.inicia_perfil,self,'potencia'))
 
     #####################  Funções da GUI #################################
     def alerta_toolbar(self, texto):

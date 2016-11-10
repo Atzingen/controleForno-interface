@@ -1,5 +1,6 @@
 # -*- coding: latin-1 -*-
 import ast
+from functools import partial
 import numpy as np
 from PyQt4 import QtGui
 import bd_perfil, bd_config, graficos, trata_dados
@@ -25,8 +26,6 @@ def automatico_perfil_update(self,tipo,estados):
             que é o período completo.
 
     '''
-    global tempo_pwm
-    tempo_pwm = 3           # Apenas para testes, para acelerar o processo.
     if tipo == 'resistencia':
         nome = unicode(self.ui.comboBox_perfilResistencia.currentText())
     elif tipo == 'potencia':
@@ -56,7 +55,7 @@ def automatico_perfil_update(self,tipo,estados):
             r_final = perfil_r[ponto_atual+1][1]
             delta_r = r_final - r_inicial
             delta_t = (t_final - t_inicial)*60.0 # convertendo para segundos
-            numero_passos = delta_t//tempo_pwm
+            numero_passos = delta_t//self.tempo_pwm
             if numero_passos > 0:
                 pwm = r_inicial + float(passo*delta_r)/float(numero_passos)
                 t_atual = t_inicial + float(passo*delta_t)/float(numero_passos)
@@ -92,7 +91,7 @@ def automatico_perfil_update(self,tipo,estados):
                                 0  ,100 ))
         if self.ui.pushButton_perfilResistencia.text() == "Cancelar" or \
         self.ui.pushButton_perfilPotencia.text() == "Cancelar":
-            self.timer_serial.singleShot(tempo_pwm*100,
+            self.timer_serial.singleShot(self.tempo_pwm*100,
                                          partial(automatico_perfil_update,
                                                 self,tipo,estados))
     else:

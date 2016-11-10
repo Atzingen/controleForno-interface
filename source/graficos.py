@@ -70,16 +70,18 @@ def plotar_sensores(self):
         pass
 
 def grafico_update(self):
-    ''' Método recursivo.
+    '''
+    Método recursivo.
     É chamado quando a checkbox de autoupdate do gráfico é ativada.
     A função ativa uma thread do QT no modo singleShot após a quantidad de tempo escolhida no
     spinBox da GUI. caso a checkbox continue ativada, a função se chamará novamente de forma recursiva
-    até que a checkbox seja desabilitada ou a conecção seja desfeita. '''
+    até que a checkbox seja desabilitada ou a conecção seja desfeita.
+    '''
     self.alerta_toolbar("update-grafico")
-    if self.ui.checkBox_graficoAuto.isChecked():                                         # Verifica se a checkbox de plotar o gráfico automaticamente está ativada
-        plotar(self)                                                            # Chama a função plotar
-        tempo_delay = 1000*int(self.ui.spinBox_graficoLatencia.value())                       # Tempo até chamar a Thread
-        self.timer_grafico.singleShot(tempo_delay,partial(grafico_update,self)) # Chama a própria função de forma recursiva
+    if self.ui.checkBox_graficoAuto.isChecked():
+        plotar_sensores(self)
+        tempo_delay = 1000*int(self.ui.spinBox_graficoLatencia.value())
+        self.timer_grafico.singleShot(tempo_delay,partial(grafico_update,self))
 
 def tempo_grafico(self):
     '''
