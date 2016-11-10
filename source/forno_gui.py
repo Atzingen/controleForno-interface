@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'source\\forno_design.ui'
+# Form implementation generated from reading ui file 'GUI/forno_design.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -202,7 +202,7 @@ class Ui_MainWindow(object):
         self.toolBox.setGeometry(QtCore.QRect(10, 20, 581, 481))
         self.toolBox.setObjectName(_fromUtf8("toolBox"))
         self.page = QtGui.QWidget()
-        self.page.setGeometry(QtCore.QRect(0, 0, 581, 382))
+        self.page.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.page.setObjectName(_fromUtf8("page"))
         self.widget_perfilResistencia = matplotlibWidget(self.page)
         self.widget_perfilResistencia.setEnabled(False)
@@ -948,7 +948,7 @@ class Ui_MainWindow(object):
         self.actionExclusive.setObjectName(_fromUtf8("actionExclusive"))
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         self.tabWidget_2.setCurrentIndex(0)
         self.toolBox.setCurrentIndex(1)
         self.tabWidget_3.setCurrentIndex(0)
