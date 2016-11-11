@@ -571,8 +571,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>98</width>
-         <height>28</height>
+         <width>100</width>
+         <height>30</height>
         </rect>
        </property>
        <attribute name="label">
@@ -907,8 +907,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>98</width>
-         <height>28</height>
+         <width>100</width>
+         <height>30</height>
         </rect>
        </property>
        <attribute name="label">
@@ -2548,108 +2548,6 @@
     <property name="title">
      <string>Sensores</string>
     </property>
-    <widget class="QLCDNumber" name="lcdNumber_s1">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="smallDecimalPoint">
-      <bool>true</bool>
-     </property>
-     <property name="value" stdset="0">
-      <double>23.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="lcdNumber_s2">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>80</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="smallDecimalPoint">
-      <bool>true</bool>
-     </property>
-     <property name="value" stdset="0">
-      <double>23.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="lcdNumber_s4">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>120</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="smallDecimalPoint">
-      <bool>true</bool>
-     </property>
-     <property name="value" stdset="0">
-      <double>23.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="lcdNumber_s6">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>160</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="smallDecimalPoint">
-      <bool>true</bool>
-     </property>
-     <property name="value" stdset="0">
-      <double>23.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="lcdNumber_s5">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>160</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="smallDecimalPoint">
-      <bool>true</bool>
-     </property>
-     <property name="value" stdset="0">
-      <double>23.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLCDNumber" name="lcdNumber_s3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="smallDecimalPoint">
-      <bool>true</bool>
-     </property>
-     <property name="value" stdset="0">
-      <double>23.000000000000000</double>
-     </property>
-    </widget>
     <widget class="QPushButton" name="pushButton_serialAtualiza">
      <property name="enabled">
       <bool>false</bool>
@@ -2688,9 +2586,9 @@
     <widget class="QLabel" name="label_9">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>120</x>
        <y>40</y>
-       <width>41</width>
+       <width>31</width>
        <height>16</height>
       </rect>
      </property>
@@ -2701,53 +2599,196 @@
     <widget class="QLabel" name="label_36">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>60</y>
-       <width>21</width>
-       <height>16</height>
+       <x>20</x>
+       <y>70</y>
+       <width>51</width>
+       <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
-      <string>S1</string>
+      <string>Esteira:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_37">
+    <widget class="QLabel" name="sensor_esteira">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>60</y>
-       <width>21</width>
-       <height>16</height>
+       <x>80</x>
+       <y>70</y>
+       <width>71</width>
+       <height>21</height>
       </rect>
      </property>
-     <property name="text">
-      <string>S2</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_39">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>200</y>
-       <width>21</width>
-       <height>16</height>
-      </rect>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="text">
-      <string>S6</string>
+      <string>0.0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QLabel" name="label_38">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>200</y>
-       <width>21</width>
-       <height>16</height>
+       <x>60</x>
+       <y>100</y>
+       <width>41</width>
+       <height>21</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
-      <string>S5</string>
+      <string>Teto:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sensor_teto1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sensor_teto2">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>130</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_43">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>160</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>lateral:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sensor_lateral2">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>190</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sensor_lateral1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="sensor_lateral3">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>190</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>0.0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>

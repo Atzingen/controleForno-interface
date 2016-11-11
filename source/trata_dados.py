@@ -115,12 +115,12 @@ def resultado_dado(self, tipo, d):
     if tipo == 1:
         # Altera os valores dos displays de temperatura.
         #temperatura = [None, d[4], d[], d[], d[], d[], d[]]
-        self.ui.lcdNumber_s1.display(d[1])
-        self.ui.lcdNumber_s2.display(d[2])
-        self.ui.lcdNumber_s3.display(d[3])
-        self.ui.lcdNumber_s4.display(d[4])
-        self.ui.lcdNumber_s5.display(d[5])
-        self.ui.lcdNumber_s6.display(d[6])
+        self.ui.sensor_esteira.setText("{0:0.1f}".format(float(d[1])))
+        self.ui.sensor_teto1.setText("{0:0.1f}".format(float(d[2])))
+        self.ui.sensor_teto2.setText("{0:0.1f}".format(float(d[3])))
+        self.ui.sensor_lateral1.setText("{0:0.1f}".format(float(d[4])))
+        self.ui.sensor_lateral2.setText("{0:0.1f}".format(float(d[5])))
+        self.ui.sensor_lateral3.setText("{0:0.1f}".format(float(d[6])))
         # Coloca os dados da temperatura em ums string
         data = str(["%i" % x for x in d])
         # Adiciona um caracter de fim de linha a string

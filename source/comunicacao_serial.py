@@ -194,9 +194,9 @@ def resistencia01(self):
         valor = int(self.ui.horizontalSlider_r01.value())
         # envia o dado adequado em função do valor 0, 1..99, 100.
         if valor == 100:
-            envia_serial(self,liga_02)
+            envia_serial(self,self.liga_02)
         elif valor == 0:
-            envia_serial(self,desliga_02)
+            envia_serial(self,self.desliga_02)
         elif valor > 0 and valor < 100:
             envia_serial(self,'SP2' + str(valor) + '\n')
         # teste de retorno para verificar se os valores foram recebidos pelo mc
@@ -207,9 +207,9 @@ def resistencia02(self):
     if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r02.value())
         if valor == 100:
-            envia_serial(self,liga_04)
+            envia_serial(self,self.liga_04)
         elif valor == 0:
-            envia_serial(self,desliga_04)
+            envia_serial(self,self.desliga_04)
         elif valor > 0 and valor < 100:
             envia_serial(self,'SP3' + str(valor) + '\n')
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))
@@ -219,9 +219,9 @@ def resistencia03(self):
     if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r03.value())
         if valor == 100:
-            envia_serial(self,liga_06)
+            envia_serial(self,self.liga_06)
         elif valor == 0:
-            envia_serial(self,desliga_06)
+            envia_serial(self,self.desliga_06)
         elif valor > 0 and valor < 100:
             envia_serial(self,'SP4' + str(valor) + '\n')
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))
@@ -231,9 +231,9 @@ def resistencia04(self):
     if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r04.value())
         if valor == 100:
-            envia_serial(self,liga_05)
+            envia_serial(self,self.liga_05)
         elif valor == 0:
-            envia_serial(self,desliga_05)
+            envia_serial(self,self.desliga_05)
         elif valor > 0 and valor < 100:
             envia_serial(self,'SP5' + str(valor) + '\n')
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))
@@ -243,9 +243,9 @@ def resistencia05(self):
     if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r05.value())
         if valor == 100:
-            envia_serial(self,liga_03)
+            envia_serial(self,self.liga_03)
         elif valor == 0:
-            envia_serial(self,desliga_03)
+            envia_serial(self,self.desliga_03)
         elif valor > 0 and valor < 100:
             envia_serial(self,'SP6' + str(valor) + '\n')
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))
@@ -255,9 +255,9 @@ def resistencia06(self):
     if (not self.ui.radioButton_hold.isChecked()):
         valor = int(self.ui.horizontalSlider_r06.value())
         if valor == 100:
-            envia_serial(self,liga_01)
+            envia_serial(self,self.liga_01)
         elif valor == 0:
-            envia_serial(self,desliga_01)
+            envia_serial(self,self.desliga_01)
         elif valor > 0 and valor < 100:
             envia_serial(self,'SP7' + str(valor) + '\n')
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))

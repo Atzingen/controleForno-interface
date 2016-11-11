@@ -31,7 +31,7 @@ class Main(QtGui.QMainWindow):
         calibracao.atualiza_valores_calibracoes(self,cal)
         calibracao.atualiza_lineEdit_calibracao(self)
 
-        ##### Variáveis para acesso entre scripts #############################
+        ##### Variáveis para controle dos estados do forno ####################
         self.valor_resistencia01 = 0
         self.valor_resistencia02 = 0
         self.valor_resistencia03 = 0
@@ -45,6 +45,19 @@ class Main(QtGui.QMainWindow):
         self.texto = ""
         self.tempo_pwm = 30
 
+        self.ubee       = '0010'		# primeiros 4 dados que chegam (código do ubee)
+        self.liga_02    = 'S21\n'	# Resistência 2
+        self.desliga_02 = 'S22\n'
+        self.liga_04    = 'S31\n'	# Resistência 4
+        self.desliga_04 = 'S32\n'
+        self.liga_06    = 'S41\n'	# Resistência 6
+        self.desliga_06 = 'S42\n'
+        self.liga_05    = 'S51\n'	# Resistência 5
+        self.desliga_05 = 'S52\n'
+        self.liga_03    = 'S61\n'	# Resistência 3
+        self.desliga_03 = 'S62\n'
+        self.liga_01    = 'S71\n'	# Resistência 1
+        self.desliga_01 = 'S72\n'
 
         #####  testes #########################################################
 
@@ -101,7 +114,7 @@ class Main(QtGui.QMainWindow):
         #######################################################################
         # Adicionando a foto do layout do forno
     	self.ui.label_layoutForno.setScaledContents(True)
-    	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap("forno_layout.png"))
+    	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap("../imagens/forno_layout.png"))
         ## Remover depois				- Porta serial com4 pc de casa
         if sys.platform.startswith('win'):
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
