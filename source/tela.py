@@ -45,19 +45,30 @@ class Main(QtGui.QMainWindow):
         self.texto = ""
         self.tempo_pwm = 30
 
-        self.ubee       = '0010'		# primeiros 4 dados que chegam (código do ubee)
-        self.liga_02    = 'S21\n'	# Resistência 2
-        self.desliga_02 = 'S22\n'
-        self.liga_04    = 'S31\n'	# Resistência 4
-        self.desliga_04 = 'S32\n'
-        self.liga_06    = 'S41\n'	# Resistência 6
-        self.desliga_06 = 'S42\n'
-        self.liga_05    = 'S51\n'	# Resistência 5
-        self.desliga_05 = 'S52\n'
-        self.liga_03    = 'S61\n'	# Resistência 3
-        self.desliga_03 = 'S62\n'
-        self.liga_01    = 'S71\n'	# Resistência 1
-        self.desliga_01 = 'S72\n'
+
+        self.CHR_pedidoTemperaturas = 'T'
+        self.STR_emergencia = 'E'
+        self.STR_inicioTemperatura = '0001'
+        self.CHR_inicioDado = 'S'
+        self.CHR_fimDado = '\n'
+        self.CHR_ligaForno = '1'
+        self.CHR_desligaForno = '2'
+        self.CHR_setPotenciaPWM = 'P'
+        self.CHR_esteiraFrente = 'H'
+        self.CHR_esteiraTras = 'A'
+        self.CHR_esteiraParada = 'D'
+        self.CHR_tempoPWM = 'U'
+        self.CHR_check = 'K'
+        self.CHR_setADC = 'L'
+
+        self.pinR1 = '2'
+        self.pinR2 = '3'
+        self.pinR3 = '4'
+        self.pinR4 = '5'
+        self.pinR5 = '6'
+        self.pinR6 = '7'
+        self.pinResistencias = [self.pinR1, self.pinR2, self.pinR3, self.pinR4,
+                                self.pinR5, self.pinR6]
 
         #####  testes #########################################################
 
@@ -121,20 +132,20 @@ class Main(QtGui.QMainWindow):
 
         ####### Connexões #####################################################
         self.ui.horizontalSlider_graficoPeriodo.sliderReleased.connect(partial(graficos.tempo_grafico, self))
-        self.ui.horizontalSlider_r01.sliderReleased.connect(partial(comunicacao_serial.resistencia01, self))
-        self.ui.horizontalSlider_r02.sliderReleased.connect(partial(comunicacao_serial.resistencia02, self))
-        self.ui.horizontalSlider_r03.sliderReleased.connect(partial(comunicacao_serial.resistencia03, self))
-        self.ui.horizontalSlider_r04.sliderReleased.connect(partial(comunicacao_serial.resistencia04, self))
-        self.ui.horizontalSlider_r05.sliderReleased.connect(partial(comunicacao_serial.resistencia05, self))
-        self.ui.horizontalSlider_r06.sliderReleased.connect(partial(comunicacao_serial.resistencia06, self))
+        self.ui.horizontalSlider_r01.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 1))
+        self.ui.horizontalSlider_r02.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 2))
+        self.ui.horizontalSlider_r03.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 3))
+        self.ui.horizontalSlider_r04.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 4))
+        self.ui.horizontalSlider_r05.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 5))
+        self.ui.horizontalSlider_r06.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 6))
         self.ui.horizontalSlider_esteira.sliderReleased.connect(partial(comunicacao_serial.esteira, self, 'slider'))
         self.ui.radioButton_esteiraTras.pressed.connect(partial(comunicacao_serial.esteira,self,'tras'))
         self.ui.radioButton_esteiraFrente.pressed.connect(partial(comunicacao_serial.esteira, self,'frente'))
         self.ui.pushButton_esteiraParar.pressed.connect(partial(comunicacao_serial.esteira,self,'parar'))
         self.ui.pushButton_conectar.pressed.connect(partial(comunicacao_serial.conecta, self))
         self.ui.pushButton_emergencia.pressed.connect(partial(comunicacao_serial.emergencia, self))
-        self.ui.pushButton_serialAtualiza.pressed.connect(partial(comunicacao_serial.envia_serial,self, 'ST\n'))
-        self.ui.pushButton_updateInfo.pressed.connect(partial(comunicacao_serial.envia_serial,self, 'SK\n'))
+        self.ui.pushButton_serialAtualiza.pressed.connect(partial(comunicacao_serial.envia_serial,self,self.CHR_pedidoTemperaturas ))
+        self.ui.pushButton_updateInfo.pressed.connect(partial(comunicacao_serial.envia_serial,self,self.CHR_check))
         self.ui.pushButton_limpaTexto.pressed.connect(self.limpa_texto)
         self.ui.pushButton_serialEnviaLinha.pressed.connect(partial(comunicacao_serial.envia_manual, self))
         self.ui.pushButton_periodoPWM.pressed.connect(partial(comunicacao_serial.envia_setpwm, self))

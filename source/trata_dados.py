@@ -1,6 +1,8 @@
 # -*- coding: latin-1 -*-
 import time
 import numpy as np
+from PyQt4 import QtCore
+from functools import partial
 from modulo_global import *
 import comunicacao_serial, bd_sensores, bd_config
 
@@ -33,6 +35,7 @@ def converte_dado(dado,self):
         d[6] = float(self.S_06_A) + (float(self.S_06_B) * int(dado[16:20]))
         return d
     except:
+        self.alerta_toolbar('Erro converte_dado')
         return False
 
 def verifica_dado(dado,self):
@@ -63,31 +66,38 @@ def verifica_dado(dado,self):
             formato: S,aaa,bbb,ccc,ddd,eee,fff,ggg
             Onde os dados, a..f são o estado das resistencias e ggg é a
             velocidade da esteira.
+          Ou 'SK' - Parada total r1,..r6 = 0 e esteira parada
     '''
     try:
-        if dado[0] == 'S':
+        #print "DEBUG: recebido:", dado
+        if dado[0] == self.CHR_inicioDado:
             # tipo 1, pedido temperatura - 'S0001aaaabbbbccccddddeeeeffff'
-            if len(dado) == 29 and dado[1:29].isdigit() and dado[1:5] == '0001':
+            if len(dado) == 29 and dado[1:29].isdigit() \
+            and dado[1:5] == self.STR_inicioTemperatura:
                 d = converte_dado(dado,self)
                 if d[0]:
                     return 1, d
             # tipo 2, ligar ou desligar alguma resistencia - S'x''y'
-            elif len(dado) == 3 and dado[1].isdigit() and (dado[2] == '1' or dado[2] == '2'):
-                if ( int(dado[1]) > 1 and int(dado[1]) < 8):
+            elif len(dado) == 3 and dado[1].isdigit() and \
+            (dado[2] == self.CHR_ligaForno or dado[2] == self.CHR_desligaForno):
+                if ( dado[1] in self.pinResistencias):
                     return 2, dado[1:]
             # tipo 3, parada da esteira
-            elif dado == 'SD':
+            elif dado == self.CHR_inicioDado + self.CHR_esteiraParada:
                 return 3, dado
             # tipo 4, esteira para frente 0 a 100 - SH'xxx'
-            elif dado[0:2] == 'SH' and dado[2:].isdigit() and len(dado) < 6:
-                if len(dado) == 4 or dado == "SH100":
-                    return 4, dado.strip('SH')
+            elif dado[1] == self.CHR_esteiraFrente \
+            and dado[2:].isdigit() and len(dado) < 6:
+                if len(dado) == 4 or dado[2:] == "100":
+                    return 4, dado.strip(self.CHR_inicioDado + self.CHR_esteiraFrente)
             # tipo 5, esteira para tras 0 a 100 - SA'xxx'
-            elif dado[0:2] == 'SA' and dado[2:].isdigit() and len(dado) < 6:
-                if len(dado) == 4 or dado == "SA100":
-                    return 5, dado.strip('SA')
+            elif dado[1] == self.CHR_esteiraTras \
+            and dado[2:].isdigit() and len(dado) < 6:
+                if len(dado) == 4 or dado[2:] == "100":
+                    return 5, dado.strip(self.CHR_inicioDado + self.CHR_esteiraTras)
             # tipo 8, pwd esteira - SP'x''y''z'
-            elif dado[0:2] == 'SP' and len(dado) > 3 and len(dado) < 6:
+            elif dado[1] == self.CHR_setPotenciaPWM and len(dado) > 3 \
+            and len(dado) < 6:
                 if ( dado[2:].isdigit() and int(dado[3:]) < 101 ):
                     return 8, dado[2:]
             # tipo 9, retorno de informacao da esteira e resistencias
@@ -96,12 +106,16 @@ def verifica_dado(dado,self):
                 # rerifica se todos os dados chegaram corretamente:
                 if len(dado) > 7:
                     return 9, valores
+            elif dado[1] == self.STR_emergencia and len(dado) == 2:
+                return 9, [0,0,0,0,0,0,0,0]
         # tipo 6: Erro - envio de string incorreta ao microcontrolador
         elif 'Erro -' in dado:
             return 6, dado
     except:
+        self.alerta_toolbar('Erro verifica_dado-except')
         return False, False
     # Caso não seja nenhum dos tipos esperados: erro, tipo 7
+    self.alerta_toolbar('Erro verifica_dado-7')
     return 7, False
 
 def resultado_dado(self, tipo, d):
@@ -131,7 +145,6 @@ def resultado_dado(self, tipo, d):
         str(self.valor_resistencia05) + "," + str(self.valor_resistencia06) + "," + \
         str(self.valor_esteira)
         calibracao = str(bd_config.retorna_dados_config_calibracao())
-        print atuadores, calibracao
         # Adicionando os dados ao bd:
         # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
         if str(self.ui.label_nomeExperimento.text()) == 'Sem Nome':
@@ -144,88 +157,48 @@ def resultado_dado(self, tipo, d):
                           float(d[6]),
                           experimento=str(self.ui.label_nomeExperimento.text()),
                           calibracao=calibracao,atuadores=atuadores)
-    # Tipo 2 - Liga ou desliga alguma resistência.
-    elif tipo == 2:
-        # d[0] - Valores de 2 a 7 = as 6 resistências
-        if d[0] == '2':
-            # d[1] : 1 para ligar e 0 para desligar
-            if d[1] == '1':
-                # Altera o valor da variável de controle da resistência
-                self.valor_resistencia01 = 100
-                # Altera a barra da GUI para a respectiva resistência
-                self.ui.progressBar_r01.setValue(100)
+    # Tipo 2 ou 8 - Liga ou desliga alguma resistência (total o pwm).
+    elif tipo == 2 or tipo == 8:
+        # tipo 2 liga ou desliga completamente uma resistência
+        if tipo == 2:
+            if d[1] == self.CHR_ligaForno:
+                valor_resistencia = 100
+            elif d[1] == self.CHR_desligaForno:
+                valor_resistencia = 0
             else:
-                self.valor_resistencia01 = 0
-                self.ui.progressBar_r01.setValue(0)
-        # Idem para as outras 5 resistências
-        elif d[0] == '3':									# Resustência 2
-            if d[1] == '1':
-                self.valor_resistencia02 = 100
-                self.ui.progressBar_r02.setValue(100)
-            else:
-                self.valor_resistencia02 = 0
-                self.ui.progressBar_r02.setValue(0)
-        elif d[0] == '4':									# Resustência 3
-            if d[1] == '1':
-                self.valor_resistencia03 = 100
-                self.ui.progressBar_r03.setValue(100)
-            else:
-                self.valor_resistencia03 = 0
-                self.ui.progressBar_r03.setValue(0)
-        elif d[0] == '5':									# Resustência 4
-            if d[1] == '1':
-                self.valor_resistencia04 = 100
-                self.ui.progressBar_r04.setValue(100)
-            else:
-                self.valor_resistencia04 = 0
-                self.ui.progressBar_r04.setValue(0)
-        elif d[0] == '6':									# Resustência 5
-            if d[1] == '1':
-                self.valor_resistencia05 = 100
-                self.ui.progressBar_r05.setValue(100)
-            else:
-                self.valor_resistencia05 = 0
-                self.ui.progressBar_r05.setValue(0)
-        elif d[0] == '7':									# Resustência 6
-            if d[1] == '1':
-                self.valor_resistencia06 = 100
-                self.ui.progressBar_r06.setValue(100)
-            else:
-                self.valor_resistencia06 = 0
-                self.ui.progressBar_r06.setValue(0)
-
-    # tipo 8 - Potência parcial de uma resistência
-    elif tipo == 8:
-        # d[0] - Valores de 2 a 7 - respectivo a cada resistência
-        if d[0] == '2':
-            # Altera o valor da variável de controle da resistência
-            self.valor_resistencia01 = int(d[1:])
-            # Altera a barra da GUI para a respectiva resistência
-            self.ui.progressBar_r01.setValue(int(d[1:]))
-        # Idem para as outas 5 resistências
-        elif d[0] == '3':
-            self.valor_resistencia02 = int(d[1:])
-            self.ui.progressBar_r02.setValue(int(d[1:]))
-        elif d[0] == '4':
-            self.valor_resistencia03 = int(d[1:])
-            self.ui.progressBar_r03.setValue(int(d[1:]))
-        elif d[0] == '5':
-            self.valor_resistencia04 = int(d[1:])
-            self.ui.progressBar_r04.setValue(int(d[1:]))
-        elif d[0] == '6':
-            self.valor_resistencia05 = int(d[1:])
-            self.ui.progressBar_r05.setValue(int(d[1:]))
-        elif d[0] == '7':
-            self.valor_resistencia06 = int(d[1:])
-            self.ui.progressBar_r06.setValue(int(d[1:]))
+                self.alerta_toolbar('Erro resultado_dado-tipo2')
+                return None
+        # tipo 8 - Potência parcial de uma resistência
+        elif tipo == 8:
+            valor_resistencia = int(d[1:])
+        else:
+            self.alerta_toolbar('Erro resultado_dado-tipo8')
+            return None
+        # d[0] - Valor do numero das resistencia
+        if d[0] == self.pinR1:
+            self.valor_resistencia01 = valor_resistencia
+            self.ui.progressBar_r01.setValue(valor_resistencia)
+        elif d[0] == self.pinR2:
+            self.valor_resistencia02 = valor_resistencia
+            self.ui.progressBar_r02.setValue(valor_resistencia)
+        elif d[0] == self.pinR3:
+            self.valor_resistencia03 = valor_resistencia
+            self.ui.progressBar_r03.setValue(valor_resistencia)
+        elif d[0] == self.pinR4:
+            self.valor_resistencia04 = valor_resistencia
+            self.ui.progressBar_r04.setValue(valor_resistencia)
+        elif d[0] == self.pinR5:
+            self.valor_resistencia05 = valor_resistencia
+            self.ui.progressBar_r05.setValue(valor_resistencia)
+        elif d[0] == self.pinR6:
+            self.valor_resistencia06 = valor_resistencia
+            self.ui.progressBar_r06.setValue(valor_resistencia)
     # Tipo 3 - Para completamente a esteira
     elif tipo == 3:
         self.valor_esteira = 0
     # tipo 4 - Velocidade da esteira para frente (1 a 99)
     elif tipo == 4:
-        print "alterando esteira (4)", d
         self.valor_esteira = int(d)
-        print "valor_esteira", self.valor_esteira
     # Tipo 5 - Velocidade da esteira para tras (1 a 99)
     elif tipo == 5:
         self.valor_esteira = -1*int(d)
@@ -241,4 +214,4 @@ def resultado_dado(self, tipo, d):
         # Atualiza os slides e controles da GUI
         QtCore.QTimer.singleShot(10, partial(comunicacao_serial.teste_retorno,self))
     else:
-        print "erro no recebimento !!!!!!!"
+        self.alerta_toolbar('Erro resultado_dado-else')

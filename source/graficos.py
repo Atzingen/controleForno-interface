@@ -50,20 +50,23 @@ def plotar_sensores(self):
     try:
         if np.size(d[:,0]) > 1:                                                     # Adiciona os valores ao eixo do gráfico caso a checkbox do respectivo sensor
             if self.ui.checkBox_sensor1.isChecked():                                        # esteja marcada
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,3])
+                self.ui.widget.canvas.ax.plot(d[:,2],d[:,3],label="R1")
             if self.ui.checkBox_sensor2.isChecked():                                      # Repete o procedimento para todos os sensores
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,4])
+                self.ui.widget.canvas.ax.plot(d[:,2],d[:,4],label="R2")
             if self.ui.checkBox_sensor3.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,5])
+                self.ui.widget.canvas.ax.plot(d[:,2],d[:,5],label="R3")
             if self.ui.checkBox_sensor4.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,6])
+                self.ui.widget.canvas.ax.plot(d[:,2],d[:,6],label="R4")
             if self.ui.checkBox_sensor5.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,7])
+                self.ui.widget.canvas.ax.plot(d[:,2],d[:,7],label="R5")
             if self.ui.checkBox_sensor6.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,8])
+                self.ui.widget.canvas.ax.plot(d[:,2],d[:,8],label="R6")
+            self.ui.widget.canvas.ax.legend(loc='lower left',
+                frameon=True,shadow=True, fancybox=True)
             self.ui.widget.canvas.ax.set_title('Sensores Forno')
             self.ui.widget.canvas.ax.set_xlabel('tempo (minutos)')
             self.ui.widget.canvas.ax.set_ylabel('temperatura (Celcius)')
+            self.ui.widget.canvas.ax.grid(True)
             self.ui.widget.canvas.draw()
     except:
         self.alerta_toolbar("Erro: Grafico Sensores")
