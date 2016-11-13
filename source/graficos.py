@@ -5,7 +5,8 @@ from PyQt4 import QtGui
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from functools import partial
-import bd_sensores, bd_perfil
+import banco.bd_sensores as bd_sensores
+import banco.bd_perfil as bd_perfil
 
 '''
 Classes para tela e gráfico.

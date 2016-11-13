@@ -3,7 +3,9 @@ import ast
 from functools import partial
 import numpy as np
 from PyQt4 import QtGui
-import bd_perfil, bd_config, graficos, trata_dados
+import banco.bd_perfil as bd_perfil
+import banco.bd_config as bd_config
+import graficos, trata_dados
 
 def automatico_perfil_update(self,tipo,estados):
     '''

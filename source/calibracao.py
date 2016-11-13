@@ -1,6 +1,8 @@
 # -*- coding: latin-1 -*-
 from PyQt4 import QtGui
-import bd_calibracao, bd_config, automatico
+import banco.bd_calibracao as bd_calibracao
+import banco.bd_config as bd_config
+import automatico
 
 
 def salva_calibracao(self):

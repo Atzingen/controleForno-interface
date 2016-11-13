@@ -7,7 +7,7 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEBase import MIMEBase
 from email import Encoders
-import bd_sensores
+import banco.bd_sensores as bd_sensores
 import modulo_global
 
 def local_arquivo(self):

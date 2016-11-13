@@ -6,7 +6,8 @@ from functools import partial
 from PyQt4 import QtCore
 # Imports Locais
 from modulo_global import *
-import exporta_experimentos, bd_sensores, trata_dados
+import exporta_experimentos, trata_dados
+import banco.bd_sensores as bd_sensores
 
 def serial_ports():
     '''

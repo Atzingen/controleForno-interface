@@ -4,7 +4,9 @@ import numpy as np
 from PyQt4 import QtCore
 from functools import partial
 from modulo_global import *
-import comunicacao_serial, bd_sensores, bd_config
+import comunicacao_serial
+import banco.bd_sensores as bd_sensores
+import banco.bd_config as bd_sensores
 
 def converte_numero(s):
     '''
@@ -20,6 +22,15 @@ def converte_dado(dado,self):
     '''
     Função que recebe o dado como string e particiona em um vetor com 7 pos.
     A primeira posição é o tempo atual e as outras 6 são os dados dos sensores
+
+    Return:
+        d[0] -> timestamp do instante em que o dado foi recebido
+        d[1] -> float sensor_esteira
+        d[2] -> float sensor_teto1
+        d[3] -> float sensor_teto2
+        d[4] -> float sensor_lateral1
+        d[5] -> float sensor_lateral2
+        d[6] -> float sensor_lateral3
     '''
     try:
         dado = dado.strip('S')
@@ -27,12 +38,18 @@ def converte_dado(dado,self):
         # captura a instante em que a coleta foi feita
         d[0] = time.time()
         # sensores 1,..,6
-        d[1] = float(self.S_01_A) + (float(self.S_01_B) * int(dado[4:8]))
-        d[2] = float(self.S_02_A) + (float(self.S_02_B) * int(dado[8:12]))
-        d[3] = float(self.S_03_A) + (float(self.S_03_B) * int(dado[24:28]))
-        d[4] = float(self.S_04_A) + (float(self.S_04_B) * int(dado[12:16]))
-        d[5] = float(self.S_05_A) + (float(self.S_05_B) * int(dado[20:24]))
-        d[6] = float(self.S_06_A) + (float(self.S_06_B) * int(dado[16:20]))
+        d[1] = float(self.S_01_A) + (float(self.S_01_B) * \
+               int(dado[self.pos_sensor_esteira :self.pos_sensor_esteira + 4]))
+        d[2] = float(self.S_02_A) + (float(self.S_02_B) * \
+               int(dado[self.pos_sensor_teto1 :self.pos_sensor_teto1 + 4]))
+        d[3] = float(self.S_03_A) + (float(self.S_03_B) * \
+               int(dado[self.pos_sensor_teto2 :self.pos_sensor_teto2 + 4]))
+        d[4] = float(self.S_04_A) + (float(self.S_04_B) * \
+               int(dado[self.pos_sensor_lateral1 :self.pos_sensor_lateral1 + 4]))
+        d[5] = float(self.S_05_A) + (float(self.S_05_B) * \
+               int(dado[self.pos_sensor_lateral2 :self.pos_sensor_lateral2 + 4]))
+        d[6] = float(self.S_06_A) + (float(self.S_06_B) * \
+               int(dado[self.pos_sensor_lateral3 :self.pos_sensor_lateral3 + 4]))
         return d
     except:
         self.alerta_toolbar('Erro converte_dado')

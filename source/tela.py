@@ -4,7 +4,9 @@ import sys, os, time, platform, serial
 from functools import partial
 from PyQt4 import QtGui, QtCore
 from modulo_global import *
-import bd_config, bd_calibracao, bd_sensores
+import banco.bd_config as bd_config
+import banco.bd_calibracao as bd_calibracao
+import banco.bd_sensores as bd_sensores
 import forno_gui, calibracao, comunicacao_serial, automatico
 import camera_rp, graficos, exporta_experimentos
 
@@ -45,7 +47,6 @@ class Main(QtGui.QMainWindow):
         self.texto = ""
         self.tempo_pwm = 30
 
-
         self.CHR_pedidoTemperaturas = 'T'
         self.STR_emergencia = 'E'
         self.STR_inicioTemperatura = '0001'
@@ -61,11 +62,18 @@ class Main(QtGui.QMainWindow):
         self.CHR_check = 'K'
         self.CHR_setADC = 'L'
 
-        self.pinR1 = '2'
-        self.pinR2 = '3'
-        self.pinR3 = '4'
-        self.pinR4 = '5'
-        self.pinR5 = '6'
+        self.pos_sensor_esteira = 12
+        self.pos_sensor_teto1 = 8
+        self.pos_sensor_teto2 = 24
+        self.pos_sensor_lateral1 = 20
+        self.pos_sensor_lateral2 = 4
+        self.pos_sensor_lateral3 = 16
+
+        self.pinR1 = '3'
+        self.pinR2 = '5'
+        self.pinR3 = '2'
+        self.pinR4 = '6'
+        self.pinR5 = '4'
         self.pinR6 = '7'
         self.pinResistencias = [self.pinR1, self.pinR2, self.pinR3, self.pinR4,
                                 self.pinR5, self.pinR6]
@@ -125,7 +133,9 @@ class Main(QtGui.QMainWindow):
         #######################################################################
         # Adicionando a foto do layout do forno
     	self.ui.label_layoutForno.setScaledContents(True)
-    	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap("../imagens/forno_layout.png"))
+        caminho_inicial, _ = local_parent()
+        caminho_foto_forno = caminho_inicial + '/imagens/forno_layout.png'
+    	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap(caminho_foto_forno))
         ## Remover depois				- Porta serial com4 pc de casa
         if sys.platform.startswith('win'):
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
@@ -240,20 +250,28 @@ class Main(QtGui.QMainWindow):
         #self.ui.pushButton_perfilResistenciaFim.setEnabled(estado)
 
     def add_portas_disponiveis(self):
-        ''' M�todo que altera os valores da combobox que mostra as portas dispon�veis
-		Os valores s�o retirados da fun��o serial_ports '''
-        escolha = self.ui.comboBox_portaSerial.currentIndex()  # Salva a porta atual escolhida
-        self.ui.comboBox_portaSerial.blockSignals(True)  # Bloqueia sinais do PyQt na combobox para evitar que a fun��o seja chamada novamente
-        self.ui.comboBox_portaSerial.clear()  # Limpa os itens da combobox
-        self.ui.comboBox_portaSerial.addItem('Atualiza')  # Adiciona uma op��o de atualiza��o das portas
-        self.ui.comboBox_portaSerial.addItem('/')  # Adiciona um item para a raiz do sistema
-        ports = comunicacao_serial.serial_ports()  # chama a fun��o que lista as portas
+        '''
+        Metodo que altera os valores da combobox que mostra as portas disponíveis
+		Os valores são retirados da função serial_ports
+        '''
+        # Salva a porta atual escolhida
+        escolha = self.ui.comboBox_portaSerial.currentIndex()
+        # Bloqueia sinais do PyQt na combobox para evitar que a fun��o seja chamada novamente
+        self.ui.comboBox_portaSerial.blockSignals(True)
+        self.ui.comboBox_portaSerial.clear()
+        self.ui.comboBox_portaSerial.addItem('Atualiza')
+        self.ui.comboBox_portaSerial.addItem('/')
+        ports = comunicacao_serial.serial_ports()
         for port in ports:
-            self.ui.comboBox_portaSerial.addItem(port)  # Adiciona as portas a lista da combobox
-        self.ui.comboBox_portaSerial.blockSignals(False)  # Desabitita o bloqueio de sinal do PyQt para que esta fun��o possa ser chamada novamente no futuro
-        self.ui.comboBox_portaSerial.setCurrentIndex(escolha)  # Volta para a porta escolhida
+            self.ui.comboBox_portaSerial.addItem(port)
+        # Desabitita o bloqueio de sinal do PyQt para que esta função possa
+        # ser chamada novamente no futuro.
+        self.ui.comboBox_portaSerial.blockSignals(False)
+        self.ui.comboBox_portaSerial.setCurrentIndex(escolha)
 
     def limpa_texto(self):
-        ''' Limpa as 3 textbox que informam os dados recebidos '''
+        '''
+        Limpa as 3 textbox que informam os dados recebidos
+        '''
         self.ui.textEdit_dadosSerial.clear()
         self.ui.textEdit_temperatura.clear()
