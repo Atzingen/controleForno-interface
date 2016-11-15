@@ -102,11 +102,12 @@ def plota_perfil(self,tipo,posicao_atual):
     '''
     Plota o gráfico mostrando o perfil escolhido
     '''
-    if tipo == 'resistencia':
-        escolha = unicode(self.ui.comboBox_perfilResistencia.currentText())
-        dados = bd_perfil.leitura_perfil(escolha,'resistencia')
-        indice = int(self.ui.comboBox_displayPerfilResistencia.currentIndex())
-        self.ui.widget_perfilResistencia.canvas.ax.clear()
+    if tipo == 'temperatura':
+        nomes_drop = {0:'todos',1:'t_ar',2:'t_esteira'}
+        escolha = unicode(self.ui.comboBox_perfilTemperatura.currentText())
+        dados = bd_perfil.leitura_perfil(escolha,'temperatura')
+        indice = int(self.ui.comboBox_displayPerfilTemperatura.currentIndex())
+        self.ui.widget_perfilTemperatura.canvas.ax.clear()
     elif tipo == 'potencia':
         escolha = unicode(self.ui.comboBox_perfilPotencia.currentText())
         dados = bd_perfil.leitura_perfil(escolha,'potencia')
@@ -118,19 +119,20 @@ def plota_perfil(self,tipo,posicao_atual):
         for i in v:
             x.append(i[0])
             y.append(i[1])
-        if tipo == 'resistencia':
-            self.ui.widget_perfilResistencia.canvas.ax.plot(x,y,label="R" + str(indice))
-            self.ui.widget_perfilResistencia.canvas.ax.legend(loc='lower right',
+        if tipo == 'temperatura':
+            print x, y
+            self.ui.widget_perfilTemperatura.canvas.ax.plot(x,y,label=nomes_drop[indice])
+            self.ui.widget_perfilTemperatura.canvas.ax.legend(loc='lower right',
                 frameon=True,shadow=True, fancybox=True)
             if posicao_atual:
-                self.ui.widget_perfilResistencia.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
-                                    (posicao_atual[2], posicao_atual[3]), 'k--',)
-            self.ui.widget_perfilResistencia.canvas.ax.set_title('Perfil Resistencias')
-            self.ui.widget_perfilResistencia.canvas.ax.set_xlabel('Tempo (minutos)')
-            self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
-            self.ui.widget_perfilResistencia.canvas.ax.set_ylim([0,400])
-            self.ui.widget_perfilResistencia.canvas.ax.grid(True)
-            self.ui.widget_perfilResistencia.canvas.draw()
+                self.ui.widget_perfilTemperatura.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
+                                (posicao_atual[2], posicao_atual[3]), 'k--')
+            self.ui.widget_perfilTemperatura.canvas.ax.set_title('Perfil temperatura')
+            self.ui.widget_perfilTemperatura.canvas.ax.set_xlabel('Tempo (minutos)')
+            self.ui.widget_perfilTemperatura.canvas.ax.set_ylabel('Temperatura (K)')
+            self.ui.widget_perfilTemperatura.canvas.ax.set_ylim([0,300])
+            self.ui.widget_perfilTemperatura.canvas.ax.grid(True)
+            self.ui.widget_perfilTemperatura.canvas.draw()
         elif tipo == 'potencia':
             self.ui.widget_perfilPotencia.canvas.ax.plot(x,y,label="R" + str(indice))
             self.ui.widget_perfilPotencia.canvas.ax.legend(loc='lower right',
@@ -147,23 +149,27 @@ def plota_perfil(self,tipo,posicao_atual):
     elif indice == 0:
         for elemento in range(2,8):
             x , y = [], []
-            v = ast.literal_eval(dados[elemento])
-            for i in v:
-                x.append(i[0])
-                y.append(i[1])
-            if tipo == 'resistencia':
-                self.ui.widget_perfilResistencia.canvas.ax.set_title('Perfil Resistencias')
-                self.ui.widget_perfilResistencia.canvas.ax.set_xlabel('Tempo (minutos)')
-                self.ui.widget_perfilResistencia.canvas.ax.set_ylabel('Resistencia ()%)')
-                self.ui.widget_perfilResistencia.canvas.ax.set_ylim([0,400])
-                self.ui.widget_perfilResistencia.canvas.ax.grid(True)
-                self.ui.widget_perfilResistencia.canvas.ax.plot(x,y,label="R" + str(elemento-1))
-                self.ui.widget_perfilResistencia.canvas.ax.legend(loc='lower right',
+            if tipo == 'temperatura' and elemento < 4:
+                v = ast.literal_eval(dados[elemento])
+                for i in v:
+                    x.append(i[0])
+                    y.append(i[1])
+                self.ui.widget_perfilTemperatura.canvas.ax.set_title('Perfil temperatura')
+                self.ui.widget_perfilTemperatura.canvas.ax.set_xlabel('Tempo (minutos)')
+                self.ui.widget_perfilTemperatura.canvas.ax.set_ylabel('Temperatura (K)')
+                self.ui.widget_perfilTemperatura.canvas.ax.set_ylim([0,300])
+                self.ui.widget_perfilTemperatura.canvas.ax.grid(True)
+                self.ui.widget_perfilTemperatura.canvas.ax.plot(x,y,label=nomes_drop[elemento-1])
+                self.ui.widget_perfilTemperatura.canvas.ax.legend(loc='lower right',
                     frameon=True,shadow=True, fancybox=True, ncol=2)
                 if posicao_atual:
-                    self.ui.widget_perfilResistencia.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
+                    self.ui.widget_perfilTemperatura.canvas.ax.plot((posicao_atual[0], posicao_atual[1]),
                                         (posicao_atual[2], posicao_atual[3]), 'k--')
             elif tipo == 'potencia':
+                v = ast.literal_eval(dados[elemento])
+                for i in v:
+                    x.append(i[0])
+                    y.append(i[1])
                 self.ui.widget_perfilPotencia.canvas.ax.plot(x,y,label=str('R' + str(elemento-1)))
                 self.ui.widget_perfilPotencia.canvas.ax.legend(loc='lower right',
                     frameon=True,shadow=True, fancybox=True, ncol=2)
@@ -175,8 +181,8 @@ def plota_perfil(self,tipo,posicao_atual):
                 self.ui.widget_perfilPotencia.canvas.ax.set_xlabel('Tempo (minutos)')
                 self.ui.widget_perfilPotencia.canvas.ax.set_ylabel('Potencia ()%)')
                 self.ui.widget_perfilPotencia.canvas.ax.set_ylim([0,110])
-        if tipo == 'resistencia':
-            self.ui.widget_perfilResistencia.canvas.draw()
+        if tipo == 'temperatura':
+            self.ui.widget_perfilTemperatura.canvas.draw()
         elif tipo == 'potencia':
             self.ui.widget_perfilPotencia.canvas.draw()
     else:

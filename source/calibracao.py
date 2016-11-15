@@ -41,6 +41,7 @@ def salva_calibracao(self):
             bd_calibracao.insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
 
 def deleta_calibracao(self, tipo):
+    print 'inicio', tipo
     try:
         if tipo == 'Fit':
             numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
@@ -48,16 +49,16 @@ def deleta_calibracao(self, tipo):
         elif tipo == 'potencia':
             numero_escolha = self.ui.comboBox_perfilPotencia.currentIndex()
             escolha = self.ui.comboBox_perfilPotencia.itemText(numero_escolha)
-        elif tipo == 'resistencia':
-            numero_escolha = self.ui.comboBox_perfilResistencia.currentIndex()
-            escolha = self.ui.comboBox_perfilResistencia.itemText(numero_escolha)
+        elif tipo == 'temperatura':
+            numero_escolha = self.ui.comboBox_perfilTemperatura.currentIndex()
+            escolha = self.ui.comboBox_perfilTemperatura.itemText(numero_escolha)
         else:
-            self.alerta_toolbar("nome ja existe")
-            print "erro - deleta_calibracao"
+            self.alerta_toolbar("Tipo" + str(tipo) + " nao existe")
             return None
         reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que deletar a calibracao" + escolha + " ?",
     										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:
+            print escolha, tipo
             bd_calibracao.deleta_calibracao_bd(str(escolha),tipo)
             if (str(escolha)==bd_config.retorna_dados_config_calibracao()):
                 primeiro_nome = self.ui.comboBox_fitLinear.itemText(0)
@@ -65,7 +66,8 @@ def deleta_calibracao(self, tipo):
             lista_calibracoes(self)
             automatico.lista_perfil_potencia(self)
             automatico.lista_perfil_resistencia(self)
-    except:
+    except Exception as e:
+        print e
         pass
 
 def atualiza_lineEdit_calibracao(self):

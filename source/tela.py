@@ -8,7 +8,7 @@ import banco.bd_config as bd_config
 import banco.bd_calibracao as bd_calibracao
 import banco.bd_sensores as bd_sensores
 import forno_gui, calibracao, comunicacao_serial, automatico
-import camera_rp, graficos, exporta_experimentos
+import camera_rp, graficos, exporta_experimentos, controle_pid
 
 class Main(QtGui.QMainWindow):
     '''
@@ -19,8 +19,8 @@ class Main(QtGui.QMainWindow):
 	'''
     def __init__(self):
         '''
-            Construtor do objeto da tela principal. Executa quando o programa
-            inicia e cria o objeto tela principal.
+        Construtor do objeto da tela principal. Executa quando o programa
+        inicia e cria o objeto tela principal.
         '''
         # Iniciando a ui
         QtGui.QMainWindow.__init__(self)
@@ -45,7 +45,7 @@ class Main(QtGui.QMainWindow):
         self.s = serial.Serial()
 
         self.texto = ""
-        self.tempo_pwm = 30
+        self.tempo_pwm = 3
 
         self.CHR_pedidoTemperaturas = 'T'
         self.STR_emergencia = 'E'
@@ -78,8 +78,10 @@ class Main(QtGui.QMainWindow):
         self.pinResistencias = [self.pinR1, self.pinR2, self.pinR3, self.pinR4,
                                 self.pinR5, self.pinR6]
 
-        #####  testes #########################################################
+        self.pid = controle_pid.PID()
+        controle_pid.update_valores_pid(self)
 
+        #####  testes ############################################################
 
         ##### Efeitos visuais para outros OS (teste)
         if (platform.system() == 'Darwin'):
@@ -122,13 +124,16 @@ class Main(QtGui.QMainWindow):
         self.ui.dateTimeEdit_inicio.setDateTime(antes)
         self.ui.dateTimeEdit_fim.setDateTime(agora)
 
+        #######  Atualizando os valores do controle PID
+        controle_pid.update_label_pid(self)
+
         #######  Atualizando os valores das portas no inicio do programa #####
         self.add_portas_disponiveis()
 
         ####### Atualiza o dropbox da calibracao ##############################
         calibracao.lista_calibracoes(self)
         automatico.lista_perfil_potencia(self)
-        automatico.lista_perfil_resistencia(self)
+        automatico.lista_perfil_temperatura(self)
 
         #######################################################################
         # Adicionando a foto do layout do forno
@@ -141,6 +146,7 @@ class Main(QtGui.QMainWindow):
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
 
         ####### Connexões #####################################################
+        self.ui.pushButton_pidUpdate.pressed.connect(partial(controle_pid.update_config_pid,self))
         self.ui.horizontalSlider_graficoPeriodo.sliderReleased.connect(partial(graficos.tempo_grafico, self))
         self.ui.horizontalSlider_r01.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 1))
         self.ui.horizontalSlider_r02.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 2))
@@ -163,7 +169,7 @@ class Main(QtGui.QMainWindow):
         self.ui.comboBox_portaSerial.activated.connect(self.add_portas_disponiveis)
         self.ui.comboBox_fitLinear.activated.connect(partial(calibracao.lista_calibracoes,self))
         self.ui.comboBox_perfilPotencia.activated.connect(partial(automatico.lista_perfil_potencia,self))
-        self.ui.comboBox_perfilResistencia.activated.connect(partial(automatico.lista_perfil_resistencia,self))
+        self.ui.comboBox_perfilTemperatura.activated.connect(partial(automatico.lista_perfil_temperatura,self))
         self.ui.radioButton_hold.clicked.connect(partial(comunicacao_serial.hold, self))
         self.ui.pushButton_tiraFoto.pressed.connect(partial(camera_rp.tira_foto, self))
         self.ui.checkBox_cameraAutoUpdate.stateChanged.connect(partial(camera_rp.foto_update, self))
@@ -178,13 +184,13 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_localArquivo.pressed.connect(partial(exporta_experimentos.local_arquivo, self.ui))
         self.ui.pushButton_salvarFit.pressed.connect(partial(calibracao.salva_calibracao,self))
         self.ui.comboBox_displayPerfilPotencia.activated.connect(partial(graficos.plota_perfil,self,'potencia',None))
-        self.ui.comboBox_displayPerfilResistencia.activated.connect(partial(graficos.plota_perfil,self,'resistencia',None))
-        self.ui.pushButton_NovoPerfilResistencia.pressed.connect(partial(automatico.novo_perfil,'resistencia'))
-        self.ui.pushButton_NovoPerfilPotencia.pressed.connect(partial(automatico.novo_perfil,'potencia'))
-        self.ui.pushButton_deletarFit.pressed.connect(partial(calibracao.deleta_calibracao,'Fit'))
-        self.ui.pushButton_apagarPerfilPotencia.pressed.connect(partial(calibracao.deleta_calibracao,'potencia'))
-        self.ui.pushButton_apagarPerfilResistencia.pressed.connect(partial(calibracao.deleta_calibracao,'resistencia'))
-        self.ui.pushButton_perfilResistencia.pressed.connect(partial(automatico.inicia_perfil,self,'resistencia'))
+        self.ui.comboBox_displayPerfilTemperatura.activated.connect(partial(graficos.plota_perfil,self,'temperatura',None))
+        self.ui.pushButton_NovoPerfilTemperatura.pressed.connect(partial(automatico.novo_perfil,self,'temperatura'))
+        self.ui.pushButton_NovoPerfilPotencia.pressed.connect(partial(automatico.novo_perfil,self,'potencia'))
+        self.ui.pushButton_deletarFit.pressed.connect(partial(calibracao.deleta_calibracao,self,'Fit'))
+        self.ui.pushButton_apagarPerfilPotencia.pressed.connect(partial(calibracao.deleta_calibracao,self,'potencia'))
+        self.ui.pushButton_apagarPerfilTemperatura.pressed.connect(partial(calibracao.deleta_calibracao,self,'temperatura'))
+        self.ui.pushButton_perfilTemperatura.pressed.connect(partial(automatico.inicia_perfil,self,'temperatura'))
         self.ui.pushButton_perfilPotencia.pressed.connect(partial(automatico.inicia_perfil,self,'potencia'))
 
     #####################  Funções da GUI #################################

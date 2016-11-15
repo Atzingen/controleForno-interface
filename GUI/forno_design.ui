@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>798</width>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -564,21 +564,21 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>100</width>
-         <height>30</height>
+         <width>581</width>
+         <height>382</height>
         </rect>
        </property>
        <attribute name="label">
-        <string>Perfil Resistencia / Tempo</string>
+        <string>Perfil Temperatura / Tempo</string>
        </attribute>
-       <widget class="matplotlibWidget" name="widget_perfilResistencia" native="true">
+       <widget class="matplotlibWidget" name="widget_perfilTemperatura" native="true">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -603,7 +603,7 @@
         <property name="title">
          <string>Configuracao</string>
         </property>
-        <widget class="QPushButton" name="pushButton_apagarPerfilResistencia">
+        <widget class="QPushButton" name="pushButton_apagarPerfilTemperatura">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -616,7 +616,7 @@
           <string>Apagar</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_NovoPerfilResistencia">
+        <widget class="QPushButton" name="pushButton_NovoPerfilTemperatura">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -629,7 +629,7 @@
           <string>Novo</string>
          </property>
         </widget>
-        <widget class="QComboBox" name="comboBox_perfilResistencia">
+        <widget class="QComboBox" name="comboBox_perfilTemperatura">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -658,7 +658,7 @@
         <property name="title">
          <string>Controle</string>
         </property>
-        <widget class="QPushButton" name="pushButton_perfilResistencia">
+        <widget class="QPushButton" name="pushButton_perfilTemperatura">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -672,7 +672,7 @@
          </property>
         </widget>
        </widget>
-       <widget class="QComboBox" name="comboBox_displayPerfilResistencia">
+       <widget class="QComboBox" name="comboBox_displayPerfilTemperatura">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -683,37 +683,17 @@
         </property>
         <item>
          <property name="text">
-          <string>Perfil Todos</string>
+          <string>Ambos</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Perfil R1</string>
+          <string>T Ar</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Perfil R2</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Perfil R3</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Perfil R4</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Perfil R5</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Perfil R6</string>
+          <string>T Esteira</string>
          </property>
         </item>
        </widget>
@@ -739,8 +719,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>581</width>
-         <height>382</height>
+         <width>100</width>
+         <height>30</height>
         </rect>
        </property>
        <attribute name="label">
@@ -921,101 +901,124 @@
      <attribute name="title">
       <string>Grafico</string>
      </attribute>
-     <widget class="matplotlibWidget" name="widget" native="true">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
+     <widget class="QTabWidget" name="tabWidget_4">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>581</width>
-        <height>421</height>
+        <width>591</width>
+        <height>501</height>
        </rect>
       </property>
-     </widget>
-     <widget class="QSlider" name="horizontalSlider_graficoPeriodo">
-      <property name="geometry">
-       <rect>
-        <x>90</x>
-        <y>480</y>
-        <width>431</width>
-        <height>21</height>
-       </rect>
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>180</number>
-      </property>
-      <property name="value">
-       <number>60</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_10">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>480</y>
-        <width>51</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1 min</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_11">
-      <property name="geometry">
-       <rect>
-        <x>540</x>
-        <y>480</y>
-        <width>61</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>180 min</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_graficoTempo">
-      <property name="geometry">
-       <rect>
-        <x>240</x>
-        <y>450</y>
-        <width>151</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Delta T = 60min</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_graficoAuto">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>450</y>
-        <width>61</width>
-        <height>18</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Auto</string>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
+      <widget class="QWidget" name="tab_11">
+       <attribute name="title">
+        <string>grafico Sensores</string>
+       </attribute>
+       <widget class="QSlider" name="horizontalSlider_graficoPeriodo">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>430</y>
+          <width>431</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>180</number>
+        </property>
+        <property name="value">
+         <number>60</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_graficoTempo">
+        <property name="geometry">
+         <rect>
+          <x>210</x>
+          <y>410</y>
+          <width>151</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Delta T = 60min</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="checkBox_graficoAuto">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>410</y>
+          <width>61</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Auto</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>430</y>
+          <width>51</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>1 min</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>510</x>
+          <y>430</y>
+          <width>61</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>180 min</string>
+        </property>
+       </widget>
+       <widget class="matplotlibWidget" name="widget" native="true">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>561</width>
+          <height>391</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_12">
+       <attribute name="title">
+        <string>Simulacao Forno</string>
+       </attribute>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
@@ -1849,7 +1852,7 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>141</width>
+        <width>151</width>
         <height>121</height>
        </rect>
       </property>
@@ -1947,7 +1950,7 @@
        <rect>
         <x>10</x>
         <y>140</y>
-        <width>141</width>
+        <width>151</width>
         <height>71</height>
        </rect>
       </property>
@@ -2253,9 +2256,9 @@
      <widget class="QGroupBox" name="groupBox_8">
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>170</x>
         <y>10</y>
-        <width>181</width>
+        <width>171</width>
         <height>201</height>
        </rect>
       </property>
@@ -2265,9 +2268,9 @@
       <widget class="QCheckBox" name="checkBox_sensor2">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>30</x>
          <y>70</y>
-         <width>85</width>
+         <width>61</width>
          <height>18</height>
         </rect>
        </property>
@@ -2281,9 +2284,9 @@
       <widget class="QCheckBox" name="checkBox_sensor3">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>30</x>
          <y>110</y>
-         <width>85</width>
+         <width>61</width>
          <height>18</height>
         </rect>
        </property>
@@ -2313,9 +2316,9 @@
       <widget class="QCheckBox" name="checkBox_sensor1">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>30</x>
          <y>30</y>
-         <width>85</width>
+         <width>61</width>
          <height>18</height>
         </rect>
        </property>
@@ -2361,9 +2364,9 @@
       <widget class="QSpinBox" name="spinBox_graficoLatencia">
        <property name="geometry">
         <rect>
-         <x>100</x>
-         <y>150</y>
-         <width>61</width>
+         <x>110</x>
+         <y>160</y>
+         <width>53</width>
          <height>31</height>
         </rect>
        </property>
@@ -2380,8 +2383,8 @@
       <widget class="QLabel" name="label_16">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>150</y>
+         <x>30</x>
+         <y>160</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -2478,6 +2481,116 @@
        </property>
        <property name="placeholderText">
         <string>delay ms</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_16">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>170</y>
+        <width>231</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>PID</string>
+      </property>
+      <widget class="QLineEdit" name="lineEdit_kp">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Kp</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_ki">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>Ki</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_kd">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>90</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>Kd</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_maxIntegrador">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>60</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>max_Integ.</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_minIntegrador">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>90</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="placeholderText">
+        <string>min_Integ.</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_pidUpdate">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>22</y>
+         <width>91</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Update</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_infoPID">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>130</y>
+         <width>211</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </widget>

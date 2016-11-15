@@ -190,6 +190,7 @@ def envia_resistencia(self,n):
         else:
             self.alerta_toolbar(self,"valor fora do range (0..100)")
             return None
+        print 'DEBUG:', 'envia_serial', str_pin, valor
         # teste de retorno para verificar se os valores foram recebidos pelo mc
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))
 
@@ -249,7 +250,7 @@ def esteira(self,sinal):
 def emergencia(self):
     '''
     Função de Emergência. Para a esteira e desliga todas as resistências
-'''
+    '''
     envia_serial(self,self.STR_emergencia)
     # teste de retorno para verificar se os valores foram recebidos pelo mc
     QtCore.QTimer.singleShot(4000, partial(teste_retorno,self))

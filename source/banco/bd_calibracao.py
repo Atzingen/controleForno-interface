@@ -29,11 +29,11 @@ def deleta_calibracao_bd(nome,tipo):
 			numero_ids = cursor.fetchall()
 			for numero_id in numero_ids:
 				cursor.execute("DELETE FROM calibracao WHERE id = ?",(numero_id[0],))
-		elif tipo == 'resistencia':
-			cursor.execute('''SELECT id FROM perfil_resistencia WHERE nome = ?''',(nome,))
+		elif tipo == 'temperatura':
+			cursor.execute('''SELECT id FROM perfil_temperatura WHERE nome = ?''',(nome,))
 			numero_ids = cursor.fetchall()
 			for numero_id in numero_ids:
-				cursor.execute("DELETE FROM perfil_resistencia WHERE id = ?",(numero_id[0],))
+				cursor.execute("DELETE FROM perfil_temperatura WHERE id = ?",(numero_id[0],))
 		elif tipo == 'potencia':
 			cursor.execute('''SELECT id FROM perfil_potencia WHERE nome = ?''',(nome,))
 			numero_ids = cursor.fetchall()
