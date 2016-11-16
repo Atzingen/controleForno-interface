@@ -6,7 +6,7 @@ from functools import partial
 from modulo_global import *
 import comunicacao_serial
 import banco.bd_sensores as bd_sensores
-import banco.bd_config as bd_sensores
+import banco.bd_config as bd_config
 
 def converte_numero(s):
     '''
@@ -80,9 +80,12 @@ def verifica_dado(dado,self):
     8 ->  Liga parcialmente (pwm) uma das resistências.
             SP'x''y''z'. x: indica a esteira (de 2a7)y e z: o valor de 1 a 99.
     9 ->  Retorno do Pedido de informação das resistencias e esteira (SK).
-            formato: S,aaa,bbb,ccc,ddd,eee,fff,ggg
+            formato: S,aaa,bbb,ccc,ddd,eee,fff,ggg,h,i,j
             Onde os dados, a..f são o estado das resistencias e ggg é a
             velocidade da esteira.
+            h é o delayAnalog,
+            i é o _nLeituras (número de leituras analogicas para a média)
+            j é o período total do pwm
           Ou 'SK' - Parada total r1,..r6 = 0 e esteira parada
     '''
     try:
@@ -142,93 +145,104 @@ def resultado_dado(self, tipo, d):
     Com estas informações, as alterações da GUI e nas variáveis de controle
     são feitas para mosrtar o recebimento dos dados.
     '''
-    # tipo 1: retono de dados de temperatura.
-    if tipo == 1:
-        # Altera os valores dos displays de temperatura.
-        #temperatura = [None, d[4], d[], d[], d[], d[], d[]]
-        self.ui.sensor_esteira.setText("{0:0.1f}".format(float(d[1])))
-        self.ui.sensor_teto1.setText("{0:0.1f}".format(float(d[2])))
-        self.ui.sensor_teto2.setText("{0:0.1f}".format(float(d[3])))
-        self.ui.sensor_lateral1.setText("{0:0.1f}".format(float(d[4])))
-        self.ui.sensor_lateral2.setText("{0:0.1f}".format(float(d[5])))
-        self.ui.sensor_lateral3.setText("{0:0.1f}".format(float(d[6])))
-        # Coloca os dados da temperatura em ums string
-        data = str(["%i" % x for x in d])
-        # Adiciona um caracter de fim de linha a string
-        data = data + '\n'
-        self.ui.textEdit_temperatura.insertPlainText(data)
-        atuadores = str(self.valor_resistencia01) + "," + str(self.valor_resistencia02) + "," + \
-        str(self.valor_resistencia03) + "," + str(self.valor_resistencia04) + "," + \
-        str(self.valor_resistencia05) + "," + str(self.valor_resistencia06) + "," + \
-        str(self.valor_esteira)
-        calibracao = str(bd_config.retorna_dados_config_calibracao())
-        # Adicionando os dados ao bd:
-        # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
-        if str(self.ui.label_nomeExperimento.text()) == 'Sem Nome':
-            bd_sensores.adiciona_dado(float(d[0]),float(d[1]),float(d[2]),
-                          float(d[3]),float(d[4]),float(d[5]),float(d[6]),
-                          calibracao=calibracao,atuadores=atuadores)
-        else:
-            bd_sensores.adiciona_dado(float(d[0]),float(d[1]),
-                          float(d[2]),float(d[3]),float(d[4]),float(d[5]),
-                          float(d[6]),
-                          experimento=str(self.ui.label_nomeExperimento.text()),
-                          calibracao=calibracao,atuadores=atuadores)
-    # Tipo 2 ou 8 - Liga ou desliga alguma resistência (total o pwm).
-    elif tipo == 2 or tipo == 8:
-        # tipo 2 liga ou desliga completamente uma resistência
-        if tipo == 2:
-            if d[1] == self.CHR_ligaForno:
-                valor_resistencia = 100
-            elif d[1] == self.CHR_desligaForno:
-                valor_resistencia = 0
+    try:
+        # tipo 1: retono de dados de temperatura.
+        if tipo == 1:
+            # Altera os valores dos displays de temperatura.
+            #temperatura = [None, d[4], d[], d[], d[], d[], d[]]
+            self.ui.sensor_esteira.setText("{0:0.1f}".format(float(d[1])))
+            self.ui.sensor_teto1.setText("{0:0.1f}".format(float(d[2])))
+            self.ui.sensor_teto2.setText("{0:0.1f}".format(float(d[3])))
+            self.ui.sensor_lateral1.setText("{0:0.1f}".format(float(d[4])))
+            self.ui.sensor_lateral2.setText("{0:0.1f}".format(float(d[5])))
+            self.ui.sensor_lateral3.setText("{0:0.1f}".format(float(d[6])))
+            # Coloca os dados da temperatura em ums string
+            data = str(["%i" % x for x in d])
+            # Adiciona um caracter de fim de linha a string
+            data = data + '\n'
+            self.ui.textEdit_temperatura.insertPlainText(data)
+            atuadores = str(self.valor_resistencia01) + "," + str(self.valor_resistencia02) + "," + \
+            str(self.valor_resistencia03) + "," + str(self.valor_resistencia04) + "," + \
+            str(self.valor_resistencia05) + "," + str(self.valor_resistencia06) + "," + \
+            str(self.valor_esteira)
+            calibracao = str(bd_config.retorna_dados_config_calibracao())
+            # Adicionando os dados ao bd:
+            # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
+            if str(self.ui.label_nomeExperimento.text()) == 'Sem Nome':
+                bd_sensores.adiciona_dado(float(d[0]),float(d[1]),float(d[2]),
+                              float(d[3]),float(d[4]),float(d[5]),float(d[6]),
+                              calibracao=calibracao,atuadores=atuadores)
             else:
-                self.alerta_toolbar('Erro resultado_dado-tipo2')
+                bd_sensores.adiciona_dado(float(d[0]),float(d[1]),
+                              float(d[2]),float(d[3]),float(d[4]),float(d[5]),
+                              float(d[6]),
+                              experimento=str(self.ui.label_nomeExperimento.text()),
+                              calibracao=calibracao,atuadores=atuadores)
+        # Tipo 2 ou 8 - Liga ou desliga alguma resistência (total o pwm).
+        elif tipo == 2 or tipo == 8:
+            # tipo 2 liga ou desliga completamente uma resistência
+            if tipo == 2:
+                if d[1] == self.CHR_ligaForno:
+                    valor_resistencia = 100
+                elif d[1] == self.CHR_desligaForno:
+                    valor_resistencia = 0
+                else:
+                    self.alerta_toolbar('Erro resultado_dado-tipo2')
+                    return None
+            # tipo 8 - Potência parcial de uma resistência
+            elif tipo == 8:
+                valor_resistencia = int(d[1:])
+            else:
+                self.alerta_toolbar('Erro resultado_dado-tipo8')
                 return None
-        # tipo 8 - Potência parcial de uma resistência
-        elif tipo == 8:
-            valor_resistencia = int(d[1:])
+            # d[0] - Valor do numero das resistencia
+            if d[0] == self.pinR1:
+                self.valor_resistencia01 = valor_resistencia
+                self.ui.progressBar_r01.setValue(valor_resistencia)
+            elif d[0] == self.pinR2:
+                self.valor_resistencia02 = valor_resistencia
+                self.ui.progressBar_r02.setValue(valor_resistencia)
+            elif d[0] == self.pinR3:
+                self.valor_resistencia03 = valor_resistencia
+                self.ui.progressBar_r03.setValue(valor_resistencia)
+            elif d[0] == self.pinR4:
+                self.valor_resistencia04 = valor_resistencia
+                self.ui.progressBar_r04.setValue(valor_resistencia)
+            elif d[0] == self.pinR5:
+                self.valor_resistencia05 = valor_resistencia
+                self.ui.progressBar_r05.setValue(valor_resistencia)
+            elif d[0] == self.pinR6:
+                self.valor_resistencia06 = valor_resistencia
+                self.ui.progressBar_r06.setValue(valor_resistencia)
+        # Tipo 3 - Para completamente a esteira
+        elif tipo == 3:
+            self.valor_esteira = 0
+        # tipo 4 - Velocidade da esteira para frente (1 a 99)
+        elif tipo == 4:
+            self.valor_esteira = int(d)
+        # Tipo 5 - Velocidade da esteira para tras (1 a 99)
+        elif tipo == 5:
+            self.valor_esteira = -1*int(d)
+        elif tipo == 9:
+            # Atualiza o valor das variaveis globais
+            self.valor_resistencia01 = int(d[1])
+            self.valor_resistencia02 = int(d[2])
+            self.valor_resistencia03 = int(d[3])
+            self.valor_resistencia04 = int(d[4])
+            self.valor_resistencia05 = int(d[5])
+            self.valor_resistencia06 = int(d[6])
+            self.valor_esteira = int(d[7])
+            if len(d) > 8:
+                delayAnalog = int(d[8])
+                self.ui.lineEdit_analogicaDelayms.setPlaceholderText(str(delayAnalog))
+                nLeituras = int(d[9])
+                self.ui.lineEdit_analogicaNleituras.setPlaceholderText(str(nLeituras))
+                self.tempo_pwm = int(d[10])
+                self.ui.lineEdit_periodoPWM.setPlaceholderText(str(self.tempo_pwm))
+                print delayAnalog, nLeituras, self.tempo_pwm
+            # Atualiza os slides e controles da GUI
+            QtCore.QTimer.singleShot(10, partial(comunicacao_serial.teste_retorno,self))
         else:
-            self.alerta_toolbar('Erro resultado_dado-tipo8')
-            return None
-        # d[0] - Valor do numero das resistencia
-        if d[0] == self.pinR1:
-            self.valor_resistencia01 = valor_resistencia
-            self.ui.progressBar_r01.setValue(valor_resistencia)
-        elif d[0] == self.pinR2:
-            self.valor_resistencia02 = valor_resistencia
-            self.ui.progressBar_r02.setValue(valor_resistencia)
-        elif d[0] == self.pinR3:
-            self.valor_resistencia03 = valor_resistencia
-            self.ui.progressBar_r03.setValue(valor_resistencia)
-        elif d[0] == self.pinR4:
-            self.valor_resistencia04 = valor_resistencia
-            self.ui.progressBar_r04.setValue(valor_resistencia)
-        elif d[0] == self.pinR5:
-            self.valor_resistencia05 = valor_resistencia
-            self.ui.progressBar_r05.setValue(valor_resistencia)
-        elif d[0] == self.pinR6:
-            self.valor_resistencia06 = valor_resistencia
-            self.ui.progressBar_r06.setValue(valor_resistencia)
-    # Tipo 3 - Para completamente a esteira
-    elif tipo == 3:
-        self.valor_esteira = 0
-    # tipo 4 - Velocidade da esteira para frente (1 a 99)
-    elif tipo == 4:
-        self.valor_esteira = int(d)
-    # Tipo 5 - Velocidade da esteira para tras (1 a 99)
-    elif tipo == 5:
-        self.valor_esteira = -1*int(d)
-    elif tipo == 9:
-        # Atualiza o valor das variaveis globais
-        self.valor_resistencia01 = int(d[1])
-        self.valor_resistencia02 = int(d[2])
-        self.valor_resistencia03 = int(d[3])
-        self.valor_resistencia04 = int(d[4])
-        self.valor_resistencia05 = int(d[5])
-        self.valor_resistencia06 = int(d[6])
-        self.valor_esteira = int(x=d[7])
-        # Atualiza os slides e controles da GUI
-        QtCore.QTimer.singleShot(10, partial(comunicacao_serial.teste_retorno,self))
-    else:
-        self.alerta_toolbar('Erro resultado_dado-else')
+            self.alerta_toolbar('Erro resultado_dado-else')
+    except:
+        self.alerta_toolbar('except resultado_dado')

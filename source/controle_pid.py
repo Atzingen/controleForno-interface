@@ -7,13 +7,13 @@ sobre a licença MIT: http://opensource.org/licenses/MIT
 '''
 
 class PID:
-	"""
+	'''
 	Controle PID Discreto
 	Este objeto deve ser instanciado com os valores de Kp, Ki e Kd (padrão = 2, 0.5 e 1) e com o set_point
 	set_point -> Valor desejado para o controle
 	Limite máximo e mínimo para o integrador = 100 e -100 respectivamente
 	Integrador e Derivador iniciam com valor 0
-	"""
+	'''
 	def __init__(self, P=2.0, I=0.5, D=1.0, set_point=1.0,Derivador=0,
 				Integrador=0, max_Integrador=100, min_Integrator=-100):
 		# Construtor - Inicia automaticamente quando um objeto da classe PID é instanciado
@@ -28,10 +28,10 @@ class PID:
 		self.error=0.0
 
 	def update(self,current_value):
-		"""
+		'''
 		Recebe um novo dado lido pelo sensor e retorna a resposta
 		do controle PID para o sistema
-		"""
+		'''
 		# Cálculo do erro: Objetivo - Valor atual
 		self.error = self.set_point - current_value
 		# Cálculo de K,P e D
@@ -52,14 +52,14 @@ class PID:
 		return PID
 
 	def setPoint(self,set_point):
-		"""
+		'''
 		Atualiza o valor do set_point, caso um novo objetivo seja desejado
 		Zera os valores do Integrador e do Derivador pois é como se o controle
 		estivesse começando novamente.
-		"""
-		self.set_point = set_point  # Atualiza o set_point (obejtivo)
-		self.Integrador=0  # Zera o valor do Integrador
-		self.Derivador=0   # Zera o valor do Derivador
+		'''
+		self.set_point = set_point
+		self.Integrador=0
+		self.Derivador=0  
 
 def update_label_pid(self):
     cfg = bd_config.retorna_dados_config()

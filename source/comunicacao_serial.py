@@ -52,6 +52,7 @@ def conecta(self):
                 self.enabled_disabled(True)
                 self.ui.pushButton_conectar.setText('Desconectar')
                 self.timer_serial.singleShot(500,partial(serial_read,self))
+                self.timer_serial.singleShot(500,partial(envia_serial,self,self.CHR_check))
             except:
                 self.alerta_toolbar('erro ao conectar')
     elif ( texto_botao == 'Desconectar'):
