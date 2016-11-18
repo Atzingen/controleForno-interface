@@ -40,3 +40,7 @@ Thumbs.db
 source/.DS_Store
 
 source/.DS_Store
+
+*.txt
+
+dadosExperimento/.DS_Store
