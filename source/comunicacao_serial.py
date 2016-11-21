@@ -6,7 +6,7 @@ from functools import partial
 from PyQt4 import QtCore
 # Imports Locais
 from modulo_global import *
-import exporta_experimentos, trata_dados
+import exporta_experimentos, trata_dados, automatico
 import banco.bd_sensores as bd_sensores
 import banco.bd_config as bd_config
 
@@ -124,6 +124,7 @@ def envia_setpwm(self, atualiza):
         if atualiza:
             self.tempo_pwm = int(self.ui.lineEdit_periodoPWM.text())
             bd_config.salva_config_pwm(self.tempo_pwm)
+            automatico.atualiza_label_microcontrolador()
         else:
             self.tempo_pwm = bd_config.retorna_dados_config()[9]
         envia_serial(self,self.CHR_tempoPWM + str(self.tempo_pwm))
@@ -136,6 +137,7 @@ def envia_setanalog(self, atualiza):
             texto_nLeituras = str(self.ui.lineEdit_analogicaNleituras.text())
             texto_delay = str(self.ui.lineEdit_analogicaDelayms.text())
             bd_config.salva_config_ad(int(texto_nLeituras),int(texto_delay))
+            automatico.atualiza_label_microcontrolador()
         else:
             resposta_bd = bd_config.retorna_dados_config()[9]
             texto_nLeituras, texto_delay = resposta_bd[10], resposta_bd[11]

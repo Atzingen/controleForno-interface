@@ -14,7 +14,7 @@ def atuacao_automatico(self,tipo,targuets):
     microcontrolador para o controle das resistências.
 
     tipo -> { resistencia, forno}
-    targuet -> lista de lista com dois elementos cada.
+    targuet -> lista de lista com dois elementos cada.update_config_pid
     [[r1,targuet1],[r2,targuet2],...].
     Quando o tipo é Potencia, são até 6 targuets e o valor do targuet é
     enviado diretamente para o MC.
@@ -331,12 +331,14 @@ def lista_perfil_potencia(self):
         graficos.plota_perfil(self,'potencia',None)
     except:
         self.alerta_toolbar("except:lista_perfil_potencia")
-        pass
 
 
 def atualiza_label_microcontrolador(self):
-    resposta = bd_config.retorna_dados_config()
-    t_pwm, n_leituras, delay_leituras = resposta[9], resposta[10], resposta[11]
-    texto =  't_pwm=' + str(t_pwm) + ' n_leituras=' + str(n_leituras) + \
-    '\ndelay_leituras=' + str(delay_leituras)
-    self.ui.label_infoPWM_ADC.setText(texto)
+    try:
+        resposta = bd_config.retorna_dados_config()
+        t_pwm, n_leituras, delay_leituras = resposta[9], resposta[10], resposta[11]
+        texto =  't_pwm=' + str(t_pwm) + ' n_leituras=' + str(n_leituras) + \
+        '\ndelay_leituras=' + str(delay_leituras)
+        self.ui.label_infoPWM_ADC.setText(texto)
+    except:
+        self.alerta_toolbar("except:atualiza_label_microcontrolador")
