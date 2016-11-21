@@ -59,29 +59,38 @@ class PID:
 		'''
 		self.set_point = set_point
 		self.Integrador=0
-		self.Derivador=0  
+		self.Derivador=0
 
 def update_label_pid(self):
-    cfg = bd_config.retorna_dados_config()
-    kp, ki, kd, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8]
-    texto_label = 'kp=' + str(kp) + ' ki=' + str(ki) + ' kd=' + str(kd) + \
-    '\nmax=' + str(max_Integrador) + ' min=' + str(min_Integrator)
-    self.ui.label_infoPID.setText(texto_label)
+	try:
+	    cfg = bd_config.retorna_dados_config()
+	    kp, ki, kd, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8]
+	    texto_label = 'kp=' + str(kp) + ' ki=' + str(ki) + ' kd=' + str(kd) + \
+	    '\nmax=' + str(max_Integrador) + ' min=' + str(min_Integrator)
+	    self.ui.label_infoPID.setText(texto_label)
+	except:
+		self.alerta_toolbar("erro update_label_pid")
 
 def update_config_pid(self):
-	kp = float(self.ui.lineEdit_kp.text())
-	ki = float(self.ui.lineEdit_ki.text())
-	kd = float(self.ui.lineEdit_kd.text())
-	max_Integrador = float(self.ui.lineEdit_maxIntegrador.text())
-	min_Integrator = float(self.ui.lineEdit_minIntegrador.text())
-	r = bd_config.salva_config_pid([kp, ki, kd, max_Integrador, min_Integrator])
-	update_valores_pid(self)
+	try:
+		kp = float(self.ui.lineEdit_kp.text())
+		ki = float(self.ui.lineEdit_ki.text())
+		kd = float(self.ui.lineEdit_kd.text())
+		max_Integrador = float(self.ui.lineEdit_maxIntegrador.text())
+		min_Integrator = float(self.ui.lineEdit_minIntegrador.text())
+		r = bd_config.salva_config_pid([kp, ki, kd, max_Integrador, min_Integrator])
+		update_valores_pid(self)
+	except:
+		self.alerta_toolbar("erro update_config_pid")
 
 def update_valores_pid(self):
-	cfg = bd_config.retorna_dados_config()
-	kp, ki, kd, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8]
-	self.pid.kp = kp
-	self.pid.ki = ki
-	self.pid.kd = kd
-	self.pid.max_Integrador = max_Integrador
-	self.pid.min_Integrator = min_Integrator
+	try:
+		cfg = bd_config.retorna_dados_config()
+		kp, ki, kd, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8]
+		self.pid.kp = kp
+		self.pid.ki = ki
+		self.pid.kd = kd
+		self.pid.max_Integrador = max_Integrador
+		self.pid.min_Integrator = min_Integrator
+	except:
+		self.alerta_toolbar("erro update_valores_pid")

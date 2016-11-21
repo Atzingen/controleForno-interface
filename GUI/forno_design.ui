@@ -719,8 +719,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>98</width>
-         <height>28</height>
+         <width>100</width>
+         <height>30</height>
         </rect>
        </property>
        <attribute name="label">
@@ -887,8 +887,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>98</width>
-         <height>28</height>
+         <width>100</width>
+         <height>30</height>
         </rect>
        </property>
        <attribute name="label">
@@ -2403,7 +2403,7 @@
         <x>360</x>
         <y>10</y>
         <width>231</width>
-        <height>141</height>
+        <height>191</height>
        </rect>
       </property>
       <property name="title">
@@ -2483,12 +2483,25 @@
         <string>delay ms</string>
        </property>
       </widget>
+      <widget class="QLabel" name="label_infoPWM_ADC">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>130</y>
+         <width>211</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_16">
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>170</y>
+        <y>210</y>
         <width>231</width>
         <height>181</height>
        </rect>
@@ -2585,6 +2598,19 @@
         <rect>
          <x>10</x>
          <y>130</y>
+         <width>211</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_infoPID_2">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>-60</y>
          <width>211</width>
          <height>41</height>
         </rect>

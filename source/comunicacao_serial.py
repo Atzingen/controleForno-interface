@@ -8,6 +8,7 @@ from PyQt4 import QtCore
 from modulo_global import *
 import exporta_experimentos, trata_dados
 import banco.bd_sensores as bd_sensores
+import banco.bd_config as bd_config
 
 def serial_ports():
     '''
@@ -51,8 +52,10 @@ def conecta(self):
                 # altera as informações da ui para conectado.
                 self.enabled_disabled(True)
                 self.ui.pushButton_conectar.setText('Desconectar')
-                self.timer_serial.singleShot(500,partial(serial_read,self))
+                self.timer_serial.singleShot(100,partial(serial_read,self))
                 self.timer_serial.singleShot(500,partial(envia_serial,self,self.CHR_check))
+                self.timer_serial.singleShot(600,partial(envia_setanalog,self,atualiza=False))
+                self.timer_serial.singleShot(700,partial(envia_setpwm,self,atualiza=False))
             except:
                 self.alerta_toolbar('erro ao conectar')
     elif ( texto_botao == 'Desconectar'):
@@ -116,24 +119,37 @@ def auto_ST(self):
         tempo = 1000*self.ui.spinBox_serialUpdate.value()
         self.timer_ST.singleShot(tempo,partial(auto_ST,self))
 
-def envia_setpwm(self):
+def envia_setpwm(self, atualiza):
     try:
-        self.tempo_pwm = int(self.ui.lineEdit_periodoPWM.text())
+        if atualiza:
+            self.tempo_pwm = int(self.ui.lineEdit_periodoPWM.text())
+            bd_config.salva_config_pwm(self.tempo_pwm)
+        else:
+            self.tempo_pwm = bd_config.retorna_dados_config()[9]
         envia_serial(self,self.CHR_tempoPWM + str(self.tempo_pwm))
     except:
         self.alerta_toolbar('Erro envia_setpwm - int')
 
-def envia_setanalog(self):
-    texto_nLeituras = str(self.ui.lineEdit_analogicaNleituras.text())
-    if len(texto_nLeituras) > 2:
-        texto_nLeituras = texto_nLeituras[0:2]
-    elif len(texto_nLeituras) == 1:
-        texto_nLeituras = '0' + texto_nLeituras
-    elif len(texto_nLeituras) < 1:
-        self.alerta_toolbar('erro textbox nLeituras (2 caracteres)')
-        return None
-    texto_delay = self.ui.lineEdit_analogicaDelayms.text()
-    envia_serial(self,self.CHR_setADC + texto_nLeituras + str(texto_delay))
+def envia_setanalog(self, atualiza):
+    try:
+        if atualiza:
+            texto_nLeituras = str(self.ui.lineEdit_analogicaNleituras.text())
+            texto_delay = str(self.ui.lineEdit_analogicaDelayms.text())
+            bd_config.salva_config_ad(int(texto_nLeituras),int(texto_delay))
+        else:
+            resposta_bd = bd_config.retorna_dados_config()[9]
+            texto_nLeituras, texto_delay = resposta_bd[10], resposta_bd[11]
+        if len(texto_nLeituras) > 2:
+            texto_nLeituras = texto_nLeituras[0:2]
+        elif len(texto_nLeituras) == 1:
+            texto_nLeituras = '0' + texto_nLeituras
+        elif len(texto_nLeituras) < 1:
+            self.alerta_toolbar('erro textbox nLeituras (2 caracteres)')
+            return None
+        texto_delay = self.ui.lineEdit_analogicaDelayms.text()
+        envia_serial(self,self.CHR_setADC + texto_nLeituras + str(texto_delay))
+    except:
+        self.alerta_toolbar('Erro envia_setanalog')
 
 def envia_manual(self):
     '''

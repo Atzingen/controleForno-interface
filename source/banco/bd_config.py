@@ -11,7 +11,9 @@ def cria_tabela_config():
         (id INTEGER PRIMARY KEY, calibracao_selecionada TEXT UNIQUE,
         perfil_temperatura TEXT UNIQUE, perfil_potencia TEXT UNIQUE,
         kp REAL UNIQUE, ki REAL UNIQUE, kd REAL UNIQUE,
-        max_Integrador REAL UNIQUE, min_Integrator REAL UNIQUE)''')
+        max_Integrador REAL UNIQUE, min_Integrator REAL UNIQUE,
+        periodo_pwm INTEGER UNIQUE, n_leituras_ad INTEGER UNIQUE,
+        delay_ad INTEGER UNIQUE )''')
         db.commit()
         db.close()
         if cursor.rowcount > 0:
@@ -140,6 +142,37 @@ def salva_config_calibracao(nome):
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''UPDATE config SET calibracao_selecionada=? WHERE id=?''',(nome,1))
+    	db.commit()
+    	db.close()
+    	if cursor.rowcount > 0:
+    		return True
+    	else:
+    		return False
+    except:
+    	return None
+
+def salva_config_pwm(nome):
+    try:
+        global caminho_banco
+    	db = sqlite3.connect(caminho_banco)
+    	cursor = db.cursor()
+    	cursor.execute('''UPDATE config SET periodo_pwm=? WHERE id=?''',(nome,1))
+    	db.commit()
+    	db.close()
+    	if cursor.rowcount > 0:
+    		return True
+    	else:
+    		return False
+    except:
+    	return None
+
+def salva_config_ad(n_leituras,delay):
+    try:
+        global caminho_banco
+    	db = sqlite3.connect(caminho_banco)
+    	cursor = db.cursor()
+    	cursor.execute('''UPDATE config SET n_leituras_ad=? WHERE id=?''',(n_leituras,1))
+        cursor.execute('''UPDATE config SET delay_ad=? WHERE id=?''',(delay,1))
     	db.commit()
     	db.close()
     	if cursor.rowcount > 0:

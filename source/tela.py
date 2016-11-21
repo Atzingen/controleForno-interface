@@ -135,6 +135,9 @@ class Main(QtGui.QMainWindow):
         automatico.lista_perfil_potencia(self)
         automatico.lista_perfil_temperatura(self)
 
+        ####### Atualizando o label do tempo PWM e leituras AD ###############
+        automatico.atualiza_label_microcontrolador(self)
+
         #######################################################################
         # Adicionando a foto do layout do forno
     	self.ui.label_layoutForno.setScaledContents(True)
@@ -164,8 +167,8 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_updateInfo.pressed.connect(partial(comunicacao_serial.envia_serial,self,self.CHR_check))
         self.ui.pushButton_limpaTexto.pressed.connect(self.limpa_texto)
         self.ui.pushButton_serialEnviaLinha.pressed.connect(partial(comunicacao_serial.envia_manual, self))
-        self.ui.pushButton_periodoPWM.pressed.connect(partial(comunicacao_serial.envia_setpwm, self))
-        self.ui.pushButton_leituraAnalogica.pressed.connect(partial(comunicacao_serial.envia_setanalog, self))
+        self.ui.pushButton_periodoPWM.pressed.connect(partial(comunicacao_serial.envia_setpwm, self, atualiza=True))
+        self.ui.pushButton_leituraAnalogica.pressed.connect(partial(comunicacao_serial.envia_setanalog, self,atualiza=True))
         self.ui.comboBox_portaSerial.activated.connect(self.add_portas_disponiveis)
         self.ui.comboBox_fitLinear.activated.connect(partial(calibracao.lista_calibracoes,self))
         self.ui.comboBox_perfilPotencia.activated.connect(partial(automatico.lista_perfil_potencia,self))
@@ -222,9 +225,9 @@ class Main(QtGui.QMainWindow):
 
 
     def enabled_disabled(self, estado):
-        ''' Habilita ou desabilita as fun��es de controle da esteira (caso esteja ou n�o conectado ao forno) '''
+        ''' Habilita ou desabilita as funções de controle da esteira (caso esteja ou não conectado ao forno) '''
         if (not estado):  # Caso esteja conectado:
-            self.ui.horizontalSlider_r01.setValue(0)  # Volta os sliders para a opsi��o inicial
+            self.ui.horizontalSlider_r01.setValue(0)  # Volta os sliders para a opsição inicial
             self.ui.horizontalSlider_r02.setValue(0)
             self.ui.horizontalSlider_r04.setValue(0)
             self.ui.horizontalSlider_r03.setValue(0)
@@ -262,7 +265,7 @@ class Main(QtGui.QMainWindow):
         '''
         # Salva a porta atual escolhida
         escolha = self.ui.comboBox_portaSerial.currentIndex()
-        # Bloqueia sinais do PyQt na combobox para evitar que a fun��o seja chamada novamente
+        # Bloqueia sinais do PyQt na combobox para evitar que a funcão seja chamada novamente
         self.ui.comboBox_portaSerial.blockSignals(True)
         self.ui.comboBox_portaSerial.clear()
         self.ui.comboBox_portaSerial.addItem('Atualiza')

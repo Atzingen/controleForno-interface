@@ -332,3 +332,11 @@ def lista_perfil_potencia(self):
     except:
         self.alerta_toolbar("except:lista_perfil_potencia")
         pass
+
+
+def atualiza_label_microcontrolador(self):
+    resposta = bd_config.retorna_dados_config()
+    t_pwm, n_leituras, delay_leituras = resposta[9], resposta[10], resposta[11]
+    texto =  't_pwm=' + str(t_pwm) + ' n_leituras=' + str(n_leituras) + \
+    '\ndelay_leituras=' + str(delay_leituras)
+    self.ui.label_infoPWM_ADC.setText(texto)
