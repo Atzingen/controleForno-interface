@@ -144,9 +144,12 @@ class Main(QtGui.QMainWindow):
         caminho_inicial, _ = local_parent()
         caminho_foto_forno = caminho_inicial + '/imagens/forno_layout.png'
     	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap(caminho_foto_forno))
+
         ## Remover depois				- Porta serial com4 pc de casa
-        if sys.platform.startswith('win'):
+        try:
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
+        except:
+            pass
 
         ####### Connexões #####################################################
         self.ui.pushButton_pidUpdate.pressed.connect(partial(controle_pid.update_config_pid,self))

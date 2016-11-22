@@ -85,7 +85,6 @@ def serial_read(self):
                 self.alerta_toolbar('Dado Recebido: ' + item)
                 self.ui.textEdit_dadosSerial.insertPlainText(item + '\n')
                 tipo, d = trata_dados.verifica_dado(item,self)
-                print 'DEBUG: tratado:', item, tipo, d
                 trata_dados.resultado_dado(self, tipo, d)
         self.timer_serial.singleShot(50,partial(serial_read,self))
 
@@ -122,11 +121,12 @@ def auto_ST(self):
 def envia_setpwm(self, atualiza):
     try:
         if atualiza:
-            self.tempo_pwm = int(self.ui.lineEdit_periodoPWM.text())
+            self.tempo_pwm = int(str(self.ui.lineEdit_periodoPWM.text()))
             bd_config.salva_config_pwm(self.tempo_pwm)
-            automatico.atualiza_label_microcontrolador()
+            self.ui.lineEdit_periodoPWM.setText("")
         else:
             self.tempo_pwm = bd_config.retorna_dados_config()[9]
+        automatico.atualiza_label_microcontrolador(self)
         envia_serial(self,self.CHR_tempoPWM + str(self.tempo_pwm))
     except:
         self.alerta_toolbar('Erro envia_setpwm - int')
@@ -134,22 +134,23 @@ def envia_setpwm(self, atualiza):
 def envia_setanalog(self, atualiza):
     try:
         if atualiza:
-            texto_nLeituras = str(self.ui.lineEdit_analogicaNleituras.text())
+            nLeituras = int(str(self.ui.lineEdit_analogicaNleituras.text()))
             texto_delay = str(self.ui.lineEdit_analogicaDelayms.text())
-            bd_config.salva_config_ad(int(texto_nLeituras),int(texto_delay))
-            automatico.atualiza_label_microcontrolador()
+            bd_config.salva_config_ad(int(nLeituras),int(texto_delay))
+            automatico.atualiza_label_microcontrolador(self)
+            self.ui.lineEdit_analogicaNleituras.setText("")
+            self.ui.lineEdit_analogicaDelayms.setText("")
         else:
-            resposta_bd = bd_config.retorna_dados_config()[9]
-            texto_nLeituras, texto_delay = resposta_bd[10], resposta_bd[11]
-        if len(texto_nLeituras) > 2:
-            texto_nLeituras = texto_nLeituras[0:2]
-        elif len(texto_nLeituras) == 1:
-            texto_nLeituras = '0' + texto_nLeituras
-        elif len(texto_nLeituras) < 1:
+            resposta_bd = bd_config.retorna_dados_config()
+            nLeituras, texto_delay = resposta_bd[10], resposta_bd[11]
+        if nLeituras > 9 and nLeituras < 99:
+            txt_nLeituras = str(nLeituras)
+        elif nLeituras < 10:
+            txt_nLeituras = '0' + str(nLeituras)
+        else:
             self.alerta_toolbar('erro textbox nLeituras (2 caracteres)')
             return None
-        texto_delay = self.ui.lineEdit_analogicaDelayms.text()
-        envia_serial(self,self.CHR_setADC + texto_nLeituras + str(texto_delay))
+        envia_serial(self,self.CHR_setADC + txt_nLeituras + str(texto_delay))
     except:
         self.alerta_toolbar('Erro envia_setanalog')
 
@@ -286,9 +287,9 @@ def teste_retorno(self):
     estado dos sliders de controle, que são alterados quando recebem o sinal de
     volta do microcontrolador
     '''
-    print 'DEBUG: funcao retorno', self.valor_resistencia01, self.valor_resistencia02,\
-    self.valor_resistencia03, self.valor_resistencia04, \
-    self.valor_resistencia05,self.valor_resistencia06, self.valor_esteira
+    # print 'DEBUG: funcao retorno', self.valor_resistencia01, self.valor_resistencia02,\
+    # self.valor_resistencia03, self.valor_resistencia04, \
+    # self.valor_resistencia05,self.valor_resistencia06, self.valor_esteira
 
     self.ui.horizontalSlider_esteira.setValue(self.valor_esteira)
     self.ui.lcdNumber_esteiraVelocidade.display(self.valor_esteira)

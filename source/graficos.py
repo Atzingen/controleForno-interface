@@ -49,19 +49,20 @@ def plotar_sensores(self):
         delta_t = self.ui.horizontalSlider_graficoPeriodo.value()
         d = bd_sensores.retorna_dados(delta_t)
     try:
-        if np.size(d[:,0]) > 1:                                                     # Adiciona os valores ao eixo do gráfico caso a checkbox do respectivo sensor
-            if self.ui.checkBox_sensor1.isChecked():                                        # esteja marcada
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,3],label="R1")
-            if self.ui.checkBox_sensor2.isChecked():                                      # Repete o procedimento para todos os sensores
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,4],label="R2")
+        if np.size(d[:,0]) > 1:
+            eixo_tempo = d[:,2]/60
+            if self.ui.checkBox_sensor2.isChecked():
+                self.ui.widget.canvas.ax.plot(eixo_tempo,d[:,4],label="teto1")
             if self.ui.checkBox_sensor3.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,5],label="R3")
+                self.ui.widget.canvas.ax.plot(eixo_tempo,d[:,5],label="teto2")
             if self.ui.checkBox_sensor4.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,6],label="R4")
+                self.ui.widget.canvas.ax.plot(eixo_tempo,d[:,6],label="lateral1")
             if self.ui.checkBox_sensor5.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,7],label="R5")
+                self.ui.widget.canvas.ax.plot(eixo_tempo,d[:,7],label="lateral2")
             if self.ui.checkBox_sensor6.isChecked():
-                self.ui.widget.canvas.ax.plot(d[:,2],d[:,8],label="R6")
+                self.ui.widget.canvas.ax.plot(eixo_tempo,d[:,8],label="lateral3")
+            if self.ui.checkBox_sensor1.isChecked():
+                self.ui.widget.canvas.ax.plot(eixo_tempo,d[:,3],label="esteira")
             self.ui.widget.canvas.ax.legend(loc='lower left',
                 frameon=True,shadow=True, fancybox=True)
             self.ui.widget.canvas.ax.set_title('Sensores Forno')

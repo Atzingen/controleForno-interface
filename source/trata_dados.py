@@ -4,7 +4,7 @@ import numpy as np
 from PyQt4 import QtCore
 from functools import partial
 from modulo_global import *
-import comunicacao_serial
+import comunicacao_serial, automatico
 import banco.bd_sensores as bd_sensores
 import banco.bd_config as bd_config
 
@@ -87,6 +87,8 @@ def verifica_dado(dado,self):
             i é o _nLeituras (número de leituras analogicas para a média)
             j é o período total do pwm
           Ou 'SK' - Parada total r1,..r6 = 0 e esteira parada
+    10 -> SU ou SL, confirmacao de recebimento de alteracao de valor do pwm ou
+          da leitura analógica.
     '''
     try:
         #print "DEBUG: recebido:", dado
@@ -128,6 +130,8 @@ def verifica_dado(dado,self):
                     return 9, valores
             elif dado[1] == self.STR_emergencia and len(dado) == 2:
                 return 9, [0,0,0,0,0,0,0,0]
+            elif dado[1] == self.CHR_tempoPWM or self.CHR_setADC:
+                return 10, None
         # tipo 6: Erro - envio de string incorreta ao microcontrolador
         elif 'Erro -' in dado:
             return 6, dado
@@ -146,6 +150,7 @@ def resultado_dado(self, tipo, d):
     são feitas para mosrtar o recebimento dos dados.
     '''
     try:
+        print tipo
         # tipo 1: retono de dados de temperatura.
         if tipo == 1:
             # Altera os valores dos displays de temperatura.
@@ -234,14 +239,14 @@ def resultado_dado(self, tipo, d):
             self.valor_esteira = int(d[7])
             if len(d) > 8:
                 delayAnalog = int(d[8])
-                self.ui.lineEdit_analogicaDelayms.setPlaceholderText(str(delayAnalog))
                 nLeituras = int(d[9])
-                self.ui.lineEdit_analogicaNleituras.setPlaceholderText(str(nLeituras))
                 self.tempo_pwm = int(d[10])
-                self.ui.lineEdit_periodoPWM.setPlaceholderText(str(self.tempo_pwm))
-                print delayAnalog, nLeituras, self.tempo_pwm
-            # Atualiza os slides e controles da GUI
+                bd_config.salva_config_pwm(self.tempo_pwm)
+                bd_config.salva_config_ad(nLeituras,delayAnalog)
+                automatico.atualiza_label_microcontrolador(self)
             QtCore.QTimer.singleShot(10, partial(comunicacao_serial.teste_retorno,self))
+        elif tipo == 10:
+            pass
         else:
             self.alerta_toolbar('Erro resultado_dado-else')
     except:
