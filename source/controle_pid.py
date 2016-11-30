@@ -14,12 +14,17 @@ class PID:
 	Limite máximo e mínimo para o integrador = 100 e -100 respectivamente
 	Integrador e Derivador iniciam com valor 0
 	'''
-	def __init__(self, P=2.0, I=0.5, D=1.0, set_point=1.0,Derivador=0,
+	def __init__(self, P_up=2.0, I_up=0.5, D_up=1.0,
+				P_down=2.0, I_down=0.5, D_down=1.0,
+				_point=1.0,Derivador=0,
 				Integrador=0, max_Integrador=100, min_Integrator=-100):
 		# Construtor - Inicia automaticamente quando um objeto da classe PID é instanciado
-		self.Kp=P
-		self.Ki=I
-		self.Kd=D
+		self.Kp_up=P_up
+		self.Ki_up=I_up
+		self.Kd_up=D_up
+		self.Kp_down=P_down
+		self.Ki_down=I_down
+		self.Kd_down=D_down
 		self.Derivador=Derivador
 		self.Integrador=Integrador
 		self.max_Integrador=max_Integrador
@@ -33,19 +38,34 @@ class PID:
 		do controle PID para o sistema
 		'''
 		# Cálculo do erro: Objetivo - Valor atual
-		self.error = self.set_point - current_value
+		novo_erro = self.set_point - current_value
+
+		# verifica se passou a linha do Objetivo
+		if novo_erro*self.error < 0:
+			self.Integrador=0
+			self.Derivador=0
+		self.error = novo_erro	
+
 		# Cálculo de K,P e D
-		self.P_value = self.Kp * self.error
-		self.D_value = self.Kd * (self.error - self.Derivador)
-		self.Derivador = self.error
-		self.Integrador = self.Integrador + self.error
+		if self.error > 0:
+			self.P_value = self.Kp_up * self.error
+			self.D_value = self.Kd_up * (self.error - self.Derivador)
+			self.Derivador = self.error
+			self.Integrador = self.Integrador + self.error
+			ki_f = self.Ki_up
+		else:
+			self.P_value = self.Kp_down * self.error
+			self.D_value = self.Kd_down * (self.error - self.Derivador)
+			self.Derivador = self.error
+			self.Integrador = self.Integrador + self.error
+			ki_f = self.Ki_down
 		# Checa se o valor do Integrador não saturou
 		if self.Integrador > self.max_Integrador:
 			self.Integrador = self.max_Integrador
 		elif self.Integrador < self.min_Integrator:
 			self.Integrador = self.min_Integrator
 
-		self.I_value = self.Integrador * self.Ki
+		self.I_value = self.Integrador * Ki_f
 		# Atualiza o valor da resposta
 		PID = self.P_value + self.I_value + self.D_value
 		# Retorna o valor para a rotina que chamou o objeto
