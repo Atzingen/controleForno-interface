@@ -16,7 +16,7 @@ class PID:
 	'''
 	def __init__(self, P_up=2.0, I_up=0.5, D_up=1.0,
 				P_down=2.0, I_down=0.5, D_down=1.0,
-				_point=1.0,Derivador=0,
+				_point=1.0,Derivador=0, dt=1,
 				Integrador=0, max_Integrador=100, min_Integrator=-100):
 		# Construtor - Inicia automaticamente quando um objeto da classe PID é instanciado
 		self.Kp_up=P_up
@@ -31,6 +31,7 @@ class PID:
 		self.min_Integrator=min_Integrator
 		self.set_point=set_point
 		self.error=0.0
+		self.dt = dt
 
 	def update(self,current_value):
 		'''
@@ -44,20 +45,20 @@ class PID:
 		if novo_erro*self.error < 0:
 			self.Integrador=0
 			self.Derivador=0
-		self.error = novo_erro	
+		self.error = novo_erro
 
 		# Cálculo de K,P e D
 		if self.error > 0:
 			self.P_value = self.Kp_up * self.error
-			self.D_value = self.Kd_up * (self.error - self.Derivador)
+			self.D_value = self.Kd_up * (self.error - self.Derivador)/self.dt
 			self.Derivador = self.error
-			self.Integrador = self.Integrador + self.error
+			self.Integrador = self.Integrador + (self.error*self.dt)
 			ki_f = self.Ki_up
 		else:
 			self.P_value = self.Kp_down * self.error
-			self.D_value = self.Kd_down * (self.error - self.Derivador)
+			self.D_value = self.Kd_down * (self.error - self.Derivador)/self.dt
 			self.Derivador = self.error
-			self.Integrador = self.Integrador + self.error
+			self.Integrador = self.Integrador + (self.error*self.dt)
 			ki_f = self.Ki_down
 		# Checa se o valor do Integrador não saturou
 		if self.Integrador > self.max_Integrador:
