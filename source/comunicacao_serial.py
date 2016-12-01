@@ -125,7 +125,7 @@ def envia_setpwm(self, atualiza):
             bd_config.salva_config_pwm(self.tempo_pwm)
             self.ui.lineEdit_periodoPWM.setText("")
         else:
-            self.tempo_pwm = bd_config.retorna_dados_config()[9]
+            self.tempo_pwm = bd_config.retorna_dados_config()[12]
         automatico.atualiza_label_microcontrolador(self)
         envia_serial(self,self.CHR_tempoPWM + str(self.tempo_pwm))
     except:
@@ -142,7 +142,7 @@ def envia_setanalog(self, atualiza):
             self.ui.lineEdit_analogicaDelayms.setText("")
         else:
             resposta_bd = bd_config.retorna_dados_config()
-            nLeituras, texto_delay = resposta_bd[10], resposta_bd[11]
+            nLeituras, texto_delay = resposta_bd[13], resposta_bd[14]
         if nLeituras > 9 and nLeituras < 99:
             txt_nLeituras = str(nLeituras)
         elif nLeituras < 10:

@@ -153,6 +153,7 @@ class Main(QtGui.QMainWindow):
 
         ####### Connexões #####################################################
         self.ui.pushButton_pidUpdate.pressed.connect(partial(controle_pid.update_config_pid,self))
+        self.ui.pushButton_pid_limpar.pressed.connect(partial(controle_pid.limpa_lineEdit,self))
         self.ui.horizontalSlider_graficoPeriodo.sliderReleased.connect(partial(graficos.tempo_grafico, self))
         self.ui.horizontalSlider_r01.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 1))
         self.ui.horizontalSlider_r02.sliderReleased.connect(partial(comunicacao_serial.envia_resistencia, self, 2))
