@@ -9,6 +9,7 @@ import scipy.misc
 import pylab
 import cv2
 import graficos
+from modulo_global import *
 
 def teste(self):
     T = calcula_perfil(200,250,280,260,300,100,350)
@@ -26,12 +27,13 @@ def teste(self):
     perfil = cv2.imread('imagens/temperatura.jpg')
     perfil = perfil[7:-25,27:]
 
-    forno = cv2.imread('imagens/forno-pre.jpg')
+    global forno
+    #forno = cv2.imread('imagens/forno-pre.jpg')
     col, lin, _ = forno.shape
     perfil = cv2.resize(perfil,(lin, col))
 
     pts1 = np.float32([[0,0],[0,col],[lin,col],[lin,0]])
-    p1, p2, p3, p4 = [70,120], [320,200], [780,55], [600,20]
+    p1, p2, p3, p4 = [85,120], [380,170], [780,50], [600,40]
     pts2 = np.float32([p1, p2, p3, p4])
 
     M = cv2.getPerspectiveTransform(pts1,pts2)

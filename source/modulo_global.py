@@ -1,5 +1,9 @@
 # -*- coding: latin-1 -*-
-import os, sys, serial
+import os, sys, serial, cv2
+
+global forno
+forno = cv2.imread('imagens/forno-pre.jpg')
+
 
 def local_parent():
 	#caminho_source = os.getcwd()
