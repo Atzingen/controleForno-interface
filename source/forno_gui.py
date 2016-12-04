@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'GUI/forno_design.ui'
+# Form implementation generated from reading ui file 'GUI/tela.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -242,7 +242,7 @@ class Ui_MainWindow(object):
         self.label_40.setObjectName(_fromUtf8("label_40"))
         self.toolBox.addItem(self.page, _fromUtf8(""))
         self.page_3 = QtGui.QWidget()
-        self.page_3.setGeometry(QtCore.QRect(0, 0, 581, 382))
+        self.page_3.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.page_3.setObjectName(_fromUtf8("page_3"))
         self.comboBox_displayPerfilPotencia = QtGui.QComboBox(self.page_3)
         self.comboBox_displayPerfilPotencia.setGeometry(QtCore.QRect(10, 150, 91, 31))
@@ -286,7 +286,7 @@ class Ui_MainWindow(object):
         self.widget_perfilPotencia.setObjectName(_fromUtf8("widget_perfilPotencia"))
         self.toolBox.addItem(self.page_3, _fromUtf8(""))
         self.page_2 = QtGui.QWidget()
-        self.page_2.setGeometry(QtCore.QRect(0, 0, 581, 382))
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.page_2.setObjectName(_fromUtf8("page_2"))
         self.toolBox.addItem(self.page_2, _fromUtf8(""))
         self.tabWidget.addTab(self.tab_3, _fromUtf8(""))
@@ -338,9 +338,12 @@ class Ui_MainWindow(object):
         self.pushButton_teste1.setGeometry(QtCore.QRect(30, 420, 101, 31))
         self.pushButton_teste1.setObjectName(_fromUtf8("pushButton_teste1"))
         self.label_37 = QtGui.QLabel(self.tab_12)
-        self.label_37.setGeometry(QtCore.QRect(10, 210, 561, 201))
+        self.label_37.setGeometry(QtCore.QRect(10, 210, 411, 201))
         self.label_37.setAlignment(QtCore.Qt.AlignCenter)
         self.label_37.setObjectName(_fromUtf8("label_37"))
+        self.label_colorbar = QtGui.QLabel(self.tab_12)
+        self.label_colorbar.setGeometry(QtCore.QRect(470, 210, 51, 201))
+        self.label_colorbar.setObjectName(_fromUtf8("label_colorbar"))
         self.tabWidget_4.addTab(self.tab_12, _fromUtf8(""))
         self.tab_13 = QtGui.QWidget()
         self.tab_13.setObjectName(_fromUtf8("tab_13"))
@@ -1136,7 +1139,8 @@ class Ui_MainWindow(object):
         self.tabWidget_4.setTabText(self.tabWidget_4.indexOf(self.tab_11), _translate("MainWindow", "grafico Sensores", None))
         self.label_layoutForno_2.setText(_translate("MainWindow", "Layout-teste", None))
         self.pushButton_teste1.setText(_translate("MainWindow", "Teste 1", None))
-        self.label_37.setText(_translate("MainWindow", "Aguardando", None))
+        self.label_37.setText(_translate("MainWindow", "TextLabel", None))
+        self.label_colorbar.setText(_translate("MainWindow", "colorbar", None))
         self.tabWidget_4.setTabText(self.tabWidget_4.indexOf(self.tab_12), _translate("MainWindow", "Simulacao Forno", None))
         self.tabWidget_4.setTabText(self.tabWidget_4.indexOf(self.tab_13), _translate("MainWindow", "Simulacao Alimento", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_9), _translate("MainWindow", "Grafico", None))

@@ -144,8 +144,9 @@ class Main(QtGui.QMainWindow):
     	self.ui.label_layoutForno.setScaledContents(True)
         caminho_inicial, _ = local_parent()
         caminho_foto_forno = caminho_inicial + '/imagens/forno_layout.png'
+        caminho_colorbar = caminho_inicial + '/imagens/colorbar.png'
     	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap(caminho_foto_forno))
-
+        self.ui.label_colorbar.setPixmap(QtGui.QPixmap(caminho_colorbar).scaled(self.ui.label_colorbar.size(), QtCore.Qt.KeepAspectRatio))
         ## Remover depois				- Porta serial com4 pc de casa
         try:
             self.ui.comboBox_portaSerial.setCurrentIndex(4)

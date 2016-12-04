@@ -1,6 +1,7 @@
 # -*- coding: latin-1 -*-
 from __future__ import division
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rcParams, cm
@@ -10,30 +11,38 @@ import cv2
 import graficos
 
 def teste(self):
-    print 'teste'
     T = calcula_perfil(200,250,280,260,300,100,350)
     R = gera_matriz_imagem(T)
     self.ui.widget_2.canvas.ax.clear()
     cax = self.ui.widget_2.canvas.ax.imshow(R,label="teste",interpolation='nearest',
-                                      aspect='auto', cmap=cm.jet)
-    self.ui.widget_2.canvas.fig.colorbar(cax)
+                                      aspect='auto', cmap=cm.jet)#, vmin=0, vmax=400)
+    self.ui.widget_2.canvas.ax.axis('off')
+    self.ui.widget_2.canvas.fig.savefig('imagens/temperatura.jpg', bbox_inches='tight', pad_inches=0)
+
+    self.ui.widget_2.canvas.ax.axis('on')
+    #self.ui.widget_2.canvas.fig.colorbar(cax)
     self.ui.widget_2.canvas.draw()
-    self.ui.widget_2.canvas.fig.savefig('imagens/temperatura.jpg')
-    perfil_temp = cv2.imread('imagens/temperatura.jpg')
-    forno = cv2.imread('imagens/forno_layout.png')
-    L, A = forno.shape[:2]
-    perfil_temp = cv2.resize(perfil_temp,(A, L), interpolation = cv2.INTER_CUBIC)
-    dst = cv2.addWeighted(perfil_temp,0.3,forno,0.7,0)
-    cv2.imwrite('imagens/teste-img.jpg',dst)
-    self.ui.label_37.setPixmap(QtGui.QPixmap("imagens/teste-img.jpg"))
+
+    perfil = cv2.imread('imagens/temperatura.jpg')
+    perfil = perfil[7:-25,27:]
+
+    forno = cv2.imread('imagens/forno-pre.jpg')
+    col, lin, _ = forno.shape
+    perfil = cv2.resize(perfil,(lin, col))
+
+    pts1 = np.float32([[0,0],[0,col],[lin,col],[lin,0]])
+    p1, p2, p3, p4 = [70,120], [320,200], [780,55], [600,20]
+    pts2 = np.float32([p1, p2, p3, p4])
+
+    M = cv2.getPerspectiveTransform(pts1,pts2)
+
+    perfil = cv2.warpPerspective(perfil,M,(lin,col))
+    perfil = cv2.addWeighted(perfil,0.4,forno,0.6,0)
+    cv2.imwrite('imagens/teste-img.jpg',perfil)
+    self.ui.label_37.setPixmap(QtGui.QPixmap("imagens/teste-img.jpg").scaled(self.ui.label_37.size(), QtCore.Qt.KeepAspectRatio))
 
 def calcula_perfil(Ta, T1 , T2, T3, R1, R2, R3):
     L = 1.8         # comprimento em metros
-    # Ta = 293.1      # Temperatura ambiente
-    # T1 = 397.3      # Temperatura no sensor 1
-    # T2 = 412.3      # Temperatura no sensor 2
-    # T3 = 386.1      # Temperatura no sensor 3
-
     n = 30          # número de elementos finitos
     n_sor = 1.85
 
