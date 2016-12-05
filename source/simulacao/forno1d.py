@@ -12,11 +12,11 @@ import graficos
 from modulo_global import *
 
 def teste(self):
-    T = calcula_perfil(200,250,280,260,300,100,350)
+    T = calcula_perfil(30,250,280,260,300,100,350)
     R = gera_matriz_imagem(T)
     self.ui.widget_2.canvas.ax.clear()
     cax = self.ui.widget_2.canvas.ax.imshow(R,label="teste",interpolation='nearest',
-                                      aspect='auto', cmap=cm.jet)#, vmin=0, vmax=400)
+                                      aspect='auto', cmap=cm.jet, vmin=25, vmax=350)
     self.ui.widget_2.canvas.ax.axis('off')
     self.ui.widget_2.canvas.fig.savefig('imagens/temperatura.jpg', bbox_inches='tight', pad_inches=0)
 

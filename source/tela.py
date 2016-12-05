@@ -8,6 +8,7 @@ import banco.bd_config as bd_config
 import banco.bd_calibracao as bd_calibracao
 import banco.bd_sensores as bd_sensores
 import simulacao.forno1d
+import simulacao.alimento
 import forno_gui, calibracao, comunicacao_serial, automatico
 import camera_rp, graficos, exporta_experimentos, controle_pid
 
@@ -155,6 +156,7 @@ class Main(QtGui.QMainWindow):
 
         ####### Connexões #####################################################
         self.ui.pushButton_teste1.pressed.connect(partial(simulacao.forno1d.teste,self))
+        self.ui.pushButton_testeAlimento.pressed.connect(partial(simulacao.alimento.teste,self))
 
         self.ui.pushButton_pidUpdate.pressed.connect(partial(controle_pid.update_config_pid,self))
         self.ui.pushButton_pid_limpar.pressed.connect(partial(controle_pid.limpa_lineEdit,self))

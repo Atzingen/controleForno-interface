@@ -3,6 +3,8 @@ import os, sys, serial, cv2
 
 global forno
 forno = cv2.imread('imagens/forno-pre.jpg')
+global biscoito
+biscoito = cv2.imread('imagens/biscoito.PNG')
 
 
 def local_parent():
