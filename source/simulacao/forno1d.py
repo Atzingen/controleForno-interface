@@ -11,8 +11,8 @@ import cv2
 import graficos
 from modulo_global import *
 
-def teste(self):
-    T = calcula_perfil(30,250,280,260,300,100,350)
+def display_perfilForno(self, T):
+    #T = calcula_perfil(30,250,280,260,300,100,350)
     R = gera_matriz_imagem(T)
     self.ui.widget_2.canvas.ax.clear()
     cax = self.ui.widget_2.canvas.ax.imshow(R,label="teste",interpolation='nearest',
@@ -27,8 +27,9 @@ def teste(self):
     perfil = cv2.imread('imagens/temperatura.jpg')
     perfil = perfil[7:-25,27:]
 
-    global forno
-    #forno = cv2.imread('imagens/forno-pre.jpg')
+    #global forno
+    forno = cv2.imread('imagens/forno-pre.jpg')
+    
     col, lin, _ = forno.shape
     perfil = cv2.resize(perfil,(lin, col))
 

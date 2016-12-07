@@ -50,6 +50,12 @@ def converte_dado(dado,self):
                int(dado[self.pos_sensor_lateral2 :self.pos_sensor_lateral2 + 4]))
         d[6] = float(self.S_06_A) + (float(self.S_06_B) * \
                int(dado[self.pos_sensor_lateral3 :self.pos_sensor_lateral3 + 4]))
+        try:
+            self.status.forno(self,d[1:])
+            #self.status.alimento(self,d[1:])
+            self.status.incrementaContador()
+        except Exception as e:
+            print e
         return d
     except:
         self.alerta_toolbar('Erro converte_dado')

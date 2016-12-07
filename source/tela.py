@@ -85,6 +85,8 @@ class Main(QtGui.QMainWindow):
 
         #####  testes ############################################################
 
+        self.status = status()
+
         ##### Efeitos visuais para outros OS (teste)
         if (platform.system() == 'Darwin'):
             self.ui.horizontalSlider_r01.setStyle(QtGui.QStyleFactory.create("macintosh"))
@@ -155,8 +157,7 @@ class Main(QtGui.QMainWindow):
             pass
 
         ####### Connexões #####################################################
-        self.ui.pushButton_teste1.pressed.connect(partial(simulacao.forno1d.teste,self))
-        self.ui.pushButton_testeAlimento.pressed.connect(partial(simulacao.alimento.teste,self))
+        #self.ui.checkBox_calcPerfil.stateChanged.connect(partial(self.teste))
 
         self.ui.pushButton_pidUpdate.pressed.connect(partial(controle_pid.update_config_pid,self))
         self.ui.pushButton_pid_limpar.pressed.connect(partial(controle_pid.limpa_lineEdit,self))
@@ -207,6 +208,11 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_perfilPotencia.pressed.connect(partial(automatico.inicia_perfil,self,'potencia'))
 
     #####################  Funções da GUI #################################
+    def teste(self):
+        self.status.simForno = not self.status.simForno
+        self.status.forno(self.ui)
+
+
     def alerta_toolbar(self, texto):
     	'''
 		Função que coloca o texto na statusbar. O texto passado como parâmetro

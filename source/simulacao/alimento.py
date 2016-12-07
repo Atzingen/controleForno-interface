@@ -6,9 +6,9 @@ from matplotlib import rcParams, cm
 import cv2
 from modulo_global import *
 
-def teste(self):
-    T0 = np.ones((30,60))*300 #   dimensão 2, size nr + 1, nh + 1
-    T = evolui_tempo(10, T0, T_paredes=500, T_esteira=400) - 273.5
+def display_alimento(self, T):
+    # T0 = np.ones((30,60))*300 #   dimensão 2, size nr + 1, nh + 1
+    # T = evolui_tempo(10, T0, T_paredes=500, T_esteira=400) - 273.5
     T = np.flipud(T)
     T = np.concatenate((np.fliplr(T),T),axis=1)
     self.ui.widget_3.canvas.ax.clear()
@@ -43,8 +43,7 @@ def evolui_tempo(tf, T,
                  dt=0.05, nr = 60, nh = 30,
                  R = 5.0e-2, H = 1.0e-2,
                  k = 0.1, rho = 400, Cp = 3000, h_convec = 5.0, epsion = 0.7,
-                 T_esteira = 420.0, T_paredes = 470.0, T_ar = 450.0, T_ambiente = 293.0,
-                 gif = False, grafico = True, frame_skip = 20):
+                 T_esteira = 420.0, T_paredes = 470.0, T_ar = 450.0, T_ambiente = 293.0):
     '''
     Função principal da simulação.
     Recebe a temperatura inicial e os parâmetros necessários para realizar via método direto (fowad in time, center in space),
