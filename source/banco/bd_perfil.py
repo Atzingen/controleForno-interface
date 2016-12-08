@@ -1,10 +1,8 @@
 # -*- coding: latin-1 -*-
-from modulo_global import *
 import sqlite3, datetime
 
-def cria_tabela_perfil_temperatura():
+def cria_tabela_perfil_temperatura(caminho_banco):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''CREATE TABLE IF NOT EXISTS perfil_temperatura
@@ -14,13 +12,14 @@ def cria_tabela_perfil_temperatura():
 		if cursor.rowcount > 0:
 			return True
 		else:
+			print 'Erro: cria_tabela_perfil_temperatura'
 			return False
 	except:
+		print 'Erro: except - cria_tabela_perfil_temperatura'
 		return None
 
-def cria_tabela_perfil_potencia():
+def cria_tabela_perfil_potencia(caminho_banco):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''CREATE TABLE IF NOT EXISTS perfil_potencia
@@ -31,13 +30,14 @@ def cria_tabela_perfil_potencia():
 		if cursor.rowcount > 0:
 			return True
 		else:
+			print 'Erro: cria_tabela_perfil_potencia'
 			return False
 	except:
+		print 'Erro: except - cria_tabela_perfil_potencia'
 		return None
 
-def insere_perfil(tipo,nome,v1,v2,v3=None,v4=None,v5=None,v6=None):
+def insere_perfil(caminho_banco,tipo,nome,v1,v2,v3=None,v4=None,v5=None,v6=None):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		if tipo == 'potencia':
@@ -52,14 +52,15 @@ def insere_perfil(tipo,nome,v1,v2,v3=None,v4=None,v5=None,v6=None):
 		if cursor.rowcount > 0:
 			return True
 		else:
+			print 'Erro: insere_perfil'
 			return False
 	except:
+		print 'Erro: except - insere_perfil'
 		return False
 
 
-def nomes_perfil_temperatura():
+def nomes_perfil_temperatura(caminho_banco):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''SELECT nome FROM perfil_temperatura''')
@@ -68,13 +69,14 @@ def nomes_perfil_temperatura():
 		if row:
 			return row
 		else:
+			print 'Erro: nomes_perfil_temperatura'
 			return None
 	except:
+		print 'Erro: except - nomes_perfil_temperatura'
 		return None
 
-def nomes_perfil_potencia():
+def nomes_perfil_potencia(caminho_banco):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''SELECT nome FROM perfil_potencia''')
@@ -83,13 +85,14 @@ def nomes_perfil_potencia():
 		if row:
 			return row
 		else:
+			print 'Erro: nomes_perfil_potencia'
 			return None
 	except:
+		print 'Erro: except - nomes_perfil_potencia'
 		return None
 
-def leitura_perfil(nome,tipo):
+def leitura_perfil(caminho_banco, nome, tipo):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		if tipo == 'temperatura':
@@ -101,6 +104,8 @@ def leitura_perfil(nome,tipo):
 		if row:
 			return row
 		else:
+			print 'Erro: leitura_perfil'
 			return None
 	except:
+		print 'Erro: except - leitura_perfil'
 		return None

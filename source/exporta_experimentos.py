@@ -8,7 +8,6 @@ from email.MIMEText import MIMEText
 from email.MIMEBase import MIMEBase
 from email import Encoders
 import banco.bd_sensores as bd_sensores
-import modulo_global
 
 def local_arquivo(self):
 	''' Altera o texto do lable que mostra o caminho onde s�o salvos os arquivos'''
@@ -32,9 +31,10 @@ def gera_arquivo(self):
 	if self.ui.checkBox_experimentoPeriodo.isChecked():
 		Tf = self.ui.dateTimeEdit_fim.dateTime().toPyDateTime()
 		Ti = self.ui.dateTimeEdit_inicio.dateTime().toPyDateTime()
-		d = bd_sensores.retorna_dados(1,Ti=Ti,Tf=Tf)
+		d = bd_sensores.retorna_dados(self.caminho_banco, 1, Ti=Ti, Tf=Tf)
 	elif self.ui.checkBox_experimentoAtualData.isChecked():
-		d = bd_sensores.retorna_dados(1,experimento=str(self.ui.label_nomeExperimento.text()))
+		d = bd_sensores.retorna_dados(self.caminho_banco, 1,
+						experimento=str(self.ui.label_nomeExperimento.text()))
 		tempo = str(self.ui.label_nomeExperimento.text()) + '_' + tempo
 	for a in glob.glob('*'):
 		if tempo in a:
@@ -172,4 +172,4 @@ def zerabd_gui(self):
 						QtGui.QMessageBox.No)
 		if reply == QtGui.QMessageBox.Yes:
 			self.alerta_toolbar("Apagando bd")
-			bd_sensores.deleta_tabeta()
+			bd_sensores.deleta_tabeta(self.caminho_banco)

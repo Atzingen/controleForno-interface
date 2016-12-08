@@ -3,7 +3,8 @@ from __future__ import division
 import sys, os, time, platform, serial
 from functools import partial
 from PyQt4 import QtGui, QtCore
-from modulo_global import *
+import cv2
+import informacoes
 import banco.bd_config as bd_config
 import banco.bd_calibracao as bd_calibracao
 import banco.bd_sensores as bd_sensores
@@ -29,9 +30,20 @@ class Main(QtGui.QMainWindow):
         self.ui = forno_gui.Ui_MainWindow()
         self.ui.setupUi(self)
 
+        ###  Variaveis de controle geral  #####################################
+        self.caminho_inicial = informacoes.local_parent()
+        self.caminho_banco = self.caminho_inicial + '/bancoDados/forno_data.db'
+        self.caminho_forno_pre = self.caminho_inicial + '/imagens/forno-pre.jpg'
+        self.caminho_biscoito = self.caminho_inicial + '/imagens/biscoito.PNG'
+        self.caminho_forno_layout = self.caminho_inicial + '/imagens/forno_layout.png'
+        self.caminho_colorbar = self.caminho_inicial + '/imagens/colorbar.png'
+
+        self.img_forno = cv2.imread(self.caminho_forno_pre)
+        self.img_biscoito = cv2.imread(self.caminho_biscoito)
+
         ###     Variáveis da calibração        ################################
-        nomes = bd_config.retorna_dados_config_calibracao()
-        cal = bd_calibracao.leitura_calibracao(str(nomes))
+        nomes = bd_config.retorna_dados_config_calibracao(self.caminho_banco)
+        cal = bd_calibracao.leitura_calibracao(self.caminho_banco, str(nomes))
         calibracao.atualiza_valores_calibracoes(self,cal)
         calibracao.atualiza_lineEdit_calibracao(self)
 
@@ -85,7 +97,7 @@ class Main(QtGui.QMainWindow):
 
         #####  testes ############################################################
 
-        self.status = status()
+        self.status = informacoes.status()
 
         ##### Efeitos visuais para outros OS (teste)
         if (platform.system() == 'Darwin'):
@@ -108,12 +120,11 @@ class Main(QtGui.QMainWindow):
             self.ui.horizontalSlider_graficoPeriodo.setStyle(QtGui.QStyleFactory.create("windows"))
 
         ######## Caminho para os experimentos salvos #########################
-        source_parent, _ = local_parent()
-        self.ui.label_caminho.setText(source_parent + "dadosExperimento")
+        self.ui.label_caminho.setText(self.caminho_inicial + '/dadosExperimento')
 
         ####### Banco de dados ################################################
         tempo_coleta = time.time()
-        bd_sensores.cria_tabela()#Caso não exista, cria a tabela com os esquemas necessários
+        bd_sensores.cria_tabela(self.caminho_banco)#Caso não exista, cria a tabela com os esquemas necessários
 
         #####  QTimers ########################################################
         self.timer_foto = QtCore.QTimer()
@@ -145,11 +156,8 @@ class Main(QtGui.QMainWindow):
         #######################################################################
         # Adicionando a foto do layout do forno
     	self.ui.label_layoutForno.setScaledContents(True)
-        caminho_inicial, _ = local_parent()
-        caminho_foto_forno = caminho_inicial + '/imagens/forno_layout.png'
-        caminho_colorbar = caminho_inicial + '/imagens/colorbar.png'
-    	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap(caminho_foto_forno))
-        self.ui.label_colorbar.setPixmap(QtGui.QPixmap(caminho_colorbar).scaled(self.ui.label_colorbar.size(), QtCore.Qt.KeepAspectRatio))
+    	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap(self.caminho_forno_layout))
+        self.ui.label_colorbar.setPixmap(QtGui.QPixmap(self.caminho_colorbar).scaled(self.ui.label_colorbar.size(), QtCore.Qt.KeepAspectRatio))
         ## Remover depois				- Porta serial com4 pc de casa
         try:
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
@@ -208,11 +216,6 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_perfilPotencia.pressed.connect(partial(automatico.inicia_perfil,self,'potencia'))
 
     #####################  Funções da GUI #################################
-    def teste(self):
-        self.status.simForno = not self.status.simForno
-        self.status.forno(self.ui)
-
-
     def alerta_toolbar(self, texto):
     	'''
 		Função que coloca o texto na statusbar. O texto passado como parâmetro
@@ -241,15 +244,17 @@ class Main(QtGui.QMainWindow):
 
 
     def enabled_disabled(self, estado):
-        ''' Habilita ou desabilita as funções de controle da esteira (caso esteja ou não conectado ao forno) '''
+        ''' Habilita ou desabilita as funções de controle da esteira
+         (caso esteja ou não conectado ao forno)
+        '''
         if (not estado):  # Caso esteja conectado:
-            self.ui.horizontalSlider_r01.setValue(0)  # Volta os sliders para a opsição inicial
+            self.ui.horizontalSlider_r01.setValue(0)
             self.ui.horizontalSlider_r02.setValue(0)
             self.ui.horizontalSlider_r04.setValue(0)
             self.ui.horizontalSlider_r03.setValue(0)
             self.ui.horizontalSlider_r06.setValue(0)
             self.ui.horizontalSlider_r05.setValue(0)
-        self.ui.horizontalSlider_esteira.setEnabled(estado)  # Habilita/desabilita os controles
+        self.ui.horizontalSlider_esteira.setEnabled(estado)
         self.ui.horizontalSlider_r01.setEnabled(estado)
         self.ui.horizontalSlider_r02.setEnabled(estado)
         self.ui.horizontalSlider_r04.setEnabled(estado)

@@ -1,10 +1,8 @@
 # -*- coding: latin-1 -*-
-from modulo_global import *
 import sqlite3, datetime
 
-def cria_tabela_calibracao():
+def cria_tabela_calibracao(caminho_banco):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''CREATE TABLE IF NOT EXISTS calibracao
@@ -15,13 +13,14 @@ def cria_tabela_calibracao():
 		if cursor.rowcount > 0:
 			return True
 		else:
+			print 'Erro: cria_tabela_calibracao'
 			return False
 	except:
+		print 'Erro: except - cria_tabela_calibracao'
 		return None
 
-def deleta_calibracao_bd(nome,tipo):
+def deleta_calibracao_bd(caminho_banco, nome,tipo):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		if tipo == 'Fit':
@@ -48,14 +47,15 @@ def deleta_calibracao_bd(nome,tipo):
 		if cursor.rowcount > 0:
 			return True
 		else:
+			print 'Erro: deleta_calibracao_bd'
 			return False
 	except:
+		print 'Erro: except - deleta_calibracao_bd'
 		return False
 
-def insere_calibracao(nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
+def insere_calibracao(caminho_banco, nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
 					s1_B,s2_B,s3_B,s4_B,s5_B,s6_B):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''INSERT INTO calibracao (nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
@@ -66,13 +66,14 @@ def insere_calibracao(nome,s1_A,s2_A,s3_A,s4_A,s5_A,s6_A,
 		if cursor.rowcount > 0:
 			return True
 		else:
+			print 'Erro: insere_calibracao'
 			return False
 	except:
+		print 'Erro: except - insere_calibracao'
 		return False
 
-def nomes_calibracao():
+def nomes_calibracao(caminho_banco):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''SELECT nome FROM calibracao''')
@@ -81,13 +82,14 @@ def nomes_calibracao():
 		if row:
 			return row
 		else:
+			print 'Erro: nomes_calibracao'
 			return None
 	except:
+		print 'Erro: except - nomes_calibracao'
 		return None
 
-def leitura_calibracao(nome):
+def leitura_calibracao(caminho_banco, nome):
 	try:
-		global caminho_banco
 		db = sqlite3.connect(caminho_banco)
 		cursor = db.cursor()
 		cursor.execute('''SELECT * FROM calibracao WHERE nome = ?''',(nome,))
@@ -98,4 +100,5 @@ def leitura_calibracao(nome):
 		else:
 			return [1,"sem calibracao",0,0,0,0,0,0,1,1,1,1,1,1]
 	except:
+		print 'Erro: except - leitura_calibracao'
 		return None

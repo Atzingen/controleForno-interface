@@ -5,9 +5,7 @@ import numpy as np
 from functools import partial
 from PyQt4 import QtCore
 # Imports Locais
-from modulo_global import *
 import exporta_experimentos, trata_dados, automatico
-import banco.bd_sensores as bd_sensores
 import banco.bd_config as bd_config
 
 def serial_ports():
@@ -122,10 +120,10 @@ def envia_setpwm(self, atualiza):
     try:
         if atualiza:
             self.tempo_pwm = int(str(self.ui.lineEdit_periodoPWM.text()))
-            bd_config.salva_config_pwm(self.tempo_pwm)
+            bd_config.salva_config_pwm(self.caminho_banco, self.tempo_pwm)
             self.ui.lineEdit_periodoPWM.setText("")
         else:
-            self.tempo_pwm = bd_config.retorna_dados_config()[12]
+            self.tempo_pwm = bd_config.retorna_dados_config(self.caminho_banco)[12]
         automatico.atualiza_label_microcontrolador(self)
         envia_serial(self,self.CHR_tempoPWM + str(self.tempo_pwm))
     except:
@@ -136,12 +134,12 @@ def envia_setanalog(self, atualiza):
         if atualiza:
             nLeituras = int(str(self.ui.lineEdit_analogicaNleituras.text()))
             texto_delay = str(self.ui.lineEdit_analogicaDelayms.text())
-            bd_config.salva_config_ad(int(nLeituras),int(texto_delay))
+            bd_config.salva_config_ad(self.caminho_banco, int(nLeituras),int(texto_delay))
             automatico.atualiza_label_microcontrolador(self)
             self.ui.lineEdit_analogicaNleituras.setText("")
             self.ui.lineEdit_analogicaDelayms.setText("")
         else:
-            resposta_bd = bd_config.retorna_dados_config()
+            resposta_bd = bd_config.retorna_dados_config(self.caminho_banco)
             nLeituras, texto_delay = resposta_bd[13], resposta_bd[14]
         if nLeituras > 9 and nLeituras < 99:
             txt_nLeituras = str(nLeituras)

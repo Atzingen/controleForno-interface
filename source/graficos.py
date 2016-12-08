@@ -1,4 +1,5 @@
 # -*- coding: latin-1 -*-
+from __future__ import division
 import ast
 import numpy as np
 from PyQt4 import QtGui
@@ -43,14 +44,14 @@ def plotar_sensores(self):
     self.ui.widget.canvas.ax.clear()
      # Pega o nome do experimento e verifica se é 'Sem nome' ou não.
     if (str(self.ui.label_nomeExperimento.text()) != 'Sem Nome'):
-        d = bd_sensores.retorna_dados(1,
+        d = bd_sensores.retorna_dados(self.caminho_banco, delta_t=1,
             experimento=str(self.ui.label_nomeExperimento.text()))
     else:
         delta_t = self.ui.horizontalSlider_graficoPeriodo.value()
-        d = bd_sensores.retorna_dados(delta_t)
+        d = bd_sensores.retorna_dados(self.caminho_banco, delta_t)
     try:
         if np.size(d[:,0]) > 1:
-            eixo_tempo = d[:,2]/60
+            eixo_tempo = (d[:,2].astype(float) - float(d[0,2]) )/60
             if self.ui.checkBox_sensor2.isChecked():
                 self.ui.widget.canvas.ax.plot(eixo_tempo,d[:,4],label="teto1")
             if self.ui.checkBox_sensor3.isChecked():
@@ -70,7 +71,8 @@ def plotar_sensores(self):
             self.ui.widget.canvas.ax.set_ylabel('temperatura (Celcius)')
             self.ui.widget.canvas.ax.grid(True)
             self.ui.widget.canvas.draw()
-    except:
+    except Exception as e:
+        print 'e- ', e
         self.alerta_toolbar("Erro: Grafico Sensores")
         pass
 
@@ -106,12 +108,12 @@ def plota_perfil(self,tipo,posicao_atual):
     if tipo == 'temperatura':
         nomes_drop = {0:'todos',1:'t_ar',2:'t_esteira'}
         escolha = unicode(self.ui.comboBox_perfilTemperatura.currentText())
-        dados = bd_perfil.leitura_perfil(escolha,'temperatura')
+        dados = bd_perfil.leitura_perfil(self.caminho_banco, escolha, 'temperatura')
         indice = int(self.ui.comboBox_displayPerfilTemperatura.currentIndex())
         self.ui.widget_perfilTemperatura.canvas.ax.clear()
     elif tipo == 'potencia':
         escolha = unicode(self.ui.comboBox_perfilPotencia.currentText())
-        dados = bd_perfil.leitura_perfil(escolha,'potencia')
+        dados = bd_perfil.leitura_perfil(self.caminho_banco, escolha, 'potencia')
         indice = int(self.ui.comboBox_displayPerfilPotencia.currentIndex())
         self.ui.widget_perfilPotencia.canvas.ax.clear()
     x , y = [], []

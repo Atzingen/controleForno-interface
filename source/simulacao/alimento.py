@@ -4,7 +4,6 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 from matplotlib import rcParams, cm
 import cv2
-from modulo_global import *
 
 def display_alimento(self, T):
     # T0 = np.ones((30,60))*300 #   dimensão 2, size nr + 1, nh + 1
@@ -15,15 +14,15 @@ def display_alimento(self, T):
     cax = self.ui.widget_3.canvas.ax.imshow(T,label="teste",interpolation='nearest',
                                       aspect='auto', cmap=cm.jet)#, vmin=25, vmax=350)
     self.ui.widget_3.canvas.ax.axis('off')
-    self.ui.widget_3.canvas.fig.savefig('imagens/temp-alimento.jpg', bbox_inches='tight', pad_inches=0)
+    self.ui.widget_3.canvas.fig.savefig(self.caminho_inicial + '/imagens/temp-alimento.jpg', bbox_inches='tight', pad_inches=0)
     self.ui.widget_3.canvas.ax.axis('on')
     #self.ui.widget_2.canvas.fig.colorbar(cax)
     self.ui.widget_3.canvas.draw()
 
-    perfil = cv2.imread('imagens/temp-alimento.jpg')
+    perfil = cv2.imread(self.caminho_inicial + '/imagens/temp-alimento.jpg')
     perfil = perfil[7:-25,27:]
 
-    global biscoito
+    biscoito = self.img_biscoito
 
     col, lin, _ = biscoito.shape
     perfil = cv2.resize(perfil,(lin, col))
@@ -36,8 +35,8 @@ def display_alimento(self, T):
 
     perfil = cv2.warpPerspective(perfil,M,(lin,col))
     perfil = cv2.addWeighted(biscoito,0.8,perfil,0.6,0)
-    cv2.imwrite('imagens/teste-img2.jpg',perfil)
-    self.ui.label_39.setPixmap(QtGui.QPixmap("imagens/teste-img2.jpg").scaled(self.ui.label_39.size(), QtCore.Qt.KeepAspectRatio))
+    cv2.imwrite(self.caminho_inicial + '/imagens/teste-img2.jpg',perfil)
+    self.ui.label_39.setPixmap(QtGui.QPixmap(self.caminho_inicial + '/imagens/teste-img2.jpg').scaled(self.ui.label_39.size(), QtCore.Qt.KeepAspectRatio))
 
 def evolui_tempo(tf, T,
                  dt=0.05, nr = 60, nh = 30,

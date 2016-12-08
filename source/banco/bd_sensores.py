@@ -1,15 +1,13 @@
 # -*- coding: latin-1 -*-
-from modulo_global import *
 import sqlite3, scipy, datetime
 
-def cria_tabela():
+def cria_tabela(caminho_banco):
 	'''
 	Cira a tabela 'dados_forno' caso ela não exista, criando o esquema e as
 	colunas no formato correto. O nome do arquivo do banco de dados é
 	caminho_banco e esta na mesma pasta /bandoDados.
 	'''
 	try:
-		global caminho_banco
 		createDB = sqlite3.connect(caminho_banco)
 		queryCurs = createDB.cursor()
 		queryCurs.execute('''CREATE TABLE IF NOT EXISTS dados_forno
@@ -18,16 +16,15 @@ def cria_tabela():
 		calibracao TEXT, atuadores TEXT)''')
 		createDB.commit()
 	except:
-		pass
+		print 'Erro: except cria_tabela'
 
-def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None,calibracao=None,atuadores=None):
+def adiciona_dado(caminho_banco,t_0,s1,s2,s3,s4,s5,s6,experimento=None,calibracao=None,atuadores=None):
 	'''
 	Recebe os dados de tempo e o estado dos 6 sensores. todos os dados são salvos no bd na tabela 'dados_forno', nas coluna apropriadas
 	O instante atual é capturado para salvar na culuna timestap. Caso a variável experimento (que significa o nome do experimento) seja passada,
 	ela tambénm é salva no bd.
 	'''
 	try:
-		global caminho_banco
 		createDB = sqlite3.connect(caminho_banco)
 		cursor = createDB.cursor()
 		# Pegando o tempo atual do SO
@@ -52,23 +49,21 @@ def adiciona_dado(t_0,s1,s2,s3,s4,s5,s6,experimento=None,calibracao=None,atuador
 				(t_abs,t_0,s1,s2,s3,s4,s5,s6))
 			createDB.commit()
 	except:
-		print "except"
-		pass
+		print 'Erro: except adiciona_dado'
 
-def deleta_tabeta():
+def deleta_tabeta(caminho_banco):
 	'''
 	Função que deleta dodos os dados do bd.
 	'''
 	try:
-		global caminho_banco
 		createDB = sqlite3.connect(caminho_banco)
 		cursor = createDB.cursor()
 		cursor.execute("DELETE FROM dados_forno WHERE id > -1")
 		createDB.commit()
 	except:
-		pass
+		print 'Erro: except adiciona_dado'
 
-def retorna_dados(delta_t,experimento=None,Ti=None,Tf=None):
+def retorna_dados(caminho_banco,delta_t,experimento=None,Ti=None,Tf=None):
 	'''
 	Função que retorna os dados do bd.
 		-Caso o nome do experimento seja fornecido, serão retornaos todos os dados relativos a este experimento
@@ -76,7 +71,6 @@ def retorna_dados(delta_t,experimento=None,Ti=None,Tf=None):
 		-Tempo delta (padrão) - Retorna dados entre o tempo atual e o tempo atual - delta_t.
 	'''
 	try:
-		global caminho_banco
 		createDB = sqlite3.connect(caminho_banco)
 		cursor = createDB.cursor()
 		if experimento:
@@ -86,10 +80,11 @@ def retorna_dados(delta_t,experimento=None,Ti=None,Tf=None):
 			if Ti == None and Tf == None:
 				tempo_inicial = datetime.datetime.now() - datetime.timedelta(minutes=delta_t)
 				cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ?",(tempo_inicial,))
-			else:														# Op��o Ti - Tf
+			else:											
 				cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ? AND t_abs < ?",(Ti,Tf))
 		createDB.commit()
 		# Retorna os dados no formato matricial
 		return scipy.array(cursor.fetchall())
 	except:
+		print 'Erro: except adiciona_dado'
 		return None

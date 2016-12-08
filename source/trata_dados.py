@@ -51,11 +51,12 @@ def converte_dado(dado,self):
         d[6] = float(self.S_06_A) + (float(self.S_06_B) * \
                int(dado[self.pos_sensor_lateral3 :self.pos_sensor_lateral3 + 4]))
         try:
-            self.status.forno(self,d[1:])
+            print d
+            self.status.forno(self,(d[4],d[5],d[6]))
             #self.status.alimento(self,d[1:])
             self.status.incrementaContador()
         except Exception as e:
-            print e
+            print e, 'zica'
         return d
     except:
         self.alerta_toolbar('Erro converte_dado')
@@ -156,8 +157,6 @@ def resultado_dado(self, tipo, d):
     são feitas para mosrtar o recebimento dos dados.
     '''
     try:
-        print tipo
-        # tipo 1: retono de dados de temperatura.
         if tipo == 1:
             # Altera os valores dos displays de temperatura.
             #temperatura = [None, d[4], d[], d[], d[], d[], d[]]
@@ -176,19 +175,20 @@ def resultado_dado(self, tipo, d):
             str(self.valor_resistencia03) + "," + str(self.valor_resistencia04) + "," + \
             str(self.valor_resistencia05) + "," + str(self.valor_resistencia06) + "," + \
             str(self.valor_esteira)
-            calibracao = str(bd_config.retorna_dados_config_calibracao())
+            calibracao = str(bd_config.retorna_dados_config_calibracao(self.caminho_banco))
             # Adicionando os dados ao bd:
             # 'Sem nome': padrão para quando ainda não foi dado nome ao experimento
             if str(self.ui.label_nomeExperimento.text()) == 'Sem Nome':
-                bd_sensores.adiciona_dado(float(d[0]),float(d[1]),float(d[2]),
+                bd_sensores.adiciona_dado(self.caminho_banco,
+                              float(d[0]),float(d[1]),float(d[2]),
                               float(d[3]),float(d[4]),float(d[5]),float(d[6]),
                               calibracao=calibracao,atuadores=atuadores)
             else:
-                bd_sensores.adiciona_dado(float(d[0]),float(d[1]),
-                              float(d[2]),float(d[3]),float(d[4]),float(d[5]),
-                              float(d[6]),
-                              experimento=str(self.ui.label_nomeExperimento.text()),
-                              calibracao=calibracao,atuadores=atuadores)
+                bd_sensores.adiciona_dado(self.caminho_banco,
+                            float(d[0]),float(d[1]),float(d[2]),float(d[3]),
+                            float(d[4]),float(d[5]),float(d[6]),
+                            experimento=str(self.ui.label_nomeExperimento.text()),
+                            calibracao=calibracao,atuadores=atuadores)
         # Tipo 2 ou 8 - Liga ou desliga alguma resistência (total o pwm).
         elif tipo == 2 or tipo == 8:
             # tipo 2 liga ou desliga completamente uma resistência
@@ -247,8 +247,8 @@ def resultado_dado(self, tipo, d):
                 delayAnalog = int(d[8])
                 nLeituras = int(d[9])
                 self.tempo_pwm = int(d[10])
-                bd_config.salva_config_pwm(self.tempo_pwm)
-                bd_config.salva_config_ad(nLeituras,delayAnalog)
+                bd_config.salva_config_pwm(self.caminho_banco,self.tempo_pwm)
+                bd_config.salva_config_ad(self.caminho_banco,nLeituras,delayAnalog)
                 automatico.atualiza_label_microcontrolador(self)
             QtCore.QTimer.singleShot(10, partial(comunicacao_serial.teste_retorno,self))
         elif tipo == 10:

@@ -9,7 +9,6 @@ import scipy.misc
 import pylab
 import cv2
 import graficos
-from modulo_global import *
 
 def display_perfilForno(self, T):
     #T = calcula_perfil(30,250,280,260,300,100,350)
@@ -18,18 +17,16 @@ def display_perfilForno(self, T):
     cax = self.ui.widget_2.canvas.ax.imshow(R,label="teste",interpolation='nearest',
                                       aspect='auto', cmap=cm.jet, vmin=25, vmax=350)
     self.ui.widget_2.canvas.ax.axis('off')
-    self.ui.widget_2.canvas.fig.savefig('imagens/temperatura.jpg', bbox_inches='tight', pad_inches=0)
+    self.ui.widget_2.canvas.fig.savefig(self.caminho_inicial + '/imagens/temperatura.jpg', bbox_inches='tight', pad_inches=0)
 
     self.ui.widget_2.canvas.ax.axis('on')
     #self.ui.widget_2.canvas.fig.colorbar(cax)
     self.ui.widget_2.canvas.draw()
 
-    perfil = cv2.imread('imagens/temperatura.jpg')
+    perfil = cv2.imread(self.caminho_inicial + '/imagens/temperatura.jpg')
     perfil = perfil[7:-25,27:]
 
-    #global forno
-    forno = cv2.imread('imagens/forno-pre.jpg')
-    
+    forno = self.img_forno
     col, lin, _ = forno.shape
     perfil = cv2.resize(perfil,(lin, col))
 
@@ -41,8 +38,8 @@ def display_perfilForno(self, T):
 
     perfil = cv2.warpPerspective(perfil,M,(lin,col))
     perfil = cv2.addWeighted(perfil,0.4,forno,0.6,0)
-    cv2.imwrite('imagens/teste-img.jpg',perfil)
-    self.ui.label_37.setPixmap(QtGui.QPixmap("imagens/teste-img.jpg").scaled(self.ui.label_37.size(), QtCore.Qt.KeepAspectRatio))
+    cv2.imwrite(self.caminho_inicial + '/imagens/teste-img.jpg',perfil)
+    self.ui.label_37.setPixmap(QtGui.QPixmap(self.caminho_inicial + '/imagens/teste-img.jpg').scaled(self.ui.label_37.size(), QtCore.Qt.KeepAspectRatio))
 
 def calcula_perfil(Ta, T1 , T2, T3, R1, R2, R3):
     L = 1.8         # comprimento em metros

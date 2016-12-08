@@ -4,7 +4,6 @@ import banco.bd_calibracao as bd_calibracao
 import banco.bd_config as bd_config
 import automatico
 
-
 def salva_calibracao(self):
     '''
     Função que salva o valor da calibração linear para a conversao do valor
@@ -27,7 +26,7 @@ def salva_calibracao(self):
         'Digite o nome da calibracao')
     self.alerta_toolbar("Salvando cal: " + text)
     if ok:
-        nomes = bd_calibracao.nomes_calibracao()
+        nomes = bd_calibracao.nomes_calibracao(self.caminho_banco)
         for nome in nomes:
             if nome[0] == text:
                 igual = True
@@ -38,7 +37,9 @@ def salva_calibracao(self):
             self.alerta_toolbar("nome ja existe")
             print "nome já existe"
         else:
-            bd_calibracao.insere_calibracao(str(text), s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B, s_03_B, s_04_B, s_05_B, s_06_B)
+            bd_calibracao.insere_calibracao(self.caminho_banco, str(text),
+            s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B,
+            s_03_B, s_04_B, s_05_B, s_06_B)
 
 def deleta_calibracao(self, tipo):
     print 'inicio', tipo
@@ -59,10 +60,10 @@ def deleta_calibracao(self, tipo):
     										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:
             print escolha, tipo
-            bd_calibracao.deleta_calibracao_bd(str(escolha),tipo)
-            if (str(escolha)==bd_config.retorna_dados_config_calibracao()):
+            bd_calibracao.deleta_calibracao_bd(self.caminho_banco, str(escolha), tipo)
+            if (str(escolha)==bd_config.retorna_dados_config_calibracao(self.caminho_banco)):
                 primeiro_nome = self.ui.comboBox_fitLinear.itemText(0)
-                bd_config.salva_config_calibracao(primeiro_nome)
+                bd_config.salva_config_calibracao(self.caminho_banco, primeiro_nome)
             lista_calibracoes(self)
             automatico.lista_perfil_potencia(self)
             automatico.lista_perfil_resistencia(self)
@@ -87,9 +88,9 @@ def atualiza_lineEdit_calibracao(self):
 
 def lista_calibracoes(self):
     self.ui.comboBox_portaSerial.blockSignals(True)
-    nomes = bd_calibracao.nomes_calibracao()
+    nomes = bd_calibracao.nomes_calibracao(self.caminho_banco)
     numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
-    escolha = bd_config.retorna_dados_config_calibracao()
+    escolha = bd_config.retorna_dados_config_calibracao(self.caminho_banco)
     self.ui.comboBox_fitLinear.clear()
     i = 0
     for nome in nomes:
@@ -100,8 +101,8 @@ def lista_calibracoes(self):
     self.ui.comboBox_fitLinear.setCurrentIndex(numero_escolha)
     self.ui.comboBox_fitLinear.blockSignals(False)
     escolha = unicode(self.ui.comboBox_fitLinear.currentText())
-    valores = bd_calibracao.leitura_calibracao(escolha)
-    bd_config.salva_config_calibracao(escolha)
+    valores = bd_calibracao.leitura_calibracao(self.caminho_banco, escolha)
+    bd_config.salva_config_calibracao(self.caminho_banco, escolha)
     atualiza_valores_calibracoes(self,valores)
     atualiza_lineEdit_calibracao(self)
 

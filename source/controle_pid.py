@@ -86,7 +86,7 @@ class PID:
 
 def update_label_pid(self):
 	try:
-	    cfg = bd_config.retorna_dados_config()
+	    cfg = bd_config.retorna_dados_config(self.caminho_banco)
 	    kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8], cfg[9], cfg[10], cfg[11]
 	    texto_label = 'kp=' + str(kp) + ' ki=' + str(ki) + ' kd=' + str(kd) + \
 		'\nkp_d=' + str(kp_d) + ' ki_d=' + str(ki_d) + ' kd_d=' + str(kd_d) + \
@@ -105,14 +105,14 @@ def update_config_pid(self):
 		kd_d = float(self.ui.lineEdit_kd_d.text())
 		max_Integrador = float(self.ui.lineEdit_maxIntegrador.text())
 		min_Integrator = float(self.ui.lineEdit_minIntegrador.text())
-		r = bd_config.salva_config_pid([kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator])
+		r = bd_config.salva_config_pid(self.caminho_banco, [kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator])
 		update_valores_pid(self)
 	except:
 		self.alerta_toolbar("erro update_config_pid")
 
 def update_valores_pid(self):
 	try:
-		cfg = bd_config.retorna_dados_config()
+		cfg = bd_config.retorna_dados_config(self.caminho_banco)
 		kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8], cfg[9], cfg[10], cfg[11]
 		self.pid.Kp_up = kp
 		self.pid.Ki_up = ki

@@ -1,10 +1,8 @@
 # -*- coding: latin-1 -*-
-from modulo_global import *
 import sqlite3, datetime
 
-def cria_tabela_config():
+def cria_tabela_config(caminho_banco):
     try:
-        global caminho_banco
         db = sqlite3.connect(caminho_banco)
         cursor = db.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS config
@@ -20,13 +18,14 @@ def cria_tabela_config():
         if cursor.rowcount > 0:
         	return True
         else:
-        	return False
+            print 'Erro: cria_tabela_config'
+            return False
     except:
+        print 'Erro: except - cria_tabela_config'
     	return False
 
-def retorna_dados_config():
+def retorna_dados_config(caminho_banco):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''SELECT * FROM config WHERE id = 1''')
@@ -36,13 +35,14 @@ def retorna_dados_config():
     	if row:
     		return row[0]
     	else:
-    		return None
+            print 'Erro: retorna_dados_config'
+            return None
     except:
+        print 'Erro: except - retorna_dados_config'
     	return None
 
-def retorna_dados_config_calibracao():
+def retorna_dados_config_calibracao(caminho_banco):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''SELECT calibracao_selecionada FROM config''')
@@ -52,13 +52,14 @@ def retorna_dados_config_calibracao():
     	if row:
     		return row[0][0]
     	else:
-    		return None
+            print 'Erro: retorna_dados_config_calibracao'
+            return None
     except:
+        print 'Erro: except - retorna_dados_config_calibracao'
     	return None
 
-def retorna_dados_config_potencia():
+def retorna_dados_config_potencia(caminho_banco):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''SELECT perfil_potencia FROM config''')
@@ -68,13 +69,14 @@ def retorna_dados_config_potencia():
     	if row:
     		return row[0][0]
     	else:
-    		return None
+            print 'Erro: retorna_dados_config_potencia'
+            return None
     except:
+        print 'Erro: except - retorna_dados_config_potencia'
     	return None
 
-def retorna_dados_config_temperatura():
+def retorna_dados_config_temperatura(caminho_banco):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''SELECT perfil_temperatura FROM config''')
@@ -84,13 +86,14 @@ def retorna_dados_config_temperatura():
     	if row:
     		return row[0][0]
     	else:
-    		return None
+            print 'Erro: retorna_dados_config_temperatura'
+            return None
     except:
+        print 'Erro: except - retorna_dados_config_temperatura'
     	return None
 
-def salva_config_perfil_temperatura(nome):
+def salva_config_perfil_temperatura(caminho_banco, nome):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''UPDATE config SET perfil_temperatura=? WHERE id=?''',(nome,1))
@@ -99,28 +102,30 @@ def salva_config_perfil_temperatura(nome):
     	if cursor.rowcount > 0:
     		return True
     	else:
-    		return False
+            print 'Erro: salva_config_perfil_temperatura'
+            return False
     except:
+        print 'Erro: except - salva_config_perfil_temperatura'
     	return None
 
-def salva_config_perfil_potencia(nome):
+def salva_config_perfil_potencia(caminho_banco, nome):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''UPDATE config SET perfil_potencia=? WHERE id=?''',(nome,1))
     	db.commit()
     	db.close()
     	if cursor.rowcount > 0:
-    		return True
+            print 'Erro: salva_config_perfil_potencia'
+            return True
     	else:
     		return False
     except:
+        print 'Erro: except - salva_config_perfil_potencia'
     	return None
 
-def salva_config_pid(v):
+def salva_config_pid(caminho_banco, v):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
         cursor.execute('''UPDATE config SET kp=? WHERE id=?''',(v[0],1))
@@ -134,15 +139,16 @@ def salva_config_pid(v):
     	db.commit()
     	db.close()
     	if cursor.rowcount > 0:
-    		return True
+            return True
     	else:
-    		return False
+            print 'Erro: salva_config_pid'
+            return False
     except:
+        print 'Erro: except - salva_config_pid'
     	return None
 
-def salva_config_calibracao(nome):
+def salva_config_calibracao(caminho_banco, nome):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''UPDATE config SET calibracao_selecionada=? WHERE id=?''',(nome,1))
@@ -151,13 +157,14 @@ def salva_config_calibracao(nome):
     	if cursor.rowcount > 0:
     		return True
     	else:
-    		return False
+            print 'Erro: salva_config_calibracao'
+            return False
     except:
+        print 'Erro: except - salva_config_calibracao'
     	return None
 
-def salva_config_pwm(nome):
+def salva_config_pwm(caminho_banco, nome):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''UPDATE config SET periodo_pwm=? WHERE id=?''',(nome,1))
@@ -166,13 +173,14 @@ def salva_config_pwm(nome):
     	if cursor.rowcount > 0:
     		return True
     	else:
-    		return False
+            print 'Erro: salva_config_pwm'
+            return False
     except:
+        print 'Erro: except - salva_config_pwm'
     	return None
 
-def salva_config_ad(n_leituras,delay):
+def salva_config_ad(caminho_banco, n_leituras,delay):
     try:
-        global caminho_banco
     	db = sqlite3.connect(caminho_banco)
     	cursor = db.cursor()
     	cursor.execute('''UPDATE config SET n_leituras_ad=? WHERE id=?''',(n_leituras,1))
@@ -182,6 +190,8 @@ def salva_config_ad(n_leituras,delay):
     	if cursor.rowcount > 0:
     		return True
     	else:
-    		return False
+            print 'Erro: salva_config_ad'
+            return False
     except:
+        print 'Erro: except - salva_config_ad'
     	return None

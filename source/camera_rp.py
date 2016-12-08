@@ -7,7 +7,6 @@ try:
 	import picamera
 except:
 	pass
-from modulo_global import *
 
 def tira_foto(self):
 	'''
@@ -17,7 +16,6 @@ def tira_foto(self):
 	nas informações da GUI
 	'''
 	# picamera apenas para raspberry (sistema unix)
-	caminho_inicial, _ = local_parent()
 	if sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
 		# Objeto para capturar e manipular as imagens
 		with picamera.PiCamera() as camera:
@@ -30,7 +28,7 @@ def tira_foto(self):
 			tempo_delay = int(self.ui.spinBox_cameraDelay.value())/1000
 			# tempo para estabilizar a imagem
 			time.sleep(tempo_delay)
-			camera.capture(caminho_inicial + '/imagens/teste.jpg')
+			camera.capture(self.caminho_inicial + '/imagens/teste.jpg')
 			self.alerta_toolbar('tirando foto')
 	else:
 		# Quando estiver testando no windows
@@ -38,7 +36,7 @@ def tira_foto(self):
 	# Escala a imagem para mostrar na GUI
 	self.ui.label_camera.setScaledContents(True)
 	# Insere a imagem na tela
-	self.ui.label_camera.setPixmap(QtGui.QPixmap(caminho_inicial + "/imagens/teste.jpg"))
+	self.ui.label_camera.setPixmap(QtGui.QPixmap(self.caminho_inicial + '/imagens/teste.jpg'))
 	self.alerta_toolbar('foto salva')
 
 def foto_update(self):

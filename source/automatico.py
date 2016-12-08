@@ -64,7 +64,7 @@ def automatico_perfil_update(self,tipo,estados):
         print "DEBUG: erro tipo "
         self.alerta_toolbar("Erro - tipo perfil automatico")
         return None
-    perfil = bd_perfil.leitura_perfil(nome,tipo)
+    perfil = bd_perfil.leitura_perfil(self.caminho_banco, nome, tipo)
     n_terminos = 0
     targuets = []
     # r 0..5 para passar pela info de todas as resistencias
@@ -282,18 +282,19 @@ def novo_perfil(self,tipo):
     nome, result = QtGui.QInputDialog.getText(self,"Digitar nome do perfil",text)
     if result:
         if tipo == "potencia":
-            bd_perfil.insere_perfil(tipo,str(nome),str(R[0]),str(R[1]),
-                            str(R[2]),str(R[3]),str(R[4]),str(R[5]))
+            bd_perfil.insere_perfil(self.caminho_banco, tipo,str(nome),
+                        str(R[0]), str(R[1]), str(R[2]), str(R[3]),
+                        str(R[4]),str(R[5]))
         else:
-            print R[0], R[1]
-            bd_perfil.insere_perfil(tipo,str(nome),str(R[0]),str(R[1]))
+            bd_perfil.insere_perfil(self.caminho_banco, tipo,str(nome),
+                                    str(R[0]),str(R[1]))
 
 def lista_perfil_temperatura(self):
     try:
         self.ui.comboBox_perfilTemperatura.blockSignals(True)
-        nomes = bd_perfil.nomes_perfil_temperatura()
+        nomes = bd_perfil.nomes_perfil_temperatura(self.caminho_banco)
         numero_escolha = self.ui.comboBox_perfilTemperatura.currentIndex()
-        escolha = bd_config.retorna_dados_config_temperatura()
+        escolha = bd_config.retorna_dados_config_temperatura(self.caminho_banco)
         self.ui.comboBox_perfilTemperatura.clear()
         i = 0
         for nome in nomes:
@@ -304,7 +305,7 @@ def lista_perfil_temperatura(self):
         self.ui.comboBox_perfilTemperatura.setCurrentIndex(numero_escolha)
         self.ui.comboBox_perfilTemperatura.blockSignals(False)
         escolha = unicode(self.ui.comboBox_perfilTemperatura.currentText())
-        bd_config.salva_config_perfil_temperatura(escolha)
+        bd_config.salva_config_perfil_temperatura(self.caminho_banco,escolha)
         graficos.plota_perfil(self,'temperatura',None)
     except:
         self.alerta_toolbar("except:lista_perfil_temperatura")
@@ -314,9 +315,9 @@ def lista_perfil_temperatura(self):
 def lista_perfil_potencia(self):
     try:
         self.ui.comboBox_perfilPotencia.blockSignals(True)
-        nomes = bd_perfil.nomes_perfil_potencia()
+        nomes = bd_perfil.nomes_perfil_potencia(self.caminho_banco)
         numero_escolha = self.ui.comboBox_perfilPotencia.currentIndex()
-        escolha = bd_config.retorna_dados_config_potencia()
+        escolha = bd_config.retorna_dados_config_potencia(self.caminho_banco)
         self.ui.comboBox_perfilPotencia.clear()
         i = 0
         for nome in nomes:
@@ -327,7 +328,7 @@ def lista_perfil_potencia(self):
         self.ui.comboBox_perfilPotencia.setCurrentIndex(numero_escolha)
         self.ui.comboBox_perfilPotencia.blockSignals(False)
         escolha = unicode(self.ui.comboBox_perfilPotencia.currentText())
-        bd_config.salva_config_perfil_potencia(escolha)
+        bd_config.salva_config_perfil_potencia(self.caminho_banco, escolha)
         graficos.plota_perfil(self,'potencia',None)
     except:
         self.alerta_toolbar("except:lista_perfil_potencia")
@@ -335,7 +336,7 @@ def lista_perfil_potencia(self):
 
 def atualiza_label_microcontrolador(self):
     try:
-        resposta = bd_config.retorna_dados_config()
+        resposta = bd_config.retorna_dados_config(self.caminho_banco)
         t_pwm, n_leituras, delay_leituras = resposta[12], resposta[13], resposta[14]
         texto =  't_pwm=' + str(t_pwm) + ' n_leituras=' + str(n_leituras) + \
         '\ndelay_leituras=' + str(delay_leituras)
