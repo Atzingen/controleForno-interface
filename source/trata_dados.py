@@ -3,7 +3,6 @@ import time
 import numpy as np
 from PyQt4 import QtCore
 from functools import partial
-from modulo_global import *
 import comunicacao_serial, automatico
 import banco.bd_sensores as bd_sensores
 import banco.bd_config as bd_config
@@ -51,12 +50,11 @@ def converte_dado(dado,self):
         d[6] = float(self.S_06_A) + (float(self.S_06_B) * \
                int(dado[self.pos_sensor_lateral3 :self.pos_sensor_lateral3 + 4]))
         try:
-            print d
             self.status.forno(self,(d[4],d[5],d[6]))
             #self.status.alimento(self,d[1:])
             self.status.incrementaContador()
         except Exception as e:
-            print e, 'zica'
+            print 'ERRO converte_dado', e
         return d
     except:
         self.alerta_toolbar('Erro converte_dado')
@@ -98,7 +96,6 @@ def verifica_dado(dado,self):
           da leitura analógica.
     '''
     try:
-        #print "DEBUG: recebido:", dado
         if dado[0] == self.CHR_inicioDado:
             # tipo 1, pedido temperatura - 'S0001aaaabbbbccccddddeeeeffff'
             if len(dado) == 29 and dado[1:29].isdigit() \

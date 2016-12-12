@@ -10,6 +10,7 @@ import banco.bd_calibracao as bd_calibracao
 import banco.bd_sensores as bd_sensores
 import simulacao.forno1d
 import simulacao.alimento
+import simulacao.controle
 import forno_gui, calibracao, comunicacao_serial, automatico
 import camera_rp, graficos, exporta_experimentos, controle_pid
 
@@ -29,6 +30,14 @@ class Main(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.ui = forno_gui.Ui_MainWindow()
         self.ui.setupUi(self)
+
+        #####  QTimers ########################################################
+        self.timer_foto = QtCore.QTimer()
+        self.timer_grafico = QtCore.QTimer()
+        self.timer_serial = QtCore.QTimer()
+        self.timer_ST = QtCore.QTimer()
+        self.timer_status = QtCore.QTimer()
+        self.timer_alimento = QtCore.QTimer()
 
         ###  Variaveis de controle geral  #####################################
         self.caminho_inicial = informacoes.local_parent()
@@ -92,10 +101,12 @@ class Main(QtGui.QMainWindow):
         self.pinResistencias = [self.pinR1, self.pinR2, self.pinR3, self.pinR4,
                                 self.pinR5, self.pinR6]
 
-        self.pid = controle_pid.PID()
+        #####  Controle PID ####################################################
+        self.pidEsteira = controle_pid.PID('pidEsteira')
+        self.pidAr = controle_pid.PID('pidAr')
         controle_pid.update_valores_pid(self)
 
-        #####  testes ############################################################
+        #####  testes ##########################################################
 
         self.status = informacoes.status()
 
@@ -126,13 +137,6 @@ class Main(QtGui.QMainWindow):
         tempo_coleta = time.time()
         bd_sensores.cria_tabela(self.caminho_banco)#Caso não exista, cria a tabela com os esquemas necessários
 
-        #####  QTimers ########################################################
-        self.timer_foto = QtCore.QTimer()
-        self.timer_grafico = QtCore.QTimer()
-        self.timer_serial = QtCore.QTimer()
-        self.timer_ST = QtCore.QTimer()
-        self.timer_status = QtCore.QTimer()
-
         #####  Acertando a hora do experimento (datetimeedit) #################
         agora = QtCore.QDateTime.currentDateTime()
         antes = agora.addDays(-5)
@@ -158,15 +162,24 @@ class Main(QtGui.QMainWindow):
     	self.ui.label_layoutForno.setScaledContents(True)
     	self.ui.label_layoutForno.setPixmap(QtGui.QPixmap(self.caminho_forno_layout))
         self.ui.label_colorbar.setPixmap(QtGui.QPixmap(self.caminho_colorbar).scaled(self.ui.label_colorbar.size(), QtCore.Qt.KeepAspectRatio))
+        self.ui.label_colorbar_2.setPixmap(QtGui.QPixmap(self.caminho_colorbar).scaled(self.ui.label_colorbar_2.size(), QtCore.Qt.KeepAspectRatio))
         ## Remover depois				- Porta serial com4 pc de casa
         try:
             self.ui.comboBox_portaSerial.setCurrentIndex(4)
         except:
             pass
 
-        ####### Connexões #####################################################
-        #self.ui.checkBox_calcPerfil.stateChanged.connect(partial(self.teste))
+        ####### Atualza combobox simulacao alimento ###########################
+        simulacao.controle.atualiza_comboBox(self)
+        simulacao.controle.set_colobarLabel(self)
 
+        ####### Connexões #####################################################
+        self.ui.spinBox_alimento_max.valueChanged.connect(partial(simulacao.controle.set_colobarLabel,self))
+        self.ui.spinBox_alimento_min.valueChanged.connect(partial(simulacao.controle.set_colobarLabel,self))
+        self.ui.pushButton_simAlimento.pressed.connect(partial(simulacao.controle.iniciar_perfil_alimento,self))
+        self.ui.pushButton_NovoPerfilAlimento.pressed.connect(partial(simulacao.controle.novo_perfil_alimento,self))
+        self.ui.pushButton_apagarPerfilAlimento.pressed.connect(partial(simulacao.controle.apagar_perfil,self))
+        self.ui.comboBox_perfilAlimento.activated.connect(partial(simulacao.controle.lista_perfil_alimento_update,self))
         self.ui.pushButton_pidUpdate.pressed.connect(partial(controle_pid.update_config_pid,self))
         self.ui.pushButton_pid_limpar.pressed.connect(partial(controle_pid.limpa_lineEdit,self))
         self.ui.horizontalSlider_graficoPeriodo.sliderReleased.connect(partial(graficos.tempo_grafico, self))
@@ -254,6 +267,7 @@ class Main(QtGui.QMainWindow):
             self.ui.horizontalSlider_r03.setValue(0)
             self.ui.horizontalSlider_r06.setValue(0)
             self.ui.horizontalSlider_r05.setValue(0)
+        self.ui.horizontalSlider_esteira.setValue(0)
         self.ui.horizontalSlider_esteira.setEnabled(estado)
         self.ui.horizontalSlider_r01.setEnabled(estado)
         self.ui.horizontalSlider_r02.setEnabled(estado)
@@ -266,18 +280,25 @@ class Main(QtGui.QMainWindow):
         self.ui.pushButton_esteiraParar.setEnabled(estado)
         self.ui.pushButton_serialEnviaLinha.setEnabled(estado)
         self.ui.pushButton_emergencia.setEnabled(estado)
+        self.ui.checkBox_serialAuto.setChecked(False)
         self.ui.checkBox_serialAuto.setEnabled(estado)
-        self.ui.checkBox_graficoAuto.setEnabled(estado)
         self.ui.checkBox_graficoAuto.setChecked(False)
+        self.ui.checkBox_graficoAuto.setEnabled(estado)
         self.ui.radioButton_hold.setEnabled(estado)
+        self.ui.radioButton_esteiraTras.setChecked(False)
         self.ui.radioButton_esteiraTras.setEnabled(estado)
+        self.ui.radioButton_esteiraFrente.setChecked(False)
         self.ui.radioButton_esteiraFrente.setEnabled(estado)
         self.ui.pushButton_periodoPWM.setEnabled(estado)
         self.ui.pushButton_leituraAnalogica.setEnabled(estado)
-        #self.ui.pushButton_perfilPotencia.setEnabled(estado)
-        #self.ui.pushButton_perfilPotenciaFim.setEnabled(estado)
-        #self.ui.pushButton_perfilResistencia.setEnabled(estado)
-        #self.ui.pushButton_perfilResistenciaFim.setEnabled(estado)
+        self.ui.checkBox_calcPerfil.setChecked(False)
+        self.ui.checkBox_calcPerfil.setEnabled(estado)
+        self.ui.checkBox_mostraPerfil.setChecked(False)
+        self.ui.checkBox_mostraPerfil.setEnabled(estado)
+        self.ui.pushButton_perfilTemperatura.setText('Iniciar')
+        self.ui.pushButton_perfilTemperatura.setEnabled(estado)
+        self.ui.pushButton_perfilPotencia.setText('Iniciar')
+        self.ui.pushButton_perfilPotencia.setEnabled(estado)
 
     def add_portas_disponiveis(self):
         '''

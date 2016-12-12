@@ -1,5 +1,6 @@
 # -*- coding: latin-1 -*-
 import sqlite3, datetime
+import cPickle as pickle
 
 def cria_tabela_config(caminho_banco):
     try:
@@ -116,10 +117,10 @@ def salva_config_perfil_potencia(caminho_banco, nome):
     	db.commit()
     	db.close()
     	if cursor.rowcount > 0:
-            print 'Erro: salva_config_perfil_potencia'
             return True
     	else:
-    		return False
+            print 'Erro: salva_config_perfil_potencia'
+            return False
     except:
         print 'Erro: except - salva_config_perfil_potencia'
     	return None
@@ -195,3 +196,57 @@ def salva_config_ad(caminho_banco, n_leituras,delay):
     except:
         print 'Erro: except - salva_config_ad'
     	return None
+
+
+
+##############################################################################
+def retorna_lista_config_alimento(caminho):
+    try:
+        lista_cfg = pickle.load( open(caminho + '/alimento_cfg.p', "rb" ) )
+        return lista_cfg
+    except Exception as e:
+        print 'Except: retorna_lista_config_alimento', e
+        return None
+
+def retorna_escolha_alimento(caminho):
+    try:
+        lista = retorna_lista_config_alimento(caminho)
+        for i, item in enumerate(lista):
+            if item['nome'] == 'escolha':
+                escolhido = item['qual']
+                for v in lista:
+                    if v['nome'] == escolhido:
+                        return v
+                print 'DEBUG: nome nao encontrado'
+                return False
+        print 'DEBUG: item[nome] nao encontrado'
+        return False
+    except Exception as e:
+        print 'Except: retorna_escolha_alimento', e
+        return None
+
+def salva_config_alimento(caminho,alimento):
+    try:
+        antigo = retorna_lista_config_alimento(caminho)
+        antigo.append(alimento)
+        pickle.dump(antigo, open(caminho + '/alimento_cfg.p', "wb"))
+        return True
+    except Exception as e:
+        print 'Except: salva_config_alimento', e
+        return False
+
+def deleta_config_alimento(caminho, nome):
+    try:
+        lista = retorna_lista_config_alimento(caminho)
+        apagar = []
+        for i, item in enumerate(lista):
+            print i
+            if item['nome'] == nome:
+                apagar.append(i)
+        for i in reversed(apagar):
+            lista.pop(i)
+        pickle.dump(lista, open(caminho + '/alimento_cfg.p', "wb"))
+        return None
+    except Exception as e:
+        print 'Except: deleta_config_alimento', e
+        return False

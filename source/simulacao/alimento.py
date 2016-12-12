@@ -10,17 +10,30 @@ def display_alimento(self, T):
     # T = evolui_tempo(10, T0, T_paredes=500, T_esteira=400) - 273.5
     T = np.flipud(T)
     T = np.concatenate((np.fliplr(T),T),axis=1)
-    self.ui.widget_3.canvas.ax.clear()
-    cax = self.ui.widget_3.canvas.ax.imshow(T,label="teste",interpolation='nearest',
-                                      aspect='auto', cmap=cm.jet)#, vmin=25, vmax=350)
-    self.ui.widget_3.canvas.ax.axis('off')
-    self.ui.widget_3.canvas.fig.savefig(self.caminho_inicial + '/imagens/temp-alimento.jpg', bbox_inches='tight', pad_inches=0)
-    self.ui.widget_3.canvas.ax.axis('on')
+    self.ui.widget_alimento.canvas.ax.clear()
+    self.ui.lcdNumber_alimentoMin.display(int(T[2:-3,2:-3].min()))
+    self.ui.lcdNumber_alimentoMax.display(int(T[2:-3,2:-3].max()))
+    if self.ui.spinBox_alimento_max.value() < T[2:-3,2:-3].max():
+        bar_max = T[2:-3,2:-3].max() + 10
+        self.ui.spinBox_alimento_max.setValue(T[2:-3,2:-3].max() + 10)
+    else:
+        bar_max = self.ui.spinBox_alimento_max.value()
+    if self.ui.spinBox_alimento_min.value() > T[2:-3,2:-3].min():
+        bar_min = T[2:-3,2:-3].min() - 10
+        self.ui.spinBox_alimento_min.setValue(T[2:-3,2:-3].min() + 10)
+    else:
+        bar_max = self.ui.spinBox_alimento_max.value()
+    bar_min  = self.ui.spinBox_alimento_min.value()
+    cax = self.ui.widget_alimento.canvas.ax.imshow(T,label="teste",interpolation='nearest',
+                                      aspect='auto', cmap=cm.jet, vmin=bar_min, vmax=bar_max)
+    self.ui.widget_alimento.canvas.ax.axis('off')
+    self.ui.widget_alimento.canvas.fig.savefig(self.caminho_inicial + '/imagens/temp-alimento.jpg', bbox_inches='tight', pad_inches=0)
+    self.ui.widget_alimento.canvas.ax.axis('on')
     #self.ui.widget_2.canvas.fig.colorbar(cax)
-    self.ui.widget_3.canvas.draw()
+    #self.ui.widget_alimento.canvas.draw()
 
     perfil = cv2.imread(self.caminho_inicial + '/imagens/temp-alimento.jpg')
-    perfil = perfil[7:-25,27:]
+    perfil = perfil[10:-25,27:]
 
     biscoito = self.img_biscoito
 
@@ -36,12 +49,12 @@ def display_alimento(self, T):
     perfil = cv2.warpPerspective(perfil,M,(lin,col))
     perfil = cv2.addWeighted(biscoito,0.8,perfil,0.6,0)
     cv2.imwrite(self.caminho_inicial + '/imagens/teste-img2.jpg',perfil)
-    self.ui.label_39.setPixmap(QtGui.QPixmap(self.caminho_inicial + '/imagens/teste-img2.jpg').scaled(self.ui.label_39.size(), QtCore.Qt.KeepAspectRatio))
+    self.ui.label_SimAlimentoIMG.setPixmap(QtGui.QPixmap(self.caminho_inicial + '/imagens/teste-img2.jpg').scaled(self.ui.label_SimAlimentoIMG.size(), QtCore.Qt.KeepAspectRatio))
 
 def evolui_tempo(tf, T,
                  dt=0.05, nr = 60, nh = 30,
                  R = 5.0e-2, H = 1.0e-2,
-                 k = 0.1, rho = 400, Cp = 3000, h_convec = 5.0, epsion = 0.7,
+                 k = 0.1, rho = 400, Cp = 3000, h_convec = 5.0, epsilon = 0.7,
                  T_esteira = 420.0, T_paredes = 470.0, T_ar = 450.0, T_ambiente = 293.0):
     '''
     Função principal da simulação.
@@ -102,10 +115,11 @@ def evolui_tempo(tf, T,
         #    Retirada do loop pois o valor não é alterado
         # Mista em todas as outras:
         # Radiação + convercção
-        T[:,-1] = T[:,-2] + dr*epsion*sigma*( (T_paredes**4) - (T[:,-1]**4) ) + dr*h_convec*(T_ar - T[:,-1])
-        T[-1,:] = T[-2,:] + dh*epsion*sigma*( (T_paredes**4) - (T[-1,:]**4) ) + dh*h_convec*(T_ar - T[-1,:])
+        T[:,-1] = T[:,-2] + dr*epsilon*sigma*( (T_paredes**4) - (T[:,-1]**4) ) + dr*h_convec*(T_ar - T[:,-1])
+        T[-1,:] = T[-2,:] + dh*epsilon*sigma*( (T_paredes**4) - (T[-1,:]**4) ) + dh*h_convec*(T_ar - T[-1,:])
         # Condição de Neuman (?)
         # simetria em r=0:
         T[:,0] = T[:,1]
     else:
         return T
+    return None

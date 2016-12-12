@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -594,8 +594,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>571</width>
-         <height>272</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -742,8 +742,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>571</width>
-         <height>272</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -910,8 +910,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>571</width>
-         <height>272</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -1632,36 +1632,6 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <zorder>lineEdit_S01A</zorder>
-       <zorder>lineEdit_S03B</zorder>
-       <zorder>lineEdit_S01A</zorder>
-       <zorder>lineEdit_S03A</zorder>
-       <zorder>label_26</zorder>
-       <zorder>label_24</zorder>
-       <zorder>label_21</zorder>
-       <zorder>label_22</zorder>
-       <zorder>lineEdit_S02A</zorder>
-       <zorder>lineEdit_S01B</zorder>
-       <zorder>label_23</zorder>
-       <zorder>label_25</zorder>
-       <zorder>lineEdit_S02B</zorder>
-       <zorder>line_4</zorder>
-       <zorder>lineEdit_S06B</zorder>
-       <zorder>lineEdit_S06A</zorder>
-       <zorder>lineEdit_S04B</zorder>
-       <zorder>lineEdit_S05A</zorder>
-       <zorder>label_29</zorder>
-       <zorder>label_31</zorder>
-       <zorder>lineEdit_S04A</zorder>
-       <zorder>label_27</zorder>
-       <zorder>label_28</zorder>
-       <zorder>label_30</zorder>
-       <zorder>label_32</zorder>
-       <zorder>lineEdit_S05B</zorder>
-       <zorder>pushButton_deletarFit</zorder>
-       <zorder>pushButton_salvarFit</zorder>
-       <zorder>comboBox_fitLinear</zorder>
-       <zorder>label_17</zorder>
       </widget>
       <widget class="QWidget" name="tab_17">
        <attribute name="title">
@@ -3205,21 +3175,6 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <zorder>pushButton_serialAtualiza</zorder>
-    <zorder>checkBox_serialAuto</zorder>
-    <zorder>label_9</zorder>
-    <zorder>label_36</zorder>
-    <zorder>sensor_esteira</zorder>
-    <zorder>label_38</zorder>
-    <zorder>sensor_teto1</zorder>
-    <zorder>sensor_teto2</zorder>
-    <zorder>label_43</zorder>
-    <zorder>sensor_lateral2</zorder>
-    <zorder>sensor_lateral1</zorder>
-    <zorder>sensor_lateral3</zorder>
-    <zorder>line</zorder>
-    <zorder>line_2</zorder>
-    <zorder>tabWidget_6</zorder>
    </widget>
    <widget class="QGroupBox" name="groupBox_15">
     <property name="geometry">

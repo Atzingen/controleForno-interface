@@ -90,7 +90,7 @@ def envia_serial(self,dado):
     '''
     Método que envia uma string pela serial
     '''
-    print "DEBUG: enviando:", self.CHR_inicioDado + dado
+    #print "DEBUG: enviando:", self.CHR_inicioDado + dado
     try:
         if self.s.is_open:
             self.s.write(self.CHR_inicioDado + dado + '\n')
@@ -208,7 +208,7 @@ def envia_resistencia(self,n):
         else:
             self.alerta_toolbar(self,"valor fora do range (0..100)")
             return None
-        print 'DEBUG:', 'envia_serial', str_pin, valor
+        #print 'DEBUG:', 'envia_serial', str_pin, valor
         # teste de retorno para verificar se os valores foram recebidos pelo mc
         QtCore.QTimer.singleShot(3000, partial(teste_retorno,self))
 

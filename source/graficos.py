@@ -123,7 +123,6 @@ def plota_perfil(self,tipo,posicao_atual):
             x.append(i[0])
             y.append(i[1])
         if tipo == 'temperatura':
-            print x, y
             self.ui.widget_perfilTemperatura.canvas.ax.plot(x,y,label=nomes_drop[indice])
             self.ui.widget_perfilTemperatura.canvas.ax.legend(loc='lower right',
                 frameon=True,shadow=True, fancybox=True)

@@ -80,11 +80,11 @@ def retorna_dados(caminho_banco,delta_t,experimento=None,Ti=None,Tf=None):
 			if Ti == None and Tf == None:
 				tempo_inicial = datetime.datetime.now() - datetime.timedelta(minutes=delta_t)
 				cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ?",(tempo_inicial,))
-			else:											
+			else:
 				cursor.execute("SELECT * FROM dados_forno WHERE t_abs > ? AND t_abs < ?",(Ti,Tf))
 		createDB.commit()
 		# Retorna os dados no formato matricial
 		return scipy.array(cursor.fetchall())
-	except:
-		print 'Erro: except adiciona_dado'
+	except Exception as e:
+		print 'Erro: except retorna_dados', e
 		return None

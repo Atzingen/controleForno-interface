@@ -14,11 +14,13 @@ class PID:
 	Limite máximo e mínimo para o integrador = 100 e -100 respectivamente
 	Integrador e Derivador iniciam com valor 0
 	'''
-	def __init__(self, P_up=0.5, I_up=3, D_up=0.001,
+	def __init__(self, nome,
+				P_up=0.5, I_up=3, D_up=0.001,
 				P_down=0.5, I_down=0.25, D_down=0.001,
 				_point=1.0,Derivador=0, dt=1, set_point=100,
 				Integrador=0, max_Integrador=100, min_Integrator=-100):
 		# Construtor - Inicia automaticamente quando um objeto da classe PID é instanciado
+		self.name = nome
 		self.Kp_up=P_up
 		self.Ki_up=I_up
 		self.Kd_up=D_up
@@ -43,9 +45,8 @@ class PID:
 
 		# verifica se passou a linha do Objetivo
 		if novo_erro*self.error < 0:
-			print "cruzou"
-			self.Integrador=0
-			self.Derivador=0
+			print "DEBUG: cruzou"
+			self.resetPID()
 		self.error = novo_erro
 		print self.error
 		# Cálculo de K,P e D
@@ -70,9 +71,18 @@ class PID:
 		self.I_value = self.Integrador * ki_f
 		# Atualiza o valor da resposta
 		PID = self.P_value + self.I_value + self.D_value
-		print 'P:{}, I:{}, D:{}'.format(self.P_value,self.I_value,self.D_value)
+		if PID > 100:
+			PID == 100
+		elif PID < 0:
+			PID = 0
+		#print 'DEBUG: P:{}, I:{}, D:{}'.format(self.P_value,self.I_value,self.D_value)
+		#print 'DEBUG: PID:{}, current_value:{}, targuet:{}, resposta:{}'.format(self.name, current_value, self.set_point, PID)
 		# Retorna o valor para a rotina que chamou o objeto
 		return PID
+
+	def resetPID(self):
+		self.Integrador=0
+		self.Derivador=0
 
 	def setPoint(self,set_point):
 		'''
@@ -81,8 +91,7 @@ class PID:
 		estivesse começando novamente.
 		'''
 		self.set_point = set_point
-		self.Integrador=0
-		self.Derivador=0
+		self.resetPID()
 
 def update_label_pid(self):
 	try:
@@ -114,14 +123,22 @@ def update_valores_pid(self):
 	try:
 		cfg = bd_config.retorna_dados_config(self.caminho_banco)
 		kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8], cfg[9], cfg[10], cfg[11]
-		self.pid.Kp_up = kp
-		self.pid.Ki_up = ki
-		self.pid.Kd_up = kd
-		self.pid.Kp_down = kp_d
-		self.pid.Ki_down = ki_d
-		self.pid.Kd_down = kd_d
-		self.pid.max_Integrador = max_Integrador
-		self.pid.min_Integrator = min_Integrator
+		self.pidAr.Kp_up = kp
+		self.pidAr.Ki_up = ki
+		self.pidAr.Kd_up = kd
+		self.pidAr.Kp_down = kp_d
+		self.pidAr.Ki_down = ki_d
+		self.pidAr.Kd_down = kd_d
+		self.pidAr.max_Integrador = max_Integrador
+		self.pidAr.min_Integrator = min_Integrator
+		self.pidEsteira.Kp_up = kp
+		self.pidEsteira.Ki_up = ki
+		self.pidEsteira.Kd_up = kd
+		self.pidEsteira.Kp_down = kp_d
+		self.pidEsteira.Ki_down = ki_d
+		self.pidEsteira.Kd_down = kd_d
+		self.pidEsteira.max_Integrador = max_Integrador
+		self.pidEsteira.min_Integrator = min_Integrator
 	except:
 		self.alerta_toolbar("erro update_valores_pid")
 

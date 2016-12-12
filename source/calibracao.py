@@ -35,14 +35,12 @@ def salva_calibracao(self):
                 igual = False
         if igual:
             self.alerta_toolbar("nome ja existe")
-            print "nome já existe"
         else:
             bd_calibracao.insere_calibracao(self.caminho_banco, str(text),
             s_01_A, s_02_A, s_03_A, s_04_A, s_05_A, s_06_A, s_01_B, s_02_B,
             s_03_B, s_04_B, s_05_B, s_06_B)
 
 def deleta_calibracao(self, tipo):
-    print 'inicio', tipo
     try:
         if tipo == 'Fit':
             numero_escolha = self.ui.comboBox_fitLinear.currentIndex()
@@ -59,7 +57,6 @@ def deleta_calibracao(self, tipo):
         reply = QtGui.QMessageBox.question(self,'Mensagem',"Tem certeza que deletar a calibracao" + escolha + " ?",
     										QtGui.QMessageBox.Yes |QtGui.QMessageBox.No, QtGui.QMessageBox.No)
         if reply == QtGui.QMessageBox.Yes:
-            print escolha, tipo
             bd_calibracao.deleta_calibracao_bd(self.caminho_banco, str(escolha), tipo)
             if (str(escolha)==bd_config.retorna_dados_config_calibracao(self.caminho_banco)):
                 primeiro_nome = self.ui.comboBox_fitLinear.itemText(0)
