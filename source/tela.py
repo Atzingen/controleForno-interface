@@ -171,11 +171,14 @@ class Main(QtGui.QMainWindow):
 
         ####### Atualza combobox simulacao alimento ###########################
         simulacao.controle.atualiza_comboBox(self)
-        simulacao.controle.set_colobarLabel(self)
+        simulacao.controle.set_colobarAlimentoLabel(self)
+        simulacao.controle.set_colobarFornoLabel(self)
 
         ####### Connexões #####################################################
-        self.ui.spinBox_alimento_max.valueChanged.connect(partial(simulacao.controle.set_colobarLabel,self))
-        self.ui.spinBox_alimento_min.valueChanged.connect(partial(simulacao.controle.set_colobarLabel,self))
+        self.ui.spinBox_alimento_max.valueChanged.connect(partial(simulacao.controle.set_colobarAlimentoLabel,self))
+        self.ui.spinBox_alimento_min.valueChanged.connect(partial(simulacao.controle.set_colobarAlimentoLabel,self))
+        self.ui.spinBox_forno_max.valueChanged.connect(partial(simulacao.controle.set_colobarFornoLabel,self))
+        self.ui.spinBox_forno_min.valueChanged.connect(partial(simulacao.controle.set_colobarFornoLabel,self))
         self.ui.pushButton_simAlimento.pressed.connect(partial(simulacao.controle.iniciar_perfil_alimento,self))
         self.ui.pushButton_NovoPerfilAlimento.pressed.connect(partial(simulacao.controle.novo_perfil_alimento,self))
         self.ui.pushButton_apagarPerfilAlimento.pressed.connect(partial(simulacao.controle.apagar_perfil,self))

@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -571,8 +571,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>581</width>
-         <height>382</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -722,8 +722,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>581</width>
-         <height>382</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -1352,7 +1352,7 @@
        <widget class="QLabel" name="label_colorbar">
         <property name="geometry">
          <rect>
-          <x>500</x>
+          <x>490</x>
           <y>10</y>
           <width>31</width>
           <height>271</height>
@@ -1423,49 +1423,62 @@
          <string>N Leituras</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_coloerbarMax">
+       <widget class="QLabel" name="label_coloerbar23">
+        <property name="geometry">
+         <rect>
+          <x>530</x>
+          <y>80</y>
+          <width>46</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_coloerbar13">
+        <property name="geometry">
+         <rect>
+          <x>530</x>
+          <y>170</y>
+          <width>46</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_forno_max">
         <property name="geometry">
          <rect>
           <x>530</x>
           <y>10</y>
-          <width>46</width>
-          <height>41</height>
+          <width>51</width>
+          <height>21</height>
          </rect>
         </property>
-        <property name="text">
-         <string>TextLabel</string>
+        <property name="maximum">
+         <number>500</number>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        <property name="value">
+         <number>320</number>
         </property>
        </widget>
-       <widget class="QLabel" name="label_coloerbarMed">
+       <widget class="QSpinBox" name="spinBox_forno_min">
         <property name="geometry">
          <rect>
           <x>530</x>
-          <y>140</y>
-          <width>46</width>
-          <height>51</height>
+          <y>260</y>
+          <width>51</width>
+          <height>21</height>
          </rect>
         </property>
-        <property name="text">
-         <string>TextLabel</string>
+        <property name="maximum">
+         <number>200</number>
         </property>
-       </widget>
-       <widget class="QLabel" name="label_coloerbarMin">
-        <property name="geometry">
-         <rect>
-          <x>530</x>
-          <y>230</y>
-          <width>46</width>
-          <height>51</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        <property name="value">
+         <number>25</number>
         </property>
        </widget>
       </widget>

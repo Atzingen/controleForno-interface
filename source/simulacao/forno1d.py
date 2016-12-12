@@ -13,9 +13,23 @@ import graficos
 def display_perfilForno(self, T):
     #T = calcula_perfil(30,250,280,260,300,100,350)
     R = gera_matriz_imagem(T)
+    T_max, T_min = T.max(), T.min()
+
+    if self.ui.spinBox_forno_max.value() < T_max:
+        bar_max = T_max + 10
+        self.ui.spinBox_forno_max.setValue(T_max + 10)
+    else:
+        bar_max = self.ui.spinBox_forno_max.value()
+    if self.ui.spinBox_forno_min.value() > T_min:
+        bar_min = T_min - 10
+        self.ui.spinBox_forno_min.setValue(T_min + 10)
+    else:
+        bar_min = self.ui.spinBox_forno_min.value()
+
+
     self.ui.widget_2.canvas.ax.clear()
     cax = self.ui.widget_2.canvas.ax.imshow(R,label="teste",interpolation='nearest',
-                                      aspect='auto', cmap=cm.jet, vmin=25, vmax=350)
+                                      aspect='auto', cmap=cm.jet, vmin=bar_min, vmax=bar_max)
     self.ui.widget_2.canvas.ax.axis('off')
     self.ui.widget_2.canvas.fig.savefig(self.caminho_inicial + '/imagens/temperatura.jpg', bbox_inches='tight', pad_inches=0)
 

@@ -101,8 +101,14 @@ def atuacao_automatico_alimento(self, perfil):
     else:
         print 'fim timer'
 
-def set_colobarLabel(self):
+def set_colobarAlimentoLabel(self):
     minimo = self.ui.spinBox_alimento_min.value()
     maximo = self.ui.spinBox_alimento_max.value()
     self.ui.label_alim_13.setText(str( minimo + (maximo-minimo)/3 ))
     self.ui.label_alim_23.setText(str( minimo + 2*(maximo-minimo)/3 ))
+
+def set_colobarFornoLabel(self):
+    minimo = self.ui.spinBox_forno_min.value()
+    maximo = self.ui.spinBox_forno_max.value()
+    self.ui.label_coloerbar13.setText(str( minimo + (maximo-minimo)/3 ))
+    self.ui.label_coloerbar23.setText(str( minimo + 2*(maximo-minimo)/3 ))
