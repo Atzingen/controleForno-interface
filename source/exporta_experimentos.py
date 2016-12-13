@@ -8,69 +8,74 @@ from email.MIMEText import MIMEText
 from email.MIMEBase import MIMEBase
 from email import Encoders
 import banco.bd_sensores as bd_sensores
+import informacoes
 
 def local_arquivo(self):
 	''' Altera o texto do lable que mostra o caminho onde s�o salvos os arquivos'''
-	source_parent, _ = modulo_global.local_parent()
+	source_parent = informacoes.local_parent()
 	local = str(QtGui.QFileDialog.getExistingDirectory(caption="Escolha a pasta em que os arquivos serao salvos",
-													   directory=source_parent + "dadosExperimento"))
-	if sys.platform.startswith('win'):
-		local += '\\'
-	else:
-		local += '/'
+													   directory=source_parent + "/dadosExperimento"))
 	self.label_caminho.setText(local)
 
 def gera_arquivo(self):
-	''' Método que é ativado quando o botão 'Gera Arquivo' é pressionado.
+	'''
+	Método que é ativado quando o botão 'Gera Arquivo' é pressionado.
 	Os dados são retirados do bd de acordo com as configurações do experimento (nome ou período)
-	e salvas no formato adequado de acordo com as opções no checkbox formato do Arquivo'''
-	t = datetime.datetime.now()
-	tempo = str(t.month) + '-' + str(t.day) + '-' + str(t.hour) + '-' + str(t.minute)
-	caminho = str(self.ui.label_caminho.text())
+	e salvas no formato adequado de acordo com as opções no checkbox formato do Arquivo
+	'''
+	try:
+		t = datetime.datetime.now()
+		tempo = str(t.month) + '-' + str(t.day) + '-' + str(t.hour) + '-' + str(t.minute)
+		caminho = str(self.ui.label_caminho.text())
+		if self.ui.checkBox_experimentoPeriodo.isChecked():
+			Tf = self.ui.dateTimeEdit_fim.dateTime().toPyDateTime()
+			Ti = self.ui.dateTimeEdit_inicio.dateTime().toPyDateTime()
+			d = bd_sensores.retorna_dados(self.caminho_banco, 1, Ti=Ti, Tf=Tf)
+		elif self.ui.checkBox_experimentoAtualData.isChecked():
+			d = bd_sensores.retorna_dados(self.caminho_banco, 1,
+							experimento=str(self.ui.label_nomeExperimento.text()))
+			tempo = str(self.ui.label_nomeExperimento.text()) + '_' + tempo
+		for a in glob.glob('*'):
+			if tempo in a:
+				tempo = tempo + '(1)'
+				break
+		print tempo, caminho
+		# Opção para salvar o arquivo em txt (checkbox .txt selecionado)
+		if self.ui.checkBox_formatoTxt.isChecked():
+			print 'txt', d
+			with open(caminho + '/' + tempo + '.txt', "w") as arquivo_texto:
+				# Cabeçalho do arquivo:
+				arquivo_texto.write('Arquivo gerado automaticamente - Dados do forno - LAFAC USP \n \n \n')
+				# Informação sobre as colunas
+				arquivo_texto.write('chave \t Data e horario completo  \tt_0 \t\ts1 \ts2 \ts3 \ts4 \ts5 \ts6\texperimento\n\n')
+				try:
+					for i in d:
+						arquivo_texto.write('\n')
+						for j in i:
+							arquivo_texto.write(str(j) + '\t')
+				except Exception as e:
+					print 'Except:', e
+					self.alerta_toolbar("Except: gera_arquivo-writerow")
+				arquivo_texto.close()
+				print 'fim arquivo'
 
-	if self.ui.checkBox_experimentoPeriodo.isChecked():
-		Tf = self.ui.dateTimeEdit_fim.dateTime().toPyDateTime()
-		Ti = self.ui.dateTimeEdit_inicio.dateTime().toPyDateTime()
-		d = bd_sensores.retorna_dados(self.caminho_banco, 1, Ti=Ti, Tf=Tf)
-	elif self.ui.checkBox_experimentoAtualData.isChecked():
-		d = bd_sensores.retorna_dados(self.caminho_banco, 1,
-						experimento=str(self.ui.label_nomeExperimento.text()))
-		tempo = str(self.ui.label_nomeExperimento.text()) + '_' + tempo
-	for a in glob.glob('*'):
-		if tempo in a:
-			tempo = tempo + '(1)'
-			break
-
-	# Opção para salvar o arquivo em txt (checkbox .txt selecionado)
-	if self.ui.checkBox_formatoTxt.isChecked():
-		with open(caminho + tempo + '.txt', "w") as arquivo_texto:
-			# Cabeçalho do arquivo:
-			arquivo_texto.write('Arquivo gerado automaticamente - Dados do forno - LAFAC USP \n \n \n')
-			# Informação sobre as colunas
-			arquivo_texto.write('chave \t Data e horario completo  \tt_0 \t\ts1 \ts2 \ts3 \ts4 \ts5 \ts6\texperimento\n\n')
-			try:
-				for i in d:
-					arquivo_texto.write('\n')
-					for j in i:
-						arquivo_texto.write(str(j) + '\t')
-			except:
-				pass
-			arquivo_texto.close()
-
-	# Opção para salvar o arquivo em csv (checkbox .csv selecionado)
-	elif self.ui.checkBox_formatoCsv.isChecked():
-		with open(caminho + tempo + '.csv', 'wt') as arquivo_csv:
-			writer = csv.writer(arquivo_csv,lineterminator = '\n',dialect='excel')
-			writer.writerow(('chave','Data e horario completo','t_0','s1','s2','s3','s4','s5','s6','experimento'))																	# Caso d n�o esteja vazio
-			try:
-				for i in range(np.size(d[:,1])):
-					writer.writerow(( d[i,0], d[i,1], d[i,2], d[i,3], d[i,4],
-									  d[i,5], d[i,6], d[i,7], d[i,8], d[i,9] ))
-			except:
-				pass
-			arquivo_csv.close()
-	else:
-		pass
+		# Opção para salvar o arquivo em csv (checkbox .csv selecionado)
+		elif self.ui.checkBox_formatoCsv.isChecked():
+			with open(caminho + '/' + tempo + '.csv', 'wt') as arquivo_csv:
+				writer = csv.writer(arquivo_csv,lineterminator = '\n',dialect='excel')
+				writer.writerow(('chave','Data e horario completo','t_0','s1','s2','s3','s4','s5','s6','experimento'))																	# Caso d n�o esteja vazio
+				try:
+					for i in range(np.size(d[:,1])):
+						writer.writerow(( d[i,0], d[i,1], d[i,2], d[i,3], d[i,4],
+										  d[i,5], d[i,6], d[i,7], d[i,8], d[i,9] ))
+				except Exception as e:
+					print 'Except:', e
+					self.alerta_toolbar("Except: gera_arquivo-writerow")
+				arquivo_csv.close()
+		else:
+			self.alerta_toolbar("Except: gera_arquivo checkbox nao selecionada")
+	except Exception as e:
+		print 'Except:', e
 
 def envia_email(self):
 	'''
