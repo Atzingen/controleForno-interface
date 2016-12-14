@@ -43,7 +43,7 @@ class Main(QtGui.QMainWindow):
         self.caminho_inicial = informacoes.local_parent()
         self.caminho_banco = self.caminho_inicial + '/bancoDados/forno_data.db'
         self.caminho_forno_pre = self.caminho_inicial + '/imagens/forno-pre.jpg'
-        self.caminho_biscoito = self.caminho_inicial + '/imagens/biscoito.PNG'
+        self.caminho_biscoito = self.caminho_inicial + '/imagens/biscoito.png'
         self.caminho_forno_layout = self.caminho_inicial + '/imagens/forno_layout.png'
         self.caminho_colorbar = self.caminho_inicial + '/imagens/colorbar.png'
 
@@ -173,6 +173,8 @@ class Main(QtGui.QMainWindow):
         simulacao.controle.atualiza_comboBox(self)
         simulacao.controle.set_colobarAlimentoLabel(self)
         simulacao.controle.set_colobarFornoLabel(self)
+
+        self.ui.widget_alimento.setVisible(False)
 
         ####### Connexões #####################################################
         self.ui.spinBox_alimento_max.valueChanged.connect(partial(simulacao.controle.set_colobarAlimentoLabel,self))

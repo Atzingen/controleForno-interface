@@ -58,15 +58,15 @@ def atualiza_comboBox(self):
     atuacao_label_alimento(self)
 
 def atuacao_label_alimento(self):
-    escolha = bd_config.retorna_escolha_alimento(self.caminho_inicial + '/bancoDados')
+    escolha = bd_config.retorna_escolha_alimento(self.caminho_inicial + '/bancoDados').items()
     texto = ""
-    i = 0
-    for key in escolha:
-        i, t = i+1, '\t\t\t'
-        if i == 2:
-            i, t = 0, '\n'
-        texto += str(key) + ': ' + str(escolha[key]) + t
-    self.ui.label_alimento.setText(texto)
+    for i in range(5):
+        texto += str(escolha[i][0]) + ': ' + str(escolha[i][1]) + '\n'
+    self.ui.label_alimento_A.setText(texto)
+    texto = ""
+    for i in range(5,10):
+        texto += str(escolha[i][0]) + ': ' + str(escolha[i][1]) + '\n'
+    self.ui.label_alimento_B.setText(texto)
 
 def iniciar_perfil_alimento(self):
     if self.ui.pushButton_simAlimento.text() == 'Iniciar':
