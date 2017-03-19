@@ -1,6 +1,8 @@
 # -*- coding: latin-1 -*-
 '''
 Entender quem é quem nessa bagunça
+
+Arquivo de teste para ver checar os pinos das resistencias e dos sensores
 '''
 
 #### do arduino -
