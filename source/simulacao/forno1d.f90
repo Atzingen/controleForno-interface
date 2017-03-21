@@ -13,7 +13,7 @@ subroutine calcula_perfil(Ta, T1, T2, T3, R1, R2, R3,T)
     integer :: p_n1, p_n2, p_n3, i, j ,k
     real, dimension(n) :: fonte
 
-    L = 1.5         ! comprimento do forno em metros
+    L = 2.0         ! comprimento do forno em metros
     sor = 1.85      ! parâmetro sor
     p_n1 = n/4      ! posição do primeiro sensor de Temperatura
     p_n2 = n/2      ! segundo sensor
@@ -59,4 +59,4 @@ subroutine calcula_perfil(Ta, T1, T2, T3, R1, R2, R3,T)
 end subroutine calcula_perfil
 
 
-end module perfil_forno
+end module forno1d
