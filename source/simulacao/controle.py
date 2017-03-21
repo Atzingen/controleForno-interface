@@ -12,10 +12,10 @@ import comunicacao_serial
 import controle_pid
 import simulacao
 try:
-    from simulacao.alimento_fortran import evolui_tempo
+    from simulacao.alimento_fortran import *
     print "Usando funcao evolui_tempo Fortran"
 except:
-    from simulacao.alimento import evolui_tempo
+    import simulacao.alimento as alimento
     print "Usando funcao evolui_tempo Python"
 
 def novo_perfil_alimento(self):
@@ -93,7 +93,7 @@ def atuacao_automatico_alimento(self, perfil):
             T_ar_bd = ( T_bd[-1][6] + T_bd[-1][7] + T_bd[-1][8] )/3
             T_paredes_bd = ( T_bd[-1][4] + T_bd[-1][5] )/2
             print T_esteira_bd, T_ar_bd, T_paredes_bd
-            self.status.T_alimento = evolui_tempo(self.status.dt_alimento,
+            self.status.T_alimento = alimento.evolui_tempo(self.status.dt_alimento,
                 self.status.T_alimento, R = float(perfil['R']), H = float(perfil['H']),
                 h_convec=float(perfil['h_convec']), epsilon=float(perfil['epsilon']),
                 k=float(perfil['k']), rho=float(perfil['rho']), Cp=float(perfil['Cp']),

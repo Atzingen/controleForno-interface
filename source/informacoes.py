@@ -16,7 +16,7 @@ def local_parent():
 	return str(source_parent)
 
 
-class status:_
+class status:
 	def __init__(self):
 		self.contador = 0
 		self.simForno = False

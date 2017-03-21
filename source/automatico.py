@@ -1,5 +1,5 @@
 # -*- coding: latin-1 -*-
-import ast
+import ast, time
 from functools import partial
 import numpy as np
 from PyQt4 import QtGui
@@ -9,6 +9,12 @@ import banco.bd_sensores as bd_sensores
 import graficos, trata_dados
 import comunicacao_serial
 import controle_pid
+try:
+	from simulacao.forno1d_fortran import *
+	print "Funcao calcula_perfil utilizando rotina Fortran"
+except:
+	import simulacao.forno1d as forno1d
+	print "Funcao calcula_perfil utilizando rotina Python"
 
 def atuacao_automatico(self,tipo,targuets):
     '''
@@ -36,7 +42,16 @@ def atuacao_automatico(self,tipo,targuets):
             T_bd = bd_sensores.retorna_dados(self.caminho_banco,1)
             if int(T_bd.shape[0]) > 0:
                 T_esteira = T_bd[-1][3]
-                T_ar = ( T_bd[-1][6] + T_bd[-1][7] + T_bd[-1][8] )/3
+                R1, R2, R3 = self.valor_resistencia01, self.valor_resistencia02, self.valor_resistencia03
+                T_ar_esteira = forno1d.calcula_perfil(self.T_ambiente,
+                                                      T_bd[-1][6], T_bd[-1][7], T_bd[-1][8],
+                                                      R1, R2, R3)
+                t_atual = time.time() - self.tempo_inicio
+                pos_esteira = t_atual*self.vel_max_esteira*self.valor_esteira/100
+                try:
+                    T_ar = T_ar_esteira[int(len(T_ar_esteira)*pos_esteira/2.0)]
+                except:
+                    T_ar = T_ar_esteira(int(len(T_ar_esteira/2.3)))
                 #print 'DEBUG: Val. ar:{} est:{} - Targ. ar:{} est:{}'.format(T_ar, T_esteira,targuets[0][1], targuets[1][1])
                 for i, targuet in enumerate(targuets):
                     if i == 0:
@@ -189,6 +204,7 @@ def inicia_perfil(self, tipo):
                 # passo de cada resistencia
                 estados = np.zeros([2,2])
                 controle_pid.update_valores_pid(self)
+                self.tempo_inicio = time.time()
                 self.pidEsteira.setPoint(100)
                 self.pidAr.setPoint(100)
 

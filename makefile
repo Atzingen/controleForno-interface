@@ -1,6 +1,9 @@
 run:
 	python source/app.py
 
+run-full:
+	python source/app_full.py
+
 clean:
 	del /q /s *.pyc
 	del source\\forno_gui.py
