@@ -15,18 +15,14 @@ class PID:
 	Integrador e Derivador iniciam com valor 0
 	'''
 	def __init__(self, nome,
-				P_up=0.5, I_up=3, D_up=0.001,
-				P_down=0.5, I_down=0.25, D_down=0.001,
+				P=0.5, I=3, D=0.001,
 				_point=1.0,Derivador=0, dt=1, set_point=100,
 				Integrador=0, max_Integrador=100, min_Integrator=-100):
 		# Construtor - Inicia automaticamente quando um objeto da classe PID é instanciado
 		self.name = nome
-		self.Kp_up=P_up
-		self.Ki_up=I_up
-		self.Kd_up=D_up
-		self.Kp_down=P_down
-		self.Ki_down=I_down
-		self.Kd_down=D_down
+		self.Kp=P
+		self.Ki=I
+		self.Kd=D
 		self.Derivador=Derivador
 		self.Integrador=Integrador
 		self.max_Integrador=max_Integrador
@@ -50,25 +46,17 @@ class PID:
 		self.error = novo_erro
 		print self.error
 		# Cálculo de K,P e D
-		if self.error > 0:
-			self.P_value = self.Kp_up * self.error
-			self.D_value = self.Kd_up * (self.error - self.Derivador)/self.dt
-			self.Derivador = self.error
-			self.Integrador = self.Integrador + (self.error*self.dt)
-			ki_f = self.Ki_up
-		else:
-			self.P_value = self.Kp_down * self.error
-			self.D_value = self.Kd_down * (self.error - self.Derivador)/self.dt
-			self.Derivador = self.error
-			self.Integrador = self.Integrador + (self.error*self.dt)
-			ki_f = self.Ki_down
+		self.P_value = self.Kp * self.error
+		self.D_value = self.Kd * (self.error - self.Derivador)/self.dt
+		self.Derivador = self.error
+		self.Integrador = self.Integrador + (self.error*self.dt)
 		# Checa se o valor do Integrador não saturou
 		if self.Integrador > self.max_Integrador:
 			self.Integrador = self.max_Integrador
 		elif self.Integrador < self.min_Integrator:
 			self.Integrador = self.min_Integrator
 
-		self.I_value = self.Integrador * ki_f
+		self.I_value = self.Integrador * self.Ki
 		# Atualiza o valor da resposta
 		PID = self.P_value + self.I_value + self.D_value
 		if PID > 100:
@@ -96,9 +84,8 @@ class PID:
 def update_label_pid(self):
 	try:
 	    cfg = bd_config.retorna_dados_config(self.caminho_banco)
-	    kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8], cfg[9], cfg[10], cfg[11]
+	    kp, ki, kd, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[10], cfg[11]
 	    texto_label = 'kp=' + str(kp) + ' ki=' + str(ki) + ' kd=' + str(kd) + \
-		'\nkp_d=' + str(kp_d) + ' ki_d=' + str(ki_d) + ' kd_d=' + str(kd_d) + \
 	    '\nmax=' + str(max_Integrador) + ' min=' + str(min_Integrator)
 	    self.ui.label_infoPID.setText(texto_label)
 	except:
@@ -109,12 +96,9 @@ def update_config_pid(self):
 		kp = float(self.ui.lineEdit_kp.text())
 		ki = float(self.ui.lineEdit_ki.text())
 		kd = float(self.ui.lineEdit_kd.text())
-		kp_d = float(self.ui.lineEdit_kp_d.text())
-		ki_d = float(self.ui.lineEdit_ki_d.text())
-		kd_d = float(self.ui.lineEdit_kd_d.text())
 		max_Integrador = float(self.ui.lineEdit_maxIntegrador.text())
 		min_Integrator = float(self.ui.lineEdit_minIntegrador.text())
-		r = bd_config.salva_config_pid(self.caminho_banco, [kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator])
+		r = bd_config.salva_config_pid(self.caminho_banco, [kp, ki, kd, max_Integrador, min_Integrator])
 		update_valores_pid(self)
 	except:
 		self.alerta_toolbar("erro update_config_pid")
@@ -122,21 +106,15 @@ def update_config_pid(self):
 def update_valores_pid(self):
 	try:
 		cfg = bd_config.retorna_dados_config(self.caminho_banco)
-		kp, ki, kd, kp_d, ki_d, kd_d, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[7], cfg[8], cfg[9], cfg[10], cfg[11]
-		self.pidAr.Kp_up = kp
-		self.pidAr.Ki_up = ki
-		self.pidAr.Kd_up = kd
-		self.pidAr.Kp_down = kp_d
-		self.pidAr.Ki_down = ki_d
-		self.pidAr.Kd_down = kd_d
+		kp, ki, kd, max_Integrador, min_Integrator = cfg[4], cfg[5], cfg[6], cfg[10], cfg[11]
+		self.pidAr.Kp = kp
+		self.pidAr.Ki = ki
+		self.pidAr.Kd = kd
 		self.pidAr.max_Integrador = max_Integrador
 		self.pidAr.min_Integrator = min_Integrator
-		self.pidEsteira.Kp_up = kp
-		self.pidEsteira.Ki_up = ki
-		self.pidEsteira.Kd_up = kd
-		self.pidEsteira.Kp_down = kp_d
-		self.pidEsteira.Ki_down = ki_d
-		self.pidEsteira.Kd_down = kd_d
+		self.pidEsteira.Kp = kp
+		self.pidEsteira.Ki = ki
+		self.pidEsteira.Kd = kd
 		self.pidEsteira.max_Integrador = max_Integrador
 		self.pidEsteira.min_Integrator = min_Integrator
 	except:
@@ -146,8 +124,5 @@ def limpa_lineEdit(self):
 	self.ui.lineEdit_kp.setText("")
 	self.ui.lineEdit_ki.setText("")
 	self.ui.lineEdit_kd.setText("")
-	self.ui.lineEdit_kp_d.setText("")
-	self.ui.lineEdit_ki_d.setText("")
-	self.ui.lineEdit_kd_d.setText("")
 	self.ui.lineEdit_maxIntegrador.setText("")
 	self.ui.lineEdit_minIntegrador.setText("")

@@ -1,4 +1,8 @@
-program alimento
+module alimento
+
+contains
+
+subroutine evolui_tempo()
 
     implicit none
     integer, parameter :: nr = 60
@@ -84,4 +88,6 @@ program alimento
 
     write (*,*) T
 
-end program alimento
+end subroutine evolui_tempo
+
+end module alimento

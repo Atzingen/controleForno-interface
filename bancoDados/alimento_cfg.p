@@ -78,7 +78,7 @@ p37
 sa(dp38
 S'qual'
 p39
-S'cookie'
+S'bolacha'
 p40
 sS'nome'
 p41

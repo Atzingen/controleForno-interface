@@ -11,7 +11,6 @@ import cv2
 import graficos
 
 def display_perfilForno(self, T):
-    #T = calcula_perfil(30,250,280,260,300,100,350)
     R = gera_matriz_imagem(T)
     T_max, T_min = T.max(), T.min()
 

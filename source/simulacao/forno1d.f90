@@ -1,8 +1,8 @@
-module perfil
+module perfil_forno
 
 contains
 
-subroutine roda_perfil(Ta, T1, T2, T3, R1, R2, R3,T)
+subroutine calcula_perfil(Ta, T1, T2, T3, R1, R2, R3,T)
     implicit none
 
     real, intent(in) :: Ta, T1, T2, T3, R1, R2, R3
@@ -56,7 +56,7 @@ subroutine roda_perfil(Ta, T1, T2, T3, R1, R2, R3,T)
         enddo
     enddo
 
-end subroutine roda_perfil
+end subroutine calcula_perfil
 
 
-end module perfil
+end module perfil_forno

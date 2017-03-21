@@ -100,6 +100,7 @@ class Main(QtGui.QMainWindow):
         self.pinR6 = '7'
         self.pinResistencias = [self.pinR1, self.pinR2, self.pinR3, self.pinR4,
                                 self.pinR5, self.pinR6]
+        self.vel_max_esteira = 2/(15*60)    # 2 metros, 15 minutos p/ atravessar a esteira.
 
         #####  Controle PID ####################################################
         self.pidEsteira = controle_pid.PID('pidEsteira')
@@ -107,7 +108,6 @@ class Main(QtGui.QMainWindow):
         controle_pid.update_valores_pid(self)
 
         #####  testes ##########################################################
-
         self.status = informacoes.status()
 
         ##### Efeitos visuais para outros OS (teste)

@@ -27,8 +27,8 @@ ui-display-win:
 	python C:\Users\Gustavo-PC\Anaconda2\Lib\site-packages\PyQt4\uic\pyuic.py
 
 f2py:
-	f2py -c -m forno1d_fortran source/simulacao/forn1d.f90
-	f2py -c -m /source/simulacao/alimento_fortran source/simulacao/alimento.f90
+	f2py -c -m forno1d_fortran source/simulacao/forno1d.f90
+	f2py -c -m alimento_fortran source/simulacao/alimento.f90
 	mv alimento_fortran.so source/simulacao/alimento_fortran.so
 	mv forno1d_fortran.so source/simulacao/forno1d_fortran.so
 
