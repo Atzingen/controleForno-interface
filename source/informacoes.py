@@ -3,10 +3,10 @@ import os, sys, serial, cv2
 import simulacao.alimento
 import numpy as np
 try:
-	from simulacao.forno1d_fortran.perfil_forno import calcula_perfil
+	from simulacao.forno1d_fortran import *
 	print "Funcao calcula_perfil utilizando rotina Fortran"
 except:
-	from simulacao.forno1d import calcula_perfil
+	import simulacao.forno1d as forno1d
 	print "Funcao calcula_perfil utilizando rotina Python"
 
 def local_parent():
@@ -16,7 +16,7 @@ def local_parent():
 	return str(source_parent)
 
 
-class status:
+class status:_
 	def __init__(self):
 		self.contador = 0
 		self.simForno = False
@@ -40,5 +40,5 @@ class status:
 		and tela.ui.checkBox_calcPerfil.isChecked():
 			T1 , T2, T3 = T[0], T[1], T[2]
 			R1, R2, R3 = tela.valor_resistencia01, tela.valor_resistencia02, tela.valor_resistencia03
-			T = calcula_perfil(self.T_ambiente, T1 , T2, T3, R1, R2, R3)
+			T = forno1d.calcula_perfil(self.T_ambiente, T1 , T2, T3, R1, R2, R3)
 			simulacao.forno1d.display_perfilForno(tela,T)
