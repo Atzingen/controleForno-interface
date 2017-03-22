@@ -32,7 +32,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -571,8 +571,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>100</width>
-         <height>30</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -722,8 +722,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>100</width>
-         <height>30</height>
+         <width>98</width>
+         <height>28</height>
         </rect>
        </property>
        <attribute name="label">
@@ -1003,9 +1003,9 @@
        <widget class="QLabel" name="label_colorbar_2">
         <property name="geometry">
          <rect>
-          <x>520</x>
+          <x>510</x>
           <y>40</y>
-          <width>41</width>
+          <width>51</width>
           <height>301</height>
          </rect>
         </property>
@@ -1215,7 +1215,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_11">
        <attribute name="title">
@@ -1370,9 +1370,9 @@
        <widget class="QLabel" name="label_colorbar">
         <property name="geometry">
          <rect>
-          <x>490</x>
+          <x>480</x>
           <y>10</y>
-          <width>31</width>
+          <width>41</width>
           <height>271</height>
          </rect>
         </property>
